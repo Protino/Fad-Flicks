@@ -13,6 +13,7 @@ import android.widget.GridView;
 
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.Utility.MovieDataParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class MainActivityFragment extends Fragment {
 
             HttpURLConnection httpURLConnection = null;
             BufferedReader bufferedReader = null;
-            String JSONmovieData = null;
+            String JSONStrMovieData = null;
 
 
             //step 1
@@ -119,7 +120,7 @@ public class MainActivityFragment extends Fragment {
                 if (stringBuffer.length() == 0)
                     return null;
 
-                JSONmovieData = stringBuffer.toString();
+                JSONStrMovieData = stringBuffer.toString();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 Log.e(LOG_TAG, "Malformed URL", e);
@@ -140,12 +141,13 @@ public class MainActivityFragment extends Fragment {
                     }
                 }
             }
-            return JSONmovieData;
+            return JSONStrMovieData;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            MovieDataParser.getAllMoviePosterUrls(s);
         }
     }
 }
