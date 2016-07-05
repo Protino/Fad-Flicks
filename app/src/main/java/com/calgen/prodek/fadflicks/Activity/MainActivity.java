@@ -1,10 +1,12 @@
-package com.calgen.prodek.fadflicks;
+package com.calgen.prodek.fadflicks.Activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.calgen.prodek.fadflicks.R;
 
 public class MainActivity extends AppCompatActivity {
 

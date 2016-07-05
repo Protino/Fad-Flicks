@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="3dp"
-    tools:context="com.calgen.prodek.fadflicks.MainActivityFragment"
+    tools:context=".Fragment.MainActivityFragment"
     tools:showIn="@layout/activity_main">
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
