@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.calgen.prodek.fadflicks.Adapter.ImageAdapter;
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.Utility.MovieDataParser;
@@ -29,6 +30,8 @@ import java.net.URL;
 public class MainActivityFragment extends Fragment {
 
     private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    public GridView gridView;
+    public ImageAdapter imageAdapter;
 
     public MainActivityFragment() {
     }
@@ -39,8 +42,9 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         //Fetch reference to the GridView and set a custom adapter to initialize views.
-        GridView gridView = (GridView) rootView.findViewById(R.id.gridView_posters);
-        //gridView.setAdapter(new ImageAdapter(getContext()));
+        imageAdapter = new ImageAdapter(getContext());
+        gridView = (GridView) rootView.findViewById(R.id.gridView_posters);
+        gridView.setAdapter(imageAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -97,7 +101,6 @@ public class MainActivityFragment extends Fragment {
             try {
                 //step 2
                 URL url = new URL(uri.toString());
-                Log.d(LOG_TAG, url.toString());
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("GET");
                 httpURLConnection.connect();
@@ -147,7 +150,13 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            MovieDataParser.getAllMoviePosterUrls(s);
+            // TODO: 05-Jul-16 Need to cache this received data and work on it later.
+            String[] posterUrls;
+            if (s != null) {
+                posterUrls = MovieDataParser.getAllMoviePosterUrls(s);
+                imageAdapter.update(posterUrls);
+                imageAdapter.notifyDataSetChanged();
+            }
         }
     }
 }

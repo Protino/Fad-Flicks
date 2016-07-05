@@ -13,25 +13,27 @@ import android.widget.ImageView;
 import com.calgen.prodek.fadflicks.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.Arrays;
+
 /**
  * A custom adapter that helps to load images into each gridView items.
  */
 public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
-    private String imageURL = "http://i.imgur.com/DvpvklR.png";
+    private String[] posterURLs;
 
     public ImageAdapter(Context c) {
         mContext = c;
+        posterURLs = new String[0];
     }
 
     public int getCount() {
-        // TODO: 03-Jul-16 change the hardcode
-        return 9;
+        return posterURLs.length;
     }
 
     public Object getItem(int position) {
-        return imageURL;
+        return posterURLs[position];
     }
 
     public long getItemId(int position) {
@@ -52,10 +54,16 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         //Use Picasso Image library to load the images into the imageView
-        // TODO: 03-Jul-16 Now the url is hardcoded. It needs to be fetched from the themoviedb.org
-        Picasso.with(mContext).load(imageURL).placeholder(mContext.getResources().getDrawable(R.drawable.loading)).into(imageView);
+        if (posterURLs != null)
+            Picasso.with(mContext).load(posterURLs[position]).placeholder(mContext.getResources().getDrawable(R.drawable.loading)).into(imageView);
         return imageView;
     }
 
+    public void clear() {
+        posterURLs = new String[0];
+    }
 
+    public void update(String[] urls) {
+        posterURLs = Arrays.copyOf(urls, urls.length);
+    }
 }

@@ -41,7 +41,6 @@ public class MovieDataParser {
                         .build();
 
                 posterUrls[i] = uri.toString();
-                Log.d(LOG_TAG, posterUrls[i]);
             }
         } catch (JSONException e) {
             e.printStackTrace();
