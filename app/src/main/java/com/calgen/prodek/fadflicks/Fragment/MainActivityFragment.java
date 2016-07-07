@@ -1,5 +1,6 @@
 package com.calgen.prodek.fadflicks.Fragment;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,7 +15,9 @@ import android.widget.GridView;
 import com.calgen.prodek.fadflicks.Adapter.ImageAdapter;
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.Utility.Cache;
 import com.calgen.prodek.fadflicks.Utility.MovieDataParser;
+import com.calgen.prodek.fadflicks.Utility.Network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +32,7 @@ import java.net.URL;
  */
 public class MainActivityFragment extends Fragment {
 
-    private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    private static final String TAG = MainActivityFragment.class.getSimpleName();
     public GridView gridView;
     public ImageAdapter imageAdapter;
 
@@ -62,13 +65,29 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void updateMovieData() {
-
-        FetchMovieData fetchMovieData = new FetchMovieData();
-        fetchMovieData.execute();
-
+        //Check for network connection beforehand
+        if (Network.isConnected(getContext())) {
+            FetchMovieData fetchMovieData = new FetchMovieData();
+            fetchMovieData.execute();
+        } else {
+            //load cached data
+            String cachedMovieData = Cache.getMovieData(getContext());
+            imageAdapter.update(MovieDataParser.getAllMoviePosterUrls(cachedMovieData));
+            imageAdapter.notifyDataSetChanged();
+        }
     }
 
     private class FetchMovieData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(getContext());
+            dialog.setMessage("Loading...");
+            dialog.show();
+        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -126,10 +145,10 @@ public class MainActivityFragment extends Fragment {
                 JSONStrMovieData = stringBuffer.toString();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-                Log.e(LOG_TAG, "Malformed URL", e);
+                Log.e(TAG, "Malformed URL", e);
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e(LOG_TAG, "IOException", e);
+                Log.e(TAG, "IOException", e);
             }
             //step 5
             finally {
@@ -140,7 +159,7 @@ public class MainActivityFragment extends Fragment {
                     try {
                         bufferedReader.close();
                     } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
+                        Log.e(TAG, "Error closing stream", e);
                     }
                 }
             }
@@ -150,13 +169,13 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            // TODO: 05-Jul-16 Need to cache this received data and work on it later.
-            String[] posterUrls;
             if (s != null) {
-                posterUrls = MovieDataParser.getAllMoviePosterUrls(s);
+                Cache.cacheMovieData(getContext(), s);
+                String[] posterUrls = MovieDataParser.getAllMoviePosterUrls(s);
                 imageAdapter.update(posterUrls);
                 imageAdapter.notifyDataSetChanged();
             }
+            dialog.dismiss();
         }
     }
 }

@@ -5,12 +5,13 @@ package com.calgen.prodek.fadflicks.Adapter;
  */
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.calgen.prodek.fadflicks.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -20,8 +21,9 @@ import java.util.Arrays;
  */
 public class ImageAdapter extends BaseAdapter {
 
+    private static final String TAG = ImageAdapter.class.getSimpleName();
     private Context mContext;
-    private String[] posterURLs;
+    public String[] posterURLs;
 
     public ImageAdapter(Context c) {
         mContext = c;
@@ -32,12 +34,15 @@ public class ImageAdapter extends BaseAdapter {
         return posterURLs.length;
     }
 
-    public Object getItem(int position) {
+    public Object getItem(int position)
+    {
+        if (posterURLs == null)
+            return null;
         return posterURLs[position];
     }
 
     public long getItemId(int position) {
-        return 0;
+        return posterURLs[position].hashCode();
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -54,16 +59,28 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         //Use Picasso Image library to load the images into the imageView
-        if (posterURLs != null)
-            Picasso.with(mContext).load(posterURLs[position]).placeholder(mContext.getResources().getDrawable(R.drawable.loading)).into(imageView);
+        //URL must be encoded as uri to make
+        if (posterURLs != null) {
+            Picasso.with(mContext).load(posterURLs[position])
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Log.e(TAG, "onError: Picasso couldn't load images");
+                        }
+                    });
+        }
         return imageView;
     }
 
-    public void clear() {
-        posterURLs = new String[0];
-    }
-
     public void update(String[] urls) {
+        if (urls == null) {
+            return;
+        }
         posterURLs = Arrays.copyOf(urls, urls.length);
     }
 }

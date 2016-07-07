@@ -17,13 +17,15 @@ public class MovieDataParser {
     /**
      *
      * @param movieData Represents JSON formatted string data fetched from moviedb.
-     * @return Array of strings containing formatted poster URLs
+     * @return Array of strings containing formatted poster URLs. null value if movieData is null.
      */
     public static String[] getAllMoviePosterUrls(String movieData) {
         JSONObject jsonObject;
         String[] posterUrls = null;
         String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
         String IMAGE_SIZE = "w185/";
+        if (movieData == null)
+            return null;
         try {
             jsonObject = new JSONObject(movieData);
             JSONArray jsonArray = jsonObject.getJSONArray("results");

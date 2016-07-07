@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Fad Flicks</string>
     <string name="action_settings">Settings</string>
+
+
+    <!-- Preference keys -->
+    <string name="movie_data_prefs_key">movie_data</string>
+
 </resources>
