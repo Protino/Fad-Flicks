@@ -33,10 +33,15 @@ import java.net.URL;
 public class MainActivityFragment extends Fragment {
 
     private static final String TAG = MainActivityFragment.class.getSimpleName();
+    public static ImageAdapter imageAdapter;
     public GridView gridView;
-    public ImageAdapter imageAdapter;
 
     public MainActivityFragment() {
+    }
+
+    public static void updateAdapter(String data) {
+        imageAdapter.update(MovieDataParser.getAllMoviePosterUrls(data));
+        imageAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -70,10 +75,8 @@ public class MainActivityFragment extends Fragment {
             FetchMovieData fetchMovieData = new FetchMovieData();
             fetchMovieData.execute();
         } else {
-            //load cached data
-            String cachedMovieData = Cache.getMovieData(getContext());
-            imageAdapter.update(MovieDataParser.getAllMoviePosterUrls(cachedMovieData));
-            imageAdapter.notifyDataSetChanged();
+            //load cached data and update adapter
+            updateAdapter(Cache.getMovieData(getContext()));
         }
     }
 
@@ -84,8 +87,9 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = new ProgressDialog(getContext());
-            dialog.setMessage("Loading...");
+            dialog = new ProgressDialog(getContext(), R.style.DialogTheme_NoBackground);
+            dialog.setCancelable(false);
+            dialog.setProgressStyle(android.R.style.Widget_ProgressBar_Large);
             dialog.show();
         }
 
@@ -171,9 +175,7 @@ public class MainActivityFragment extends Fragment {
             super.onPostExecute(s);
             if (s != null) {
                 Cache.cacheMovieData(getContext(), s);
-                String[] posterUrls = MovieDataParser.getAllMoviePosterUrls(s);
-                imageAdapter.update(posterUrls);
-                imageAdapter.notifyDataSetChanged();
+                MainActivityFragment.updateAdapter(s);
             }
             dialog.dismiss();
         }

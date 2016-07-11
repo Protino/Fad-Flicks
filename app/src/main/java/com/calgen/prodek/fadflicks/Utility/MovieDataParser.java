@@ -12,18 +12,17 @@ import org.json.JSONObject;
  */
 public class MovieDataParser {
 
-    private static final String LOG_TAG = MovieDataParser.class.getSimpleName();
+    private static final String TAG = MovieDataParser.class.getSimpleName();
 
     /**
-     *
      * @param movieData Represents JSON formatted string data fetched from moviedb.
      * @return Array of strings containing formatted poster URLs. null value if movieData is null.
      */
     public static String[] getAllMoviePosterUrls(String movieData) {
         JSONObject jsonObject;
         String[] posterUrls = null;
-        String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
-        String IMAGE_SIZE = "w185/";
+        String BASE_IMAGE_URL = "http://image.tmdb.org/t/p";
+        String IMAGE_SIZE = "w185";
         if (movieData == null)
             return null;
         try {
@@ -34,8 +33,7 @@ public class MovieDataParser {
 
                 //To get complete URL relative path must be suffixed to the base path
                 //along with necessary parameters,if any.
-                String relativePath = posterUrls[i] = jsonArray.getJSONObject(i).getString("poster_path");
-
+                String relativePath = posterUrls[i] = jsonArray.getJSONObject(i).getString("poster_path").replace("/","");
                 Uri uri = Uri.parse(BASE_IMAGE_URL)
                         .buildUpon()
                         .appendEncodedPath(IMAGE_SIZE)
@@ -46,7 +44,7 @@ public class MovieDataParser {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e(LOG_TAG, "JSON parsing error :", e);
+            Log.e(TAG, "JSON parsing error :", e);
         }
         return posterUrls;
     }

@@ -5,14 +5,13 @@ package com.calgen.prodek.fadflicks.Adapter;
  */
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.Arrays;
 
@@ -22,8 +21,8 @@ import java.util.Arrays;
 public class ImageAdapter extends BaseAdapter {
 
     private static final String TAG = ImageAdapter.class.getSimpleName();
+    public String[] posterURLs = null;
     private Context mContext;
-    public String[] posterURLs;
 
     public ImageAdapter(Context c) {
         mContext = c;
@@ -34,15 +33,14 @@ public class ImageAdapter extends BaseAdapter {
         return posterURLs.length;
     }
 
-    public Object getItem(int position)
-    {
+    public Object getItem(int position) {
         if (posterURLs == null)
             return null;
         return posterURLs[position];
     }
 
     public long getItemId(int position) {
-        return posterURLs[position].hashCode();
+        return 0;
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -52,28 +50,16 @@ public class ImageAdapter extends BaseAdapter {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
             imageView.setAdjustViewBounds(true);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(3, 3, 3, 3);
         } else {
             imageView = (ImageView) convertView;
         }
 
         //Use Picasso Image library to load the images into the imageView
-        //URL must be encoded as uri to make
-        if (posterURLs != null) {
-            Picasso.with(mContext).load(posterURLs[position])
-                    .into(imageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-
-                        }
-
-                        @Override
-                        public void onError() {
-                            Log.e(TAG, "onError: Picasso couldn't load images");
-                        }
-                    });
-        }
+        if (posterURLs != null)
+            Glide.with(mContext)
+                    .load(posterURLs[position])
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
         return imageView;
     }
 
