@@ -43,7 +43,6 @@ public class MainActivityFragment extends Fragment {
 
     public static void updateAdapter(String data) {
         imageAdapter.update(MovieDataParser.getAllMoviePosterUrls(data));
-        imageAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -78,7 +77,9 @@ public class MainActivityFragment extends Fragment {
         //Check for network connection beforehand
         if (Network.isConnected(getContext())) {
             FetchMovieData fetchMovieData = new FetchMovieData();
-            fetchMovieData.execute();
+            String sort_type = Cache.getSortType(getContext());
+            Log.d(TAG, "updateMovieData: "+sort_type);
+            fetchMovieData.execute(sort_type);
         } else {
             //load cached data and update adapter
             updateAdapter(Cache.getMovieData(getContext()));
@@ -112,7 +113,12 @@ public class MainActivityFragment extends Fragment {
              */
 
             //constants for URL parameters
-            final String BASE_URL = "http://api.themoviedb.org/3/movie/popular?";
+            final String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+            final String SORT_BY = "sort_by";
+            //Adding this parameter so that good top_rated movies are returned. Movie "Lady Gaga" is rated 10.0.
+            final String MIN_VOTES = "vote_count.gte";
+            final String votesValue = (params[0].equals("popularity.desc"))?"0":"1000";
+            Log.d(TAG, "doInBackground: "+votesValue);
             final String API_KEY = "api_key";
 
             HttpURLConnection httpURLConnection = null;
@@ -123,7 +129,9 @@ public class MainActivityFragment extends Fragment {
             //step 1
             Uri uri = Uri.parse(BASE_URL)
                     .buildUpon()
+                    .appendQueryParameter(SORT_BY,params[0])
                     .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
+                    .appendQueryParameter(MIN_VOTES,votesValue)
                     .build();
 
             try {

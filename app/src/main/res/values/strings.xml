@@ -4,7 +4,16 @@
 
 
     <!-- Preference keys -->
-    <string name="movie_data_prefs_key">movie_data</string>
+    <string name="movie_data_prefs_key" translatable="false">movie_data</string>
+    <string name="pref_sort_type_key" translatable="false">sort_type</string>
+
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Sort Type Settings-->
+    <string name="pref_sort_type_default" translatable="false">popularity.desc</string>
+    <string name="pref_sort_type_label">Sort Type</string>
 
 </resources>

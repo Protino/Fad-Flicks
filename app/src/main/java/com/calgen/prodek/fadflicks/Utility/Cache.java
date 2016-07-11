@@ -19,20 +19,29 @@ public class Cache {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(c);
         Editor sharedPreferencesEditor = sharedPreferences.edit();
         sharedPreferencesEditor.putString(c.getResources().getString(R.string.movie_data_prefs_key), data);
-        if(!sharedPreferencesEditor.commit())
+        if (!sharedPreferencesEditor.commit())
             Log.e(TAG, "cacheMovieData: Editor couldn't commit");
         else
             Log.d(TAG, "cacheMovieData: committed");
     }
 
-    public static String getMovieData(Context c){
+    public static String getMovieData(Context context) {
         String movieData = null;
-        SharedPreferences sharedPreferences = getDefaultSharedPreferences(c);
-        if(sharedPreferences.contains(c.getResources().getString(R.string.movie_data_prefs_key))) {
-            movieData = sharedPreferences.getString(c.getResources().getString(R.string.movie_data_prefs_key), null);
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        if (sharedPreferences.contains(context.getResources().getString(R.string.movie_data_prefs_key))) {
+            movieData = sharedPreferences.getString(context.getResources().getString(R.string.movie_data_prefs_key), null);
         }
         return movieData;
     }
 
 
+    public static String getSortType(Context context) {
+        String defaultSortType = context.getResources().getString(R.string.pref_sort_type_default);
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        if (sharedPreferences.contains(context.getResources().getString(R.string.pref_sort_type_key))) {
+            return sharedPreferences.getString(context.getResources().getString(R.string.pref_sort_type_key)
+                    , defaultSortType);
+        } else
+            return defaultSortType;
+    }
 }

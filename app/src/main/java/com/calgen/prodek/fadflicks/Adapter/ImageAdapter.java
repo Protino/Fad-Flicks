@@ -66,5 +66,6 @@ public class ImageAdapter extends BaseAdapter {
             return;
         }
         posterURLs = Arrays.copyOf(urls, urls.length);
+        notifyDataSetChanged();
     }
 }
