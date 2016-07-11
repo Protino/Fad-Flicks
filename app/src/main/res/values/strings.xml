@@ -5,5 +5,6 @@
 
     <!-- Preference keys -->
     <string name="movie_data_prefs_key">movie_data</string>
+    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>

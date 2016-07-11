@@ -1,6 +1,7 @@
 package com.calgen.prodek.fadflicks.Fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.calgen.prodek.fadflicks.Activity.DetailActivity;
 import com.calgen.prodek.fadflicks.Adapter.ImageAdapter;
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
@@ -52,11 +54,14 @@ public class MainActivityFragment extends Fragment {
         //Fetch reference to the GridView and set a custom adapter to initialize views.
         imageAdapter = new ImageAdapter(getContext());
         gridView = (GridView) rootView.findViewById(R.id.gridView_posters);
+        imageAdapter.hasStableIds();
         gridView.setAdapter(imageAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), DetailActivity.class);
+                startActivity(intent);
             }
         });
 

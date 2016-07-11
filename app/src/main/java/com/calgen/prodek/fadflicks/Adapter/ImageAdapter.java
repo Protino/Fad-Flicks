@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
 
@@ -54,11 +53,10 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        //Use Picasso Image library to load the images into the imageView
+        //Use Glide Image library to load the images into the imageView
         if (posterURLs != null)
-            Glide.with(mContext)
+            Picasso.with(mContext)
                     .load(posterURLs[position])
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView);
         return imageView;
     }
