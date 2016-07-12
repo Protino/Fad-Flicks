@@ -3,9 +3,11 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -24,32 +26,4 @@
         <item name="android:shadowRadius">8</item>
         <item name="android:shadowColor">@android:color/black</item>
     </style>
-
-
-    <!-- Loading spinner related styles -->
-    <style name="DialogTheme_NoBackground">
-        <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
-        <item name="android:windowBackground">@color/transparent</item>
-        <item name="android:textColorPrimary">#FFFFFF</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:layout_gravity">center</item>
-    </style>
-
-    <style name="CustomAlertDialogStyle">
-        <item name="android:bottomBright">@color/transparent</item>
-        <item name="android:bottomDark">@color/transparent</item>
-        <item name="android:bottomMedium">@color/transparent</item>
-        <item name="android:centerBright">@color/transparent</item>
-        <item name="android:centerDark">@color/transparent</item>
-        <item name="android:centerMedium">@color/transparent</item>
-        <item name="android:fullBright">@color/transparent</item>
-        <item name="android:fullDark">@color/transparent</item>
-        <item name="android:topBright">@color/transparent</item>
-        <item name="android:topDark">@color/transparent</item>
-    </style>
-
-    <color name="white">#FFFFFF</color>
 </resources>

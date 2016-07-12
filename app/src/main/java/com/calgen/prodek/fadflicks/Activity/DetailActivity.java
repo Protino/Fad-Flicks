@@ -45,4 +45,10 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+    }
 }

@@ -98,17 +98,20 @@ public class Parser {
      * @param formatString the string that is supposed to be formatted
      * @param start        index from where to start
      * @param end          index where to end
-     * @param flags
-     * @param params
-     * @return
+     * @return formatted {@code SpannableString}
      */
-    public static SpannableString formatIntoSpannableString(String formatString, int start, int end, int flags, Object... params) {
+    public static SpannableString formatIntoSpannableString(String formatString, int start, int end) {
         SpannableString spannableString = new SpannableString(formatString);
-        spannableString.setSpan(new RelativeSizeSpan(1f), start, end, flags);
-        spannableString.setSpan(new StyleSpan(Typeface.BOLD), start, end, flags);
+        spannableString.setSpan(new RelativeSizeSpan(1f), start, end, 0);
+        spannableString.setSpan(new StyleSpan(Typeface.BOLD), start, end, 0);
         return spannableString;
     }
 
+    /**
+     *
+     * @param releaseDate date in the form yyyy-mm-dd
+     * @return date in friendly form like JUN 2015
+     */
     public static String formatReleaseDate(String releaseDate) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
         Date date;

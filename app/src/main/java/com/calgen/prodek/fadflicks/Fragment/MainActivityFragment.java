@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +20,8 @@ import com.calgen.prodek.fadflicks.Adapter.ImageAdapter;
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.Utility.Cache;
-import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.calgen.prodek.fadflicks.Utility.Network;
+import com.calgen.prodek.fadflicks.Utility.Parser;
 
 import org.json.JSONObject;
 
@@ -37,12 +39,21 @@ import java.net.URL;
 public class MainActivityFragment extends Fragment {
 
     private static final String TAG = MainActivityFragment.class.getSimpleName();
+    private static final String MOVIE_DATA = "movie_data";
     public static ImageAdapter imageAdapter;
     public GridView gridView;
     LinearLayout linearLayoutProgressBar;
     private String memoryCachedMovieData;
+    private String sort_type = "";
+    private View rootView;
 
     public MainActivityFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     public static void updateAdapter(String data) {
@@ -50,9 +61,31 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(MOVIE_DATA, memoryCachedMovieData);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        String oldSortType = sort_type;
+        sort_type = Cache.getSortType(getContext());
+        if (savedInstanceState==null || !oldSortType.equals(sort_type) || oldSortType.equals("")) {
+            updateMovieData();
+        }else {
+            memoryCachedMovieData = savedInstanceState.getString(MOVIE_DATA);
+            if (memoryCachedMovieData != null)
+                updateAdapter(memoryCachedMovieData);
+            else
+                updateMovieData();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         linearLayoutProgressBar = (LinearLayout) rootView.findViewById(R.id.linear_layout_progress);
 
@@ -77,20 +110,25 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateMovieData();
-    }
-
     private void updateMovieData() {
         //Check for network connection beforehand
         if (Network.isConnected(getContext())) {
             FetchMovieData fetchMovieData = new FetchMovieData();
-            String sort_type = Cache.getSortType(getContext());
             fetchMovieData.execute(sort_type);
         } else {
+            //Also display snackBar to get latest content
+            final Snackbar snackbar = Snackbar.make(rootView.findViewById(R.id.fragment),
+                    "No internet connection.",
+                    Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(R.string.try_again, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //recheck internet connection and call DownloadJson if there is internet
+                    updateMovieData();
+                }
+            }).show();
             //load cached data and update adapter
+            memoryCachedMovieData = Cache.getMovieData(getContext());
             updateAdapter(Cache.getMovieData(getContext()));
         }
     }
@@ -148,7 +186,7 @@ public class MainActivityFragment extends Fragment {
                 InputStream inputStream = httpURLConnection.getInputStream();
 
                 //step4
-                StringBuffer stringBuffer = new StringBuffer();
+                StringBuilder stringBuffer = new StringBuilder();
                 if (inputStream == null)
                     return null;
 

@@ -55,14 +55,14 @@ public class DetailActivityFragment extends Fragment {
 
 
         //set ratings, title and plot
-        SpannableString spannableString = Parser.formatIntoSpannableString("User Rating\n" + userRating, 0, 11, 0);
+        SpannableString spannableString = Parser.formatIntoSpannableString("User Rating\n" + userRating, 0, 11);
         ((TextView) rootView.findViewById(R.id.user_rating)).setText(spannableString);
 
         releaseDate = Parser.formatReleaseDate(releaseDate);
-        spannableString = Parser.formatIntoSpannableString("Release Date\n" + releaseDate, 0, 12, 0);
+        spannableString = Parser.formatIntoSpannableString("Release Date\n" + releaseDate, 0, 12);
         ((TextView) rootView.findViewById(R.id.release_date)).setText(spannableString);
 
-        spannableString = Parser.formatIntoSpannableString("Plot \n" + moviePlot, 0, 4, 0);
+        spannableString = Parser.formatIntoSpannableString("Plot \n" + moviePlot, 0, 4);
         ((TextView) rootView.findViewById(R.id.plot)).setText(spannableString);
 
         return rootView;

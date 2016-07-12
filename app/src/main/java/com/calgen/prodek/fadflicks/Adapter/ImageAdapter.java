@@ -43,8 +43,8 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     // create a new ImageView for each item referenced by the Adapter
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ImageView imageView;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
@@ -53,9 +53,9 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        // TODO: 12-Jul-16 Make Picasso to cache into disk
-        // Glide library caches images to disk but it has image flickering problems
-        // and uses lot of memory and disk space
+        // Glide library caches images to disk perfectly without workarounds but it has image
+        // flickering problems and uses lot of memory and disk space. Picasso's disk caching works
+        // fine only on API 23. Needs workaround for API<23
         if (posterURLs != null)
             Picasso.with(mContext)
                     .load(posterURLs[position])
