@@ -21,8 +21,6 @@ public class Cache {
         sharedPreferencesEditor.putString(c.getResources().getString(R.string.movie_data_prefs_key), data);
         if (!sharedPreferencesEditor.commit())
             Log.e(TAG, "cacheMovieData: Editor couldn't commit");
-        else
-            Log.d(TAG, "cacheMovieData: committed");
     }
 
     public static String getMovieData(Context context) {

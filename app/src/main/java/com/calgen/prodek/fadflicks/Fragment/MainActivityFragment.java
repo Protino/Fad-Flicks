@@ -21,6 +21,8 @@ import com.calgen.prodek.fadflicks.Utility.Cache;
 import com.calgen.prodek.fadflicks.Utility.MovieDataParser;
 import com.calgen.prodek.fadflicks.Utility.Network;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +39,7 @@ public class MainActivityFragment extends Fragment {
     private static final String TAG = MainActivityFragment.class.getSimpleName();
     public static ImageAdapter imageAdapter;
     public GridView gridView;
+    private String memoryCachedMovieData;
 
     public MainActivityFragment() {
     }
@@ -53,14 +56,18 @@ public class MainActivityFragment extends Fragment {
         //Fetch reference to the GridView and set a custom adapter to initialize views.
         imageAdapter = new ImageAdapter(getContext());
         gridView = (GridView) rootView.findViewById(R.id.gridView_posters);
-        imageAdapter.hasStableIds();
         gridView.setAdapter(imageAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getContext(), DetailActivity.class);
-                startActivity(intent);
+                String posterUrl = (String) imageAdapter.getItem(position);
+                JSONObject jsonObject = MovieDataParser.getMovieDetailsByUrl(memoryCachedMovieData, posterUrl);
+                if (jsonObject != null) {
+                    Intent intent = new Intent(getContext(), DetailActivity.class);
+                    intent.putExtra(intent.EXTRA_TEXT, jsonObject.toString());
+                    startActivity(intent);
+                }
             }
         });
 
@@ -78,7 +85,6 @@ public class MainActivityFragment extends Fragment {
         if (Network.isConnected(getContext())) {
             FetchMovieData fetchMovieData = new FetchMovieData();
             String sort_type = Cache.getSortType(getContext());
-            Log.d(TAG, "updateMovieData: "+sort_type);
             fetchMovieData.execute(sort_type);
         } else {
             //load cached data and update adapter
@@ -109,7 +115,7 @@ public class MainActivityFragment extends Fragment {
             2. Open httpURLConnection using earlier uri.
             3. Create inputStream to read data
             4. Read data into a stringBuffer by using readLine function
-            5. Close streams finally.
+            5. Finally close the streams.
              */
 
             //constants for URL parameters
@@ -117,8 +123,7 @@ public class MainActivityFragment extends Fragment {
             final String SORT_BY = "sort_by";
             //Adding this parameter so that good top_rated movies are returned. Movie "Lady Gaga" is rated 10.0.
             final String MIN_VOTES = "vote_count.gte";
-            final String votesValue = (params[0].equals("popularity.desc"))?"0":"1000";
-            Log.d(TAG, "doInBackground: "+votesValue);
+            final String votesValue = (params[0].equals("popularity.desc")) ? "0" : "1000";
             final String API_KEY = "api_key";
 
             HttpURLConnection httpURLConnection = null;
@@ -129,9 +134,9 @@ public class MainActivityFragment extends Fragment {
             //step 1
             Uri uri = Uri.parse(BASE_URL)
                     .buildUpon()
-                    .appendQueryParameter(SORT_BY,params[0])
+                    .appendQueryParameter(SORT_BY, params[0])
                     .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
-                    .appendQueryParameter(MIN_VOTES,votesValue)
+                    .appendQueryParameter(MIN_VOTES, votesValue)
                     .build();
 
             try {
@@ -187,6 +192,7 @@ public class MainActivityFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if (s != null) {
+                memoryCachedMovieData = s;
                 Cache.cacheMovieData(getContext(), s);
                 MainActivityFragment.updateAdapter(s);
             }
