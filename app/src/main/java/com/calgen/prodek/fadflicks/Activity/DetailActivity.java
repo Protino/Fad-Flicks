@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.MovieDataParser;
+import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -41,7 +41,7 @@ public class DetailActivity extends AppCompatActivity {
         collapsingToolbarLayout.setTitle(movieTitle);
         ImageView imageView = (ImageView) collapsingToolbarLayout.findViewById(R.id.image_backdrop);
         imageView.setAdjustViewBounds(true);
-        Picasso.with(this).load(MovieDataParser.formatImageUrl(backdropUrl)).into(imageView);
+        Picasso.with(this).load(Parser.formatImageUrl(backdropUrl)).into(imageView);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

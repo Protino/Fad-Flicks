@@ -53,7 +53,9 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        //Use Glide Image library to load the images into the imageView
+        // TODO: 12-Jul-16 Make Picasso to cache into disk
+        // Glide library caches images to disk but it has image flickering problems
+        // and uses lot of memory and disk space
         if (posterURLs != null)
             Picasso.with(mContext)
                     .load(posterURLs[position])

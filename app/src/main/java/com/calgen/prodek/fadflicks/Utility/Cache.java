@@ -15,14 +15,26 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class Cache {
     private static final String TAG = "Cache";
 
+    /**
+     * @param c    Context needed to fetch DefaultSharedPreferences
+     * @param data Data that is supposed to be cached.
+     */
     public static void cacheMovieData(Context c, String data) {
-        SharedPreferences sharedPreferences = getDefaultSharedPreferences(c);
-        Editor sharedPreferencesEditor = sharedPreferences.edit();
-        sharedPreferencesEditor.putString(c.getResources().getString(R.string.movie_data_prefs_key), data);
-        if (!sharedPreferencesEditor.commit())
-            Log.e(TAG, "cacheMovieData: Editor couldn't commit");
+        try {
+            SharedPreferences sharedPreferences = getDefaultSharedPreferences(c);
+            Editor sharedPreferencesEditor = sharedPreferences.edit();
+            sharedPreferencesEditor.putString(c.getResources().getString(R.string.movie_data_prefs_key), data);
+            if (!sharedPreferencesEditor.commit())
+                Log.e(TAG, "cacheMovieData: Editor couldn't commit");
+        } catch (NullPointerException e) {
+            Log.e(TAG, "cacheMovieData: " + e.toString(), e);
+        }
     }
 
+    /**
+     * @param context
+     * @return String data is returned,{@code null} if not found.
+     */
     public static String getMovieData(Context context) {
         String movieData = null;
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
@@ -32,7 +44,10 @@ public class Cache {
         return movieData;
     }
 
-
+    /**
+     * @param context
+     * @return String value corresponding to the user preference of the sort type.
+     */
     public static String getSortType(Context context) {
         String defaultSortType = context.getResources().getString(R.string.pref_sort_type_default);
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);

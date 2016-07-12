@@ -5,6 +5,22 @@
     tools:context=".Fragment.MainActivityFragment"
     tools:showIn="@layout/activity_main">
 
+    <LinearLayout
+        android:id="@+id/linear_layout_progress"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </ProgressBar>
+    </LinearLayout>
+
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridView_posters"
         android:layout_width="match_parent"

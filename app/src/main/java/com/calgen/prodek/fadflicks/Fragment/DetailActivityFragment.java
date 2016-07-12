@@ -1,9 +1,9 @@
 package com.calgen.prodek.fadflicks.Fragment;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.Activity.DetailActivity;
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.MovieDataParser;
+import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -25,7 +25,6 @@ import org.json.JSONObject;
 public class DetailActivityFragment extends Fragment {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
-    Typeface robotoFont;
     String posterUrl;
     String userRating;
     String releaseDate;
@@ -41,7 +40,7 @@ public class DetailActivityFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         try {
             JSONObject movieDetails = new JSONObject(intent.getStringExtra(intent.EXTRA_TEXT));
-            posterUrl = MovieDataParser.formatImageUrl(movieDetails.getString("poster_path"));
+            posterUrl = Parser.formatImageUrl(movieDetails.getString("poster_path"));
             userRating = movieDetails.getString("vote_average");
             releaseDate = movieDetails.getString("release_date");
             moviePlot = movieDetails.getString("overview");
@@ -54,10 +53,17 @@ public class DetailActivityFragment extends Fragment {
         imageView.setAdjustViewBounds(true);
         Picasso.with(getContext()).load(posterUrl).into(imageView);
 
+
         //set ratings, title and plot
-        ((TextView) rootView.findViewById(R.id.user_rating)).setText(userRating);
-        ((TextView) rootView.findViewById(R.id.release_date)).setText(releaseDate);
-        ((TextView) rootView.findViewById(R.id.plot)).setText(moviePlot);
+        SpannableString spannableString = Parser.formatIntoSpannableString("User Rating\n" + userRating, 0, 11, 0);
+        ((TextView) rootView.findViewById(R.id.user_rating)).setText(spannableString);
+
+        releaseDate = Parser.formatReleaseDate(releaseDate);
+        spannableString = Parser.formatIntoSpannableString("Release Date\n" + releaseDate, 0, 12, 0);
+        ((TextView) rootView.findViewById(R.id.release_date)).setText(spannableString);
+
+        spannableString = Parser.formatIntoSpannableString("Plot \n" + moviePlot, 0, 4, 0);
+        ((TextView) rootView.findViewById(R.id.plot)).setText(spannableString);
 
         return rootView;
     }

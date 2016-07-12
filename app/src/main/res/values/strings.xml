@@ -10,8 +10,6 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Strings related to Settings -->
-
     <!-- Sort Type Settings-->
     <string name="pref_sort_type_default" translatable="false">popularity.desc</string>
     <string name="pref_sort_type_label">Sort Type</string>

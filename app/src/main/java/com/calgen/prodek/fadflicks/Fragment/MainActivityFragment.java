@@ -1,6 +1,5 @@
 package com.calgen.prodek.fadflicks.Fragment;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,13 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 
 import com.calgen.prodek.fadflicks.Activity.DetailActivity;
 import com.calgen.prodek.fadflicks.Adapter.ImageAdapter;
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.Utility.Cache;
-import com.calgen.prodek.fadflicks.Utility.MovieDataParser;
+import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.calgen.prodek.fadflicks.Utility.Network;
 
 import org.json.JSONObject;
@@ -39,19 +39,22 @@ public class MainActivityFragment extends Fragment {
     private static final String TAG = MainActivityFragment.class.getSimpleName();
     public static ImageAdapter imageAdapter;
     public GridView gridView;
+    LinearLayout linearLayoutProgressBar;
     private String memoryCachedMovieData;
 
     public MainActivityFragment() {
     }
 
     public static void updateAdapter(String data) {
-        imageAdapter.update(MovieDataParser.getAllMoviePosterUrls(data));
+        imageAdapter.update(Parser.getAllMoviePosterUrls(data));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        linearLayoutProgressBar = (LinearLayout) rootView.findViewById(R.id.linear_layout_progress);
 
         //Fetch reference to the GridView and set a custom adapter to initialize views.
         imageAdapter = new ImageAdapter(getContext());
@@ -62,7 +65,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String posterUrl = (String) imageAdapter.getItem(position);
-                JSONObject jsonObject = MovieDataParser.getMovieDetailsByUrl(memoryCachedMovieData, posterUrl);
+                JSONObject jsonObject = Parser.getMovieDetailsByUrl(memoryCachedMovieData, posterUrl);
                 if (jsonObject != null) {
                     Intent intent = new Intent(getContext(), DetailActivity.class);
                     intent.putExtra(intent.EXTRA_TEXT, jsonObject.toString());
@@ -94,15 +97,10 @@ public class MainActivityFragment extends Fragment {
 
     private class FetchMovieData extends AsyncTask<String, Void, String> {
 
-        ProgressDialog dialog;
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = new ProgressDialog(getContext(), R.style.DialogTheme_NoBackground);
-            dialog.setCancelable(false);
-            dialog.setProgressStyle(android.R.style.Widget_ProgressBar_Large);
-            dialog.show();
+            linearLayoutProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -196,7 +194,7 @@ public class MainActivityFragment extends Fragment {
                 Cache.cacheMovieData(getContext(), s);
                 MainActivityFragment.updateAdapter(s);
             }
-            dialog.dismiss();
+            linearLayoutProgressBar.setVisibility(View.GONE);
         }
     }
 }

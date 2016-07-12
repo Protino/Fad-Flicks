@@ -1,18 +1,26 @@
 package com.calgen.prodek.fadflicks.Utility;
 
+import android.graphics.Typeface;
 import android.net.Uri;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Gurupad on 05-Jul-16.
  */
-public class MovieDataParser {
+public class Parser {
 
-    private static final String TAG = MovieDataParser.class.getSimpleName();
+    private static final String TAG = Parser.class.getSimpleName();
 
     /**
      * @param movieData a JSON formatted string data fetched from movieDb.
@@ -69,6 +77,10 @@ public class MovieDataParser {
         return null;
     }
 
+    /**
+     * @param backdropUrl Relative image path that is supposed to be appended.
+     * @return Complete Url to locate the image resource.
+     */
     public static String formatImageUrl(String backdropUrl) {
         String BASE_IMAGE_URL = "http://image.tmdb.org/t/p";
         String IMAGE_SIZE = "w185";
@@ -78,5 +90,35 @@ public class MovieDataParser {
                 .appendEncodedPath(backdropUrl)
                 .build();
         return uri.toString();
+    }
+
+    // TODO: 12-Jul-16 It would be nice to add Object... params as the parameter
+
+    /**
+     * @param formatString the string that is supposed to be formatted
+     * @param start        index from where to start
+     * @param end          index where to end
+     * @param flags
+     * @param params
+     * @return
+     */
+    public static SpannableString formatIntoSpannableString(String formatString, int start, int end, int flags, Object... params) {
+        SpannableString spannableString = new SpannableString(formatString);
+        spannableString.setSpan(new RelativeSizeSpan(1f), start, end, flags);
+        spannableString.setSpan(new StyleSpan(Typeface.BOLD), start, end, flags);
+        return spannableString;
+    }
+
+    public static String formatReleaseDate(String releaseDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+        Date date;
+        try {
+            date = formatter.parse(releaseDate);
+            formatter = new SimpleDateFormat("MMM yyyy");
+            return formatter.format(date);
+        } catch (ParseException e) {
+            Log.e(TAG, "formatReleaseDate:", e);
+        }
+        return releaseDate;
     }
 }
