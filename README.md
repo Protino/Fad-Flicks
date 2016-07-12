@@ -1,6 +1,6 @@
 # FAD FLICKS
 * [Naming the App](#naming-the-app)
-* [What did I learn ?](#what-did-i-learn-?)
+* [What did I learn](#what-did-i-learn)
 * [For Udacity Reviewer](#for-udacity-reviewer)
 
 ### Naming the App
