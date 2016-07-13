@@ -9,6 +9,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -50,14 +53,40 @@ public class MainActivityFragment extends Fragment {
     public MainActivityFragment() {
     }
 
+    public static void updateAdapter(String data) {
+        imageAdapter.update(Parser.getAllMoviePosterUrls(data));
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         setRetainInstance(true);
     }
 
-    public static void updateAdapter(String data) {
-        imageAdapter.update(Parser.getAllMoviePosterUrls(data));
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        String currentSortType = sort_type;
+
+        switch (id) {
+            case R.id.menuSortPopular:
+                sort_type = getString(R.string.sort_type_popular);
+                break;
+            case R.id.menuSortTopRated:
+                sort_type = getString(R.string.sort_type_top_rated);
+                break;
+        }
+        if (!currentSortType.equals(sort_type)) {
+            updateMovieData();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -69,11 +98,10 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String oldSortType = sort_type;
-        sort_type = Cache.getSortType(getContext());
-        if (savedInstanceState==null || !oldSortType.equals(sort_type) || oldSortType.equals("")) {
+        if (savedInstanceState == null) {
+            sort_type = getString(R.string.sort_type_default);
             updateMovieData();
-        }else {
+        } else {
             memoryCachedMovieData = savedInstanceState.getString(MOVIE_DATA);
             if (memoryCachedMovieData != null)
                 updateAdapter(memoryCachedMovieData);
@@ -101,7 +129,7 @@ public class MainActivityFragment extends Fragment {
                 JSONObject jsonObject = Parser.getMovieDetailsByUrl(memoryCachedMovieData, posterUrl);
                 if (jsonObject != null) {
                     Intent intent = new Intent(getContext(), DetailActivity.class);
-                    intent.putExtra(intent.EXTRA_TEXT, jsonObject.toString());
+                    intent.putExtra(Intent.EXTRA_TEXT, jsonObject.toString());
                     startActivity(intent);
                 }
             }
@@ -118,12 +146,11 @@ public class MainActivityFragment extends Fragment {
         } else {
             //Also display snackBar to get latest content
             final Snackbar snackbar = Snackbar.make(rootView.findViewById(R.id.fragment),
-                    "No internet connection.",
+                    getString(R.string.internet_error_message),
                     Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction(R.string.try_again, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //recheck internet connection and call DownloadJson if there is internet
                     updateMovieData();
                 }
             }).show();
