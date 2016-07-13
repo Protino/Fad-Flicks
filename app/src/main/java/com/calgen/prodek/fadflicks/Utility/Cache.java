@@ -43,18 +43,4 @@ public class Cache {
         }
         return movieData;
     }
-
-    /**
-     * @param context
-     * @return String value corresponding to the user preference of the sort type.
-     */
-    public static String getSortType(Context context) {
-        String defaultSortType = context.getResources().getString(R.string.pref_sort_type_default);
-        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
-        if (sharedPreferences.contains(context.getResources().getString(R.string.pref_sort_type_key))) {
-            return sharedPreferences.getString(context.getResources().getString(R.string.pref_sort_type_key)
-                    , defaultSortType);
-        } else
-            return defaultSortType;
-    }
 }

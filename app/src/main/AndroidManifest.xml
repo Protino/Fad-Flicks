@@ -32,15 +32,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activity.MainActivity" />
         </activity>
-        <activity
-            android:name=".Activity.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme"
-            android:parentActivityName=".Activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.calgen.prodek.fadflicks.Activity.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
