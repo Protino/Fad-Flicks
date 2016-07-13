@@ -43,11 +43,12 @@ public class MainActivityFragment extends Fragment {
 
     private static final String TAG = MainActivityFragment.class.getSimpleName();
     private static final String MOVIE_DATA = "movie_data";
+    private static final String SORT_TYPE = "sort_type";
     public static ImageAdapter imageAdapter;
     public GridView gridView;
     LinearLayout linearLayoutProgressBar;
     private String memoryCachedMovieData;
-    private String sort_type = "";
+    private String sort_type;
     private View rootView;
 
     public MainActivityFragment() {
@@ -103,6 +104,7 @@ public class MainActivityFragment extends Fragment {
             updateMovieData();
         } else {
             memoryCachedMovieData = savedInstanceState.getString(MOVIE_DATA);
+            sort_type = savedInstanceState.getString(SORT_TYPE);
             if (memoryCachedMovieData != null)
                 updateAdapter(memoryCachedMovieData);
             else
@@ -186,7 +188,7 @@ public class MainActivityFragment extends Fragment {
             final String SORT_BY = "sort_by";
             //Adding this parameter so that good top_rated movies are returned. Movie "Lady Gaga" is rated 10.0.
             final String MIN_VOTES = "vote_count.gte";
-            final String votesValue = (params[0].equals("popularity.desc")) ? "0" : "1000";
+            final String votesValue = (params[0].equals(getString(R.string.sort_type_popular))) ? "0" : "1000";
             final String API_KEY = "api_key";
 
             HttpURLConnection httpURLConnection = null;

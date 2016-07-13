@@ -7,6 +7,8 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
+import com.calgen.prodek.fadflicks.BuildConfig;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,8 +31,8 @@ public class Parser {
     public static String[] getAllMoviePosterUrls(String movieData) {
         JSONObject jsonObject;
         String[] posterUrls = null;
-        String BASE_IMAGE_URL = "http://image.tmdb.org/t/p";
-        String IMAGE_SIZE = "w185";
+        String BASE_IMAGE_URL = BuildConfig.BASE_IMAGE_URL;
+        String IMAGE_SIZE = BuildConfig.IMAGE_SIZE;
         if (movieData == null)
             return null;
         try {
@@ -82,8 +84,8 @@ public class Parser {
      * @return Complete Url to locate the image resource.
      */
     public static String formatImageUrl(String backdropUrl) {
-        String BASE_IMAGE_URL = "http://image.tmdb.org/t/p";
-        String IMAGE_SIZE = "w185";
+        String BASE_IMAGE_URL = BuildConfig.BASE_IMAGE_URL;
+        String IMAGE_SIZE = BuildConfig.IMAGE_SIZE;
         Uri uri = Uri.parse(BASE_IMAGE_URL)
                 .buildUpon()
                 .appendEncodedPath(IMAGE_SIZE)
@@ -108,7 +110,6 @@ public class Parser {
     }
 
     /**
-     *
      * @param releaseDate date in the form yyyy-mm-dd
      * @return date in friendly form like JUN 2015
      */

@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Fad Flicks</string>
-    <string name="action_settings">Settings</string>
     <string name="action_sort">Sort</string>
 
     <string name="try_again">Try Again</string>
     <string name="popular">By Popular</string>
     <string name="top_rated">By Top Rated</string>
+    <string name="internet_error_message">No Internet Connection</string>
 
 
     <!-- Preference keys -->
@@ -19,6 +19,5 @@
     <string name="sort_type_default" translatable="false">popularity.desc</string>
     <string name="sort_type_popular" translatable="false">popularity.desc</string>
     <string name="sort_type_top_rated" translatable="false">vote_average.desc</string>
-    <string name="internet_error_message">No Internet Connection</string>
 
 </resources>
