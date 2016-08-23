@@ -9,6 +9,7 @@ import com.calgen.prodek.fadflicks.R;
 
 public class MainActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,4 +29,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
     }
+
+
 }

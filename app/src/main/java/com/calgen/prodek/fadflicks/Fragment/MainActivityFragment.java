@@ -204,6 +204,8 @@ public class MainActivityFragment extends Fragment {
                     .appendQueryParameter(MIN_VOTES, votesValue)
                     .build();
 
+            Log.d(TAG, "doInBackground: "+uri.toString());
+
             try {
                 //step 2
                 URL url = new URL(uri.toString());

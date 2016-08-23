@@ -19,6 +19,10 @@ import java.util.Arrays;
  */
 public class ImageAdapter extends BaseAdapter {
 
+
+    public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
+    public static final String IMAGE_SIZE = "w185";
+
     private static final String TAG = ImageAdapter.class.getSimpleName();
     public String[] posterURLs = null;
     private Context mContext;
