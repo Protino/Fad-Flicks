@@ -1,12 +1,11 @@
 package com.calgen.prodek.fadflicks.Fragment;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,27 +13,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.LinearLayout;
 
-import com.calgen.prodek.fadflicks.Activity.DetailActivity;
-import com.calgen.prodek.fadflicks.Adapter.ImageAdapter;
+import com.calgen.prodek.fadflicks.Adapter.MovieAdapter;
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.Cache;
 import com.calgen.prodek.fadflicks.Utility.Network;
 import com.calgen.prodek.fadflicks.Utility.Parser;
+import com.calgen.prodek.fadflicks.model.Movie;
+import com.calgen.prodek.fadflicks.model.MovieResponse;
+import com.calgen.prodek.fadflicks.model.Result;
+import com.calgen.prodek.fadflicks.rest.ApiClient;
+import com.calgen.prodek.fadflicks.rest.ApiInterface;
 
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -44,23 +42,21 @@ public class MainActivityFragment extends Fragment {
     private static final String TAG = MainActivityFragment.class.getSimpleName();
     private static final String MOVIE_DATA = "movie_data";
     private static final String SORT_TYPE = "sort_type";
-    public static ImageAdapter imageAdapter;
-    public GridView gridView;
-    LinearLayout linearLayoutProgressBar;
-    private String memoryCachedMovieData;
+    //@formatter:off
+    @BindView(R.id.recycler_view) public RecyclerView recyclerView;
     private String sort_type;
     private View rootView;
+    //@formatter:on
+    private MovieAdapter adapter;
+    private List<Movie> movieList;
 
     public MainActivityFragment() {
-    }
-
-    public static void updateAdapter(String data) {
-        imageAdapter.update(Parser.getAllMoviePosterUrls(data));
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sort_type = getString(R.string.sort_type_default);
         setHasOptionsMenu(true);
         setRetainInstance(true);
     }
@@ -92,24 +88,12 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(MOVIE_DATA, memoryCachedMovieData);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null) {
-            sort_type = getString(R.string.sort_type_default);
-            updateMovieData();
-        } else {
-            memoryCachedMovieData = savedInstanceState.getString(MOVIE_DATA);
-            sort_type = savedInstanceState.getString(SORT_TYPE);
-            if (memoryCachedMovieData != null)
-                updateAdapter(memoryCachedMovieData);
-            else
-                updateMovieData();
-        }
     }
 
     @Override
@@ -117,37 +101,32 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        linearLayoutProgressBar = (LinearLayout) rootView.findViewById(R.id.linear_layout_progress);
+        ButterKnife.bind(this, rootView);
 
-        //Fetch reference to the GridView and set a custom adapter to initialize views.
-        imageAdapter = new ImageAdapter(getContext());
-        gridView = (GridView) rootView.findViewById(R.id.gridView_posters);
-        gridView.setAdapter(imageAdapter);
+        movieList = new ArrayList<>();
+        adapter = new MovieAdapter(getActivity(), movieList);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String posterUrl = (String) imageAdapter.getItem(position);
-                JSONObject jsonObject = Parser.getMovieDetailsByUrl(memoryCachedMovieData, posterUrl);
-                if (jsonObject != null) {
-                    Intent intent = new Intent(getContext(), DetailActivity.class);
-                    intent.putExtra(Intent.EXTRA_TEXT, jsonObject.toString());
-                    startActivity(intent);
-                }
-            }
-        });
-
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        updateMovieData();
     }
 
     private void updateMovieData() {
         //Check for network connection beforehand
         if (Network.isConnected(getContext())) {
-            FetchMovieData fetchMovieData = new FetchMovieData();
-            fetchMovieData.execute(sort_type);
+            fetchData();
         } else {
             //Also display snackBar to get latest content
-            final Snackbar snackbar = Snackbar.make(rootView.findViewById(R.id.fragment),
+            displayFakeData();
+            /*final Snackbar snackbar = Snackbar.make(),
                     getString(R.string.internet_error_message),
                     Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction(R.string.try_again, new View.OnClickListener() {
@@ -155,115 +134,36 @@ public class MainActivityFragment extends Fragment {
                 public void onClick(View v) {
                     updateMovieData();
                 }
-            }).show();
-            //load cached data and update adapter
-            memoryCachedMovieData = Cache.getMovieData(getContext());
-            updateAdapter(Cache.getMovieData(getContext()));
+            }).show();*/
         }
     }
 
-    private class FetchMovieData extends AsyncTask<String, Void, String> {
+    private void displayFakeData() {
+        Movie movie = new Movie(9.0, "Hakuna Matata", "http://image.tmdb.org/t/p/w185/cGOPbv9wA5gEejkUN892JrveARt.jpg");
+        movieList.add(movie);
+        adapter.notifyDataSetChanged();
+    }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            linearLayoutProgressBar.setVisibility(View.VISIBLE);
-        }
+    private void fetchData() {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        @Override
-        protected String doInBackground(String... params) {
-
-            //Ex: url http://api.themoviedb.org/3/movie/popular?api_key=[APP_ID]
-            /*
-            Steps to fetch and read data from an url
-            1. Build the uri.
-            2. Open httpURLConnection using earlier uri.
-            3. Create inputStream to read data
-            4. Read data into a stringBuffer by using readLine function
-            5. Finally close the streams.
-             */
-
-            //constants for URL parameters
-            final String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
-            final String SORT_BY = "sort_by";
-            //Adding this parameter so that good top_rated movies are returned. Movie "Lady Gaga" is rated 10.0.
-            final String MIN_VOTES = "vote_count.gte";
-            final String votesValue = (params[0].equals(getString(R.string.sort_type_popular))) ? "0" : "1000";
-            final String API_KEY = "api_key";
-
-            HttpURLConnection httpURLConnection = null;
-            BufferedReader bufferedReader = null;
-            String JSONStrMovieData = null;
-
-
-            //step 1
-            Uri uri = Uri.parse(BASE_URL)
-                    .buildUpon()
-                    .appendQueryParameter(SORT_BY, params[0])
-                    .appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY)
-                    .appendQueryParameter(MIN_VOTES, votesValue)
-                    .build();
-
-            Log.d(TAG, "doInBackground: "+uri.toString());
-
-            try {
-                //step 2
-                URL url = new URL(uri.toString());
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("GET");
-                httpURLConnection.connect();
-
-                //step3
-                InputStream inputStream = httpURLConnection.getInputStream();
-
-                //step4
-                StringBuilder stringBuffer = new StringBuilder();
-                if (inputStream == null)
-                    return null;
-
-                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-                int ch;
-                while ((ch = bufferedReader.read()) != -1) {
-                    stringBuffer.append((char) ch);
+        Call<MovieResponse> call = apiService.getMovies(sort_type, BuildConfig.MOVIE_DB_API_KEY, String.valueOf(1000));
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<Result> results = response.body().getResults();
+                movieList.clear();
+                for (Result result : results) {
+                    Movie movie = new Movie(result.getVoteAverage(), result.getTitle(), Parser.formatImageUrl(result.getPosterPath()));
+                    movieList.add(movie);
                 }
-
-                if (stringBuffer.length() == 0)
-                    return null;
-
-                JSONStrMovieData = stringBuffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                Log.e(TAG, "Malformed URL", e);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, "IOException", e);
+                adapter.notifyDataSetChanged();
             }
-            //step 5
-            finally {
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-                if (bufferedReader != null) {
-                    try {
-                        bufferedReader.close();
-                    } catch (final IOException e) {
-                        Log.e(TAG, "Error closing stream", e);
-                    }
-                }
-            }
-            return JSONStrMovieData;
-        }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (s != null) {
-                memoryCachedMovieData = s;
-                Cache.cacheMovieData(getContext(), s);
-                MainActivityFragment.updateAdapter(s);
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
             }
-            linearLayoutProgressBar.setVisibility(View.GONE);
-        }
+        });
     }
 }

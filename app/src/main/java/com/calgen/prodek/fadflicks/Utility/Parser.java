@@ -80,14 +80,14 @@ public class Parser {
     }
 
     /**
-     * @param backdropUrl Relative image path that is supposed to be appended.
+     * @param imageUrl Relative image path that is supposed to be appended.
      * @return Complete Url to locate the image resource.
      */
-    public static String formatImageUrl(String backdropUrl) {
+    public static String formatImageUrl(String imageUrl) {
         Uri uri = Uri.parse(ImageAdapter.BASE_IMAGE_URL)
                 .buildUpon()
-                .appendEncodedPath(ImageAdapter.BASE_IMAGE_URL)
-                .appendEncodedPath(backdropUrl)
+                .appendEncodedPath(ImageAdapter.IMAGE_SIZE)
+                .appendEncodedPath(imageUrl)
                 .build();
         return uri.toString();
     }

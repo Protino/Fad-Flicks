@@ -49,7 +49,7 @@ public class DetailActivityFragment extends Fragment {
         }
 
         //set poster image
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.image_poster);
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.poster);
         imageView.setAdjustViewBounds(true);
         Picasso.with(getContext()).load(posterUrl).into(imageView);
 

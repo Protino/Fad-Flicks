@@ -20,6 +20,7 @@ import retrofit2.Response;
 public class RetrofitTest extends AndroidTestCase {
 
     public static final int RESULT_SIZE = 20;
+    private static final String TAG = RetrofitTest.class.getSimpleName();
 
     public void testApiService() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);

@@ -1,6 +1,7 @@
 package com.calgen.prodek.fadflicks.Activity;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +42,10 @@ public class DetailActivity extends AppCompatActivity {
         collapsingToolbarLayout.setTitle(movieTitle);
         ImageView imageView = (ImageView) collapsingToolbarLayout.findViewById(R.id.image_backdrop);
         imageView.setAdjustViewBounds(true);
-        Picasso.with(this).load(Parser.formatImageUrl(backdropUrl)).into(imageView);
+        Picasso.with(this)
+                .load(Parser.formatImageUrl(backdropUrl))
+                .placeholder(new ColorDrawable(0xFFFFFF))
+                .into(imageView);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

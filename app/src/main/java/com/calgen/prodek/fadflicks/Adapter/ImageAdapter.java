@@ -5,6 +5,7 @@ package com.calgen.prodek.fadflicks.Adapter;
  */
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -63,6 +64,7 @@ public class ImageAdapter extends BaseAdapter {
         if (posterURLs != null)
             Picasso.with(mContext)
                     .load(posterURLs[position])
+                    .placeholder(new ColorDrawable(0xFFFFFF))
                     .into(imageView);
         return imageView;
     }
