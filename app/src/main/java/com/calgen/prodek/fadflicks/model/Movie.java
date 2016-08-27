@@ -1,22 +1,19 @@
 package com.calgen.prodek.fadflicks.model;
 
+import org.parceler.Parcel;
+
 /**
  * Created by Gurupad on 25-Aug-16.
  * You asked me to change it for no reason.
  */
+@Parcel
 public class Movie {
 
-    private String title;
-    private Double rating;
-    private String posterId;
+    public String title;
+    public Double rating;
+    public String posterId;
 
     public Movie() {
-    }
-
-    public Movie(Double rating, String title, String posterId) {
-        this.rating = rating;
-        this.title = title;
-        this.posterId = posterId;
     }
 
     public String getTitle() {

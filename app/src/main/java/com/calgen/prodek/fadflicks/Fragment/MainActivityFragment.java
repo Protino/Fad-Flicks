@@ -125,23 +125,16 @@ public class MainActivityFragment extends Fragment {
             fetchData();
         } else {
             //Also display snackBar to get latest content
-            displayFakeData();
-            /*final Snackbar snackbar = Snackbar.make(),
-                    getString(R.string.internet_error_message),
-                    Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(R.string.try_again, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    updateMovieData();
-                }
-            }).show();*/
+//            final Snackbar snackbar = Snackbar.make(),
+//                    getString(R.string.internet_error_message),
+//                    Snackbar.LENGTH_INDEFINITE);
+//            snackbar.setAction(R.string.try_again, new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    updateMovieData();
+//                }
+//            }).show();
         }
-    }
-
-    private void displayFakeData() {
-        Movie movie = new Movie(9.0, "Hakuna Matata", "http://image.tmdb.org/t/p/w185/cGOPbv9wA5gEejkUN892JrveARt.jpg");
-        movieList.add(movie);
-        adapter.notifyDataSetChanged();
     }
 
     private void fetchData() {
@@ -154,7 +147,10 @@ public class MainActivityFragment extends Fragment {
                 List<Result> results = response.body().getResults();
                 movieList.clear();
                 for (Result result : results) {
-                    Movie movie = new Movie(result.getVoteAverage(), result.getTitle(), Parser.formatImageUrl(result.getPosterPath()));
+                    Movie movie = new Movie();
+                    movie.setPosterId(Parser.formatImageUrl(result.getPosterPath()));
+                    movie.setRating(result.getVoteAverage());
+                    movie.setTitle(result.getTitle());
                     movieList.add(movie);
                 }
                 adapter.notifyDataSetChanged();

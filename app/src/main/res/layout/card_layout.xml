@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/card_margin">
+        android:layout_margin="@dimen/card_margin"
+        android:clickable="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -29,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/poster"
+                android:clickable="true"
                 android:paddingLeft="@dimen/movie_title_padding"
                 android:paddingRight="@dimen/movie_title_padding"
                 android:paddingTop="@dimen/movie_title_padding"/>
@@ -38,6 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
+                android:clickable="true"
                 android:paddingBottom="@dimen/movie_rating_padding_bottom"
                 android:paddingLeft="@dimen/movie_title_padding"
                 android:paddingRight="@dimen/movie_title_padding"/>

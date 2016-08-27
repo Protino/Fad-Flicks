@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +25,7 @@ import butterknife.OnClick;
  * Created by Gurupad on 25-Aug-16.
  * You asked me to change it for no reason.
  */
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> implements AdapterView.OnItemClickListener {
     private static final String TAG = MovieAdapter.class.getSimpleName();
     private Context mContext;
     private List<Movie> movieList;
@@ -37,6 +38,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent, false);
+
         return new MyViewHolder(view);
     }
 
@@ -48,7 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
             holder.title.setText(movie.getTitle());
             holder.rating.setText(movie.getRating().toString());
             Picasso.with(mContext).load(movie.getPosterId()).into(holder.poster);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder: ", e);
         }
     }
@@ -56,6 +58,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     @Override
     public int getItemCount() {
         return movieList.size();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "onItemClick: " + view.toString());
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -68,11 +75,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
-        @OnClick({R.id.card_view,R.id.poster})
-        public void posterClick(){
-            // TODO: 25-Aug-16 Open detailActivity and do some stuff
+
+        @OnClick({R.id.user_rating, R.id.title, R.id.poster})
+        public void onClick(View view) {
         }
     }
 }
