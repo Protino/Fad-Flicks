@@ -18,3 +18,8 @@
 
 #Rules for Picasso library
 -dontwarn com.squareup.okhttp.**
+
+# Parcel library
+-keep interface org.parceler.Parcel
+-keep @org.parceler.Parcel class * { *; }
+-keep class **$$Parcelable { *; }
