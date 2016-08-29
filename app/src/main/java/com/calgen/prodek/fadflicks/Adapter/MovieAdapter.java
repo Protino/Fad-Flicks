@@ -18,8 +18,6 @@ import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import org.parceler.Parcels;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,7 +85,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         public void onClick(View view) {
             Movie movie = movieList.get(getLayoutPosition());
             Intent intent = new Intent(mContext, DetailActivity.class);
-            intent.putExtra(Intent.EXTRA_TEXT, Parcels.wrap(movie));
+            intent.putExtra(Intent.EXTRA_TEXT, movie);
             mContext.startActivity(intent);
         }
     }

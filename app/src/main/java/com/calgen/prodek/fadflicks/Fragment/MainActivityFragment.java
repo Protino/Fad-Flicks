@@ -40,8 +40,7 @@ import retrofit2.Response;
 public class MainActivityFragment extends Fragment {
 
     private static final String TAG = MainActivityFragment.class.getSimpleName();
-    private static final String MOVIE_DATA = "movie_data";
-    private static final String SORT_TYPE = "sort_type";
+    private static final int MIN_VOTE_COUNT = 1000;
     //@formatter:off
     @BindView(R.id.recycler_view) public RecyclerView recyclerView;
     @State public String sort_type;
@@ -109,6 +108,7 @@ public class MainActivityFragment extends Fragment {
         if (savedInstanceState == null) {
             movieList = new ArrayList<>();
         }
+        Log.d(TAG, "onCreateView: ");
 
         adapter = new MovieAdapter(getActivity(), movieList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
@@ -144,8 +144,7 @@ public class MainActivityFragment extends Fragment {
 
     private void fetchData() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Log.d(TAG, "fetchData: called");
-        Call<MovieResponse> call = apiService.getMovies(sort_type, BuildConfig.MOVIE_DB_API_KEY, String.valueOf(1000));
+        Call<MovieResponse> call = apiService.getMovies(sort_type, BuildConfig.MOVIE_DB_API_KEY, String.valueOf(MIN_VOTE_COUNT));
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {

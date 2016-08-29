@@ -3,13 +3,12 @@ package com.calgen.prodek.fadflicks.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.parceler.Parcel;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Parcel
-public class Movie {
+
+public class Movie implements Serializable {
 
     @SerializedName("poster_path")
     @Expose

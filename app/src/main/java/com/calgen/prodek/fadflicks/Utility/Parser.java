@@ -7,8 +7,6 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
-import com.calgen.prodek.fadflicks.Adapter.ImageAdapter;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +21,8 @@ import java.util.Date;
 public class Parser {
 
     private static final String TAG = Parser.class.getSimpleName();
+    public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
+    public static final String IMAGE_SIZE = "w185";
 
     /**
      * @param movieData a JSON formatted string data fetched from movieDb.
@@ -31,8 +31,6 @@ public class Parser {
     public static String[] getAllMoviePosterUrls(String movieData) {
         JSONObject jsonObject;
         String[] posterUrls = null;
-        String BASE_IMAGE_URL = ImageAdapter.BASE_IMAGE_URL;
-        String IMAGE_SIZE = ImageAdapter.IMAGE_SIZE;
         if (movieData == null)
             return null;
         try {
@@ -87,7 +85,7 @@ public class Parser {
      * @return Complete Url to locate the image resource.
      */
     public static String formatImageUrl(String imageUrl, String imageSize) {
-        Uri uri = Uri.parse(ImageAdapter.BASE_IMAGE_URL)
+        Uri uri = Uri.parse(BASE_IMAGE_URL)
                 .buildUpon()
                 .appendEncodedPath(imageSize)
                 .appendEncodedPath(imageUrl)
