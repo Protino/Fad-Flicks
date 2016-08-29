@@ -2,8 +2,8 @@ package com.calgen.prodek.fadflicks;
 
 import android.test.AndroidTestCase;
 
+import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieResponse;
-import com.calgen.prodek.fadflicks.model.Result;
 import com.calgen.prodek.fadflicks.rest.ApiClient;
 import com.calgen.prodek.fadflicks.rest.ApiInterface;
 
@@ -29,9 +29,9 @@ public class RetrofitTest extends AndroidTestCase {
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<Result> results = response.body().getResults();
+                List<Movie> movies = response.body().getMovies();
                 assertEquals("Incorrect result obtained : Should've returned 20 results"
-                        , RESULT_SIZE, results.size());
+                        , RESULT_SIZE, movies.size());
             }
 
             @Override

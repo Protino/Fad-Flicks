@@ -79,20 +79,21 @@ public class Parser {
         return null;
     }
 
+
+
     /**
      * @param imageUrl Relative image path that is supposed to be appended.
+     * @param imageSize Size of the image according to tmdb.org
      * @return Complete Url to locate the image resource.
      */
-    public static String formatImageUrl(String imageUrl) {
+    public static String formatImageUrl(String imageUrl, String imageSize) {
         Uri uri = Uri.parse(ImageAdapter.BASE_IMAGE_URL)
                 .buildUpon()
-                .appendEncodedPath(ImageAdapter.IMAGE_SIZE)
+                .appendEncodedPath(imageSize)
                 .appendEncodedPath(imageUrl)
                 .build();
         return uri.toString();
     }
-
-    // TODO: 12-Jul-16 It would be nice to add Object... params as the parameter
 
     /**
      * @param formatString the string that is supposed to be formatted

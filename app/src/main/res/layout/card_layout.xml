@@ -29,11 +29,14 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:layout_below="@id/poster"
                 android:clickable="true"
                 android:paddingLeft="@dimen/movie_title_padding"
                 android:paddingRight="@dimen/movie_title_padding"
-                android:paddingTop="@dimen/movie_title_padding"/>
+                android:paddingTop="@dimen/movie_title_padding"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/user_rating"

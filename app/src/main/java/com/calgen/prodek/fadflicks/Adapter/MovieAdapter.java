@@ -1,6 +1,7 @@
 package com.calgen.prodek.fadflicks.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,9 +12,13 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.calgen.prodek.fadflicks.Activity.DetailActivity;
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.squareup.picasso.Picasso;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -48,8 +53,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         try {
             holder.title.setText(movie.getTitle());
-            holder.rating.setText(movie.getRating().toString());
-            Picasso.with(mContext).load(movie.getPosterId()).into(holder.poster);
+            holder.rating.setText(movie.getVoteAverage().toString());
+            Picasso.with(mContext).load(Parser.formatImageUrl(movie.getPosterPath(), mContext.getString(R.string.image_size_small))).into(holder.poster);
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder: ", e);
         }
@@ -80,6 +85,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         @OnClick({R.id.user_rating, R.id.title, R.id.poster})
         public void onClick(View view) {
+            Movie movie = movieList.get(getLayoutPosition());
+            Intent intent = new Intent(mContext, DetailActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, Parcels.wrap(movie));
+            mContext.startActivity(intent);
         }
     }
 }

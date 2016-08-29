@@ -18,10 +18,8 @@ import com.calgen.prodek.fadflicks.Adapter.MovieAdapter;
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.Utility.Network;
-import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieResponse;
-import com.calgen.prodek.fadflicks.model.Result;
 import com.calgen.prodek.fadflicks.rest.ApiClient;
 import com.calgen.prodek.fadflicks.rest.ApiInterface;
 
@@ -30,6 +28,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.State;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,11 +44,11 @@ public class MainActivityFragment extends Fragment {
     private static final String SORT_TYPE = "sort_type";
     //@formatter:off
     @BindView(R.id.recycler_view) public RecyclerView recyclerView;
-    private String sort_type;
-    private View rootView;
+    @State public String sort_type;
+    @State public ArrayList<Movie> movieList;
     //@formatter:on
+    private View rootView;
     private MovieAdapter adapter;
-    private List<Movie> movieList;
 
     public MainActivityFragment() {
     }
@@ -56,7 +56,9 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sort_type = getString(R.string.sort_type_default);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        if (savedInstanceState == null)
+            sort_type = getString(R.string.sort_type_default);
         setHasOptionsMenu(true);
         setRetainInstance(true);
     }
@@ -89,6 +91,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -103,9 +106,11 @@ public class MainActivityFragment extends Fragment {
 
         ButterKnife.bind(this, rootView);
 
-        movieList = new ArrayList<>();
-        adapter = new MovieAdapter(getActivity(), movieList);
+        if (savedInstanceState == null) {
+            movieList = new ArrayList<>();
+        }
 
+        adapter = new MovieAdapter(getActivity(), movieList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -116,7 +121,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateMovieData();
+        if (savedInstanceState == null) updateMovieData();
     }
 
     private void updateMovieData() {
@@ -139,18 +144,14 @@ public class MainActivityFragment extends Fragment {
 
     private void fetchData() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-
+        Log.d(TAG, "fetchData: called");
         Call<MovieResponse> call = apiService.getMovies(sort_type, BuildConfig.MOVIE_DB_API_KEY, String.valueOf(1000));
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<Result> results = response.body().getResults();
+                List<Movie> movies = response.body().getMovies();
                 movieList.clear();
-                for (Result result : results) {
-                    Movie movie = new Movie();
-                    movie.setPosterId(Parser.formatImageUrl(result.getPosterPath()));
-                    movie.setRating(result.getVoteAverage());
-                    movie.setTitle(result.getTitle());
+                for (Movie movie : movies) {
                     movieList.add(movie);
                 }
                 adapter.notifyDataSetChanged();

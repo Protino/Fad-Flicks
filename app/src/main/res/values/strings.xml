@@ -20,4 +20,8 @@
     <string name="sort_type_popular" translatable="false">popularity.desc</string>
     <string name="sort_type_top_rated" translatable="false">vote_average.desc</string>
 
+    <!-- Image Sizes according to tmbd.org -->
+    <string name="image_size_small" translatable="false">w185</string>
+    <string name="image_size_medium" translatable="false">w342</string>
+    <string name="image_size_large" translatable="false">w780</string>
 </resources>

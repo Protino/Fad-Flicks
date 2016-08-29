@@ -20,14 +20,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_options,menu);
+        getMenuInflater().inflate(R.menu.menu_options, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        overridePendingTransition(android.R.anim.fade_in, 0x7f050005);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
 
