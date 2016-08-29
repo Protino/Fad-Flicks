@@ -108,7 +108,6 @@ public class MainActivityFragment extends Fragment {
         if (savedInstanceState == null) {
             movieList = new ArrayList<>();
         }
-        Log.d(TAG, "onCreateView: ");
 
         adapter = new MovieAdapter(getActivity(), movieList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
