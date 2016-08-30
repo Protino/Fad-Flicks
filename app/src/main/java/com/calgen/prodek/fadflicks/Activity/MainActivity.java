@@ -8,10 +8,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 
 import com.calgen.prodek.fadflicks.Fragment.FavouriteFragment;
-import com.calgen.prodek.fadflicks.Fragment.MainActivityFragment;
+import com.calgen.prodek.fadflicks.Fragment.PopularFragment;
+import com.calgen.prodek.fadflicks.Fragment.TopRatedFragment;
 import com.calgen.prodek.fadflicks.R;
 
 import java.util.ArrayList;
@@ -19,15 +19,28 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     //@formatter:off
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.tabs) public TabLayout tabLayout;
     @BindView(R.id.viewpager) public ViewPager viewPager;
     //@formatter:on
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +53,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        ViewPagerAdapter viewPagerAdaper = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdaper.addFragment(new MainActivityFragment(), "Popular");
-        viewPagerAdaper.addFragment(new FavouriteFragment(), "Favourites");
-        viewPager.setAdapter(viewPagerAdaper);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_options, menu);
-        return super.onCreateOptionsMenu(menu);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(new PopularFragment(), getString(R.string.popular_tab_title));
+        viewPagerAdapter.addFragment(new TopRatedFragment(), getString(R.string.top_rated_tab_title));
+        viewPagerAdapter.addFragment(new FavouriteFragment(), getString(R.string.favourites_tab_title));
+        viewPager.setAdapter(viewPagerAdapter);
     }
 
     @Override
@@ -58,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    public class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private final List<Fragment> fragmentList = new ArrayList<>();
         private final List<String> fragmentTitleList = new ArrayList<>();
@@ -87,6 +95,4 @@ public class MainActivity extends AppCompatActivity {
             fragmentTitleList.add(title);
         }
     }
-
-
 }

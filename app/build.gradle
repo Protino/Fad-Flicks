@@ -59,4 +59,7 @@ dependencies {
     //Icepick for savingInstanceState
     compile 'frankiesardo:icepick:3.2.0'
     provided 'frankiesardo:icepick-processor:3.2.0'
+
+    //Dynamic box
+    compile 'com.github.medyo:dynamicbox:1.2@aar'
 }

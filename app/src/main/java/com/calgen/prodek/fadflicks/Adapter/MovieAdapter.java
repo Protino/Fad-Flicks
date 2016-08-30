@@ -2,6 +2,7 @@ package com.calgen.prodek.fadflicks.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -52,7 +53,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         try {
             holder.title.setText(movie.getTitle());
             holder.rating.setText(movie.getVoteAverage().toString());
-            Picasso.with(mContext).load(Parser.formatImageUrl(movie.getPosterPath(), mContext.getString(R.string.image_size_small))).into(holder.poster);
+            Picasso.with(mContext)
+                    .load(Parser.formatImageUrl(movie.getPosterPath(), mContext.getString(R.string.image_size_small)))
+                    .placeholder(new ColorDrawable(0xB6B6B6))
+                    .into(holder.poster);
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder: ", e);
         }

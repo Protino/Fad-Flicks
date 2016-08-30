@@ -3,8 +3,6 @@
     <string name="action_sort">Sort</string>
 
     <string name="try_again">Try Again</string>
-    <string name="popular">By Popular</string>
-    <string name="top_rated">By Top Rated</string>
     <string name="internet_error_message">No Internet Connection</string>
 
 
@@ -24,4 +22,9 @@
     <string name="image_size_small" translatable="false">w185</string>
     <string name="image_size_medium" translatable="false">w342</string>
     <string name="image_size_large" translatable="false">w780</string>
+
+    <!--Tab Titles -->
+    <string name="popular_tab_title">Popular</string>
+    <string name="top_rated_tab_title">Top Rated</string>
+    <string name="favourites_tab_title">Favourites</string>
 </resources>

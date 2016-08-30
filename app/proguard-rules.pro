@@ -16,5 +16,14 @@
 #   public *;
 #}
 
-#Rules for Picasso library
+#Picasso library
 -dontwarn com.squareup.okhttp.**
+
+#Icepick library
+-dontwarn icepick.**
+-keep class icepick.** { *; }
+-keep class **$$Icepick { *; }
+-keepclasseswithmembernames class * {
+    @icepick.* <fields>;
+}
+-keepnames class * { @icepick.State *;}
