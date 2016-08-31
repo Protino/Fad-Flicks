@@ -4,26 +4,20 @@ package com.calgen.prodek.fadflicks.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Review {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
-    @SerializedName("page")
+    private String id;
+    @SerializedName("author")
     @Expose
-    private Integer page;
-    @SerializedName("results")
+    private String author;
+    @SerializedName("content")
     @Expose
-    private List<ReviewResponse> reviewResponses = new ArrayList<ReviewResponse>();
-    @SerializedName("total_pages")
+    private String content;
+    @SerializedName("url")
     @Expose
-    private Integer totalPages;
-    @SerializedName("total_results")
-    @Expose
-    private Integer totalResults;
+    private String url;
 
     /**
      * No args constructor for use in serialization
@@ -34,18 +28,16 @@ public class Review {
 
     /**
      * 
+     * @param content
      * @param id
-     * @param reviewResponses
-     * @param totalResults
-     * @param page
-     * @param totalPages
+     * @param author
+     * @param url
      */
-    public Review(Integer id, Integer page, List<ReviewResponse> reviewResponses, Integer totalPages, Integer totalResults) {
+    public Review(String id, String author, String content, String url) {
         this.id = id;
-        this.page = page;
-        this.reviewResponses = reviewResponses;
-        this.totalPages = totalPages;
-        this.totalResults = totalResults;
+        this.author = author;
+        this.content = content;
+        this.url = url;
     }
 
     /**
@@ -53,7 +45,7 @@ public class Review {
      * @return
      *     The id
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -62,80 +54,62 @@ public class Review {
      * @param id
      *     The id
      */
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
      * 
      * @return
-     *     The page
+     *     The author
      */
-    public Integer getPage() {
-        return page;
+    public String getAuthor() {
+        return author;
     }
 
     /**
      * 
-     * @param page
-     *     The page
+     * @param author
+     *     The author
      */
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    /**
-     * 
-     * @return
-     *     The results
-     */
-    public List<ReviewResponse> getReviewResponses() {
-        return reviewResponses;
-    }
-
-    /**
-     * 
-     * @param reviewResponses
-     *     The results
-     */
-    public void setReviewResponses(List<ReviewResponse> reviewResponses) {
-        this.reviewResponses = reviewResponses;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     /**
      * 
      * @return
-     *     The totalPages
+     *     The content
      */
-    public Integer getTotalPages() {
-        return totalPages;
+    public String getContent() {
+        return content;
     }
 
     /**
      * 
-     * @param totalPages
-     *     The total_pages
+     * @param content
+     *     The content
      */
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     /**
      * 
      * @return
-     *     The totalResults
+     *     The url
      */
-    public Integer getTotalResults() {
-        return totalResults;
+    public String getUrl() {
+        return url;
     }
 
     /**
      * 
-     * @param totalResults
-     *     The total_results
+     * @param url
+     *     The url
      */
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 }
