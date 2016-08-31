@@ -6,30 +6,21 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.calgen.prodek.fadflicks.Adapter.MovieAdapter;
-import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.Utility.Network;
 import com.calgen.prodek.fadflicks.model.Movie;
-import com.calgen.prodek.fadflicks.model.MovieResponse;
-import com.calgen.prodek.fadflicks.rest.ApiClient;
-import com.calgen.prodek.fadflicks.rest.ApiInterface;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -115,23 +106,5 @@ public class PopularFragment extends Fragment {
     }
 
     private void fetchData() {
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<MovieResponse> call = apiService.getMovies(sort_type, BuildConfig.MOVIE_DB_API_KEY, String.valueOf(MIN_VOTE_COUNT));
-        call.enqueue(new Callback<MovieResponse>() {
-            @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<Movie> movies = response.body().getMovies();
-                movieList.clear();
-                for (Movie movie : movies) {
-                    movieList.add(movie);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Log.e(TAG, "onFailure: ", t);
-            }
-        });
     }
 }
