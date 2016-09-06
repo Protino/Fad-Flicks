@@ -25,7 +25,7 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         HttpUrl url = request.url().newBuilder()
-                .addQueryParameter("api_key", BuildConfig.MOVIE_DB_API_KEY)
+                .addQueryParameter("api_key", BuildConfig.TMDB_API_KEY)
                 .build();
         request = request.newBuilder().url(url).build();
         return chain.proceed(request);

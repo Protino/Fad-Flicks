@@ -27,6 +27,7 @@ import butterknife.OnClick;
  */
 public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.BaseViewHolder> {
 
+    private static final String TAG = DetailMovieAdapter.class.getSimpleName();
     private MovieDetails movieDetails;
     private Context context;
 
@@ -67,6 +68,8 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         VideosAdapter videosAdapter = new VideosAdapter(context, movieDetails.videoResponse);
         holder.cardTrailer.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.cardTrailer.setAdapter(videosAdapter);
+
+
 
     }
 

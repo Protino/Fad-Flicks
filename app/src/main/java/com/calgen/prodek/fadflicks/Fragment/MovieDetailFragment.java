@@ -2,6 +2,7 @@ package com.calgen.prodek.fadflicks.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,14 +36,18 @@ import retrofit2.Response;
 public class MovieDetailFragment extends Fragment {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
-    public static byte jobsDone = 0;
+    public byte jobsDone = 0;
     public MovieDetails movieDetails;
     public Movie movie;
+    public ReviewResponse reviewResponse;
+    public VideoResponse videoResponse;
+    public Credits credits;
     @BindView(R.id.detail_recycler_view)
     RecyclerView baseRecyclerView;
     private DetailMovieAdapter detailMovieAdapter;
 
     public MovieDetailFragment() {
+        jobsDone = 0;
     }
 
     @Override
@@ -52,15 +57,21 @@ public class MovieDetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         movie = (Movie) getActivity().getIntent().getSerializableExtra(Intent.EXTRA_TEXT);
+        movieDetails = new MovieDetails();
+        jobsDone = 0;
 
         detailMovieAdapter = new DetailMovieAdapter(getContext(), movieDetails);
-        fetchData();
-
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         baseRecyclerView.setLayoutManager(linearLayoutManager);
         baseRecyclerView.setItemAnimator(new DefaultItemAnimator());
         baseRecyclerView.setAdapter(detailMovieAdapter);
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fetchData();
     }
 
     private void fetchData() {
@@ -70,15 +81,12 @@ public class MovieDetailFragment extends Fragment {
 
             ApiClient apiClient = new ApiClient().setIsDebug(ApplicationConstants.DEBUG);
 
-            //basic info from movie object
-            movieDetails.movie = movie;
-
             //reviews
             Call<ReviewResponse> reviewResponseCall = apiClient.movieInterface().getReviews(movie.getId());
             reviewResponseCall.enqueue(new Callback<ReviewResponse>() {
                 @Override
                 public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
-                    movieDetails.reviewResponse = response.body();
+                    reviewResponse = response.body();
                     jobsDone++;
                     notifyDataSetChanged();
                 }
@@ -94,7 +102,7 @@ public class MovieDetailFragment extends Fragment {
             videoResponseCall.enqueue(new Callback<VideoResponse>() {
                 @Override
                 public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
-                    movieDetails.videoResponse = response.body();
+                    videoResponse = response.body();
                     jobsDone++;
                     notifyDataSetChanged();
                 }
@@ -110,7 +118,7 @@ public class MovieDetailFragment extends Fragment {
             creditsCall.enqueue(new Callback<Credits>() {
                 @Override
                 public void onResponse(Call<Credits> call, Response<Credits> response) {
-                    movieDetails.credits = response.body();
+                    credits = response.body();
                     jobsDone++;
                     notifyDataSetChanged();
                 }
@@ -128,6 +136,10 @@ public class MovieDetailFragment extends Fragment {
 
     private void notifyDataSetChanged() {
         if (jobsDone == 3) {
+            movieDetails.movie = movie;
+            movieDetails.reviewResponse = reviewResponse;
+            movieDetails.credits = credits;
+            movieDetails.videoResponse = videoResponse;
             detailMovieAdapter.notifyDataSetChanged();
         }
     }
