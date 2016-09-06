@@ -27,4 +27,6 @@
     <string name="popular_tab_title">Popular</string>
     <string name="top_rated_tab_title">Top Rated</string>
     <string name="favourites_tab_title">Favourites</string>
+    <string name="movie_lot">Plot</string>
+    <string name="read_more">Read More</string>
 </resources>

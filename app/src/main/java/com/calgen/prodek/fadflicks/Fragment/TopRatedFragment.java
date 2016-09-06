@@ -10,17 +10,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.calgen.prodek.fadflicks.Adapter.MovieAdapter;
+import com.calgen.prodek.fadflicks.Adapter.GridMovieAdapter;
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.Utility.Network;
+import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Movie;
+import com.calgen.prodek.fadflicks.model.MovieResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Gurupad on 29-Aug-16.
@@ -36,7 +42,7 @@ public class TopRatedFragment extends Fragment {
     @State public ArrayList<Movie> movieList;
     //@formatter:on
     private View rootView;
-    private MovieAdapter adapter;
+    private GridMovieAdapter adapter;
 
     public TopRatedFragment() {
     }
@@ -67,7 +73,7 @@ public class TopRatedFragment extends Fragment {
             movieList = new ArrayList<>();
         }
 
-        adapter = new MovieAdapter(getActivity(), movieList);
+        adapter = new GridMovieAdapter(getActivity(), movieList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -100,5 +106,24 @@ public class TopRatedFragment extends Fragment {
     }
 
     private void fetchData() {
+        ApiClient apiClient = new ApiClient().setIsDebug(false);
+        Call<MovieResponse> call = apiClient.movieInterface().getMovies(sort_type,MIN_VOTE_COUNT);
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                movieList.clear();
+                List<Movie> movies= response.body().getMovies();
+                for (Movie movie : movies) {
+                    movieList.add(movie);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+
+            }
+        });
     }
 }

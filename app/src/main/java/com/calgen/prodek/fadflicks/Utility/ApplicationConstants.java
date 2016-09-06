@@ -10,7 +10,7 @@ public class ApplicationConstants {
      * Set to true to Enable Debugging in the API false to disable. This should be false when
      * releasing the app.
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     /**
      * API Endpoint
      */

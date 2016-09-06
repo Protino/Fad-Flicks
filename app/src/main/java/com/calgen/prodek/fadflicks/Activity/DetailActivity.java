@@ -13,26 +13,32 @@ import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
+    //@formatter:off
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.image_backdrop) ImageView backdropImage;
+    //@formatter:on
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        ButterKnife.bind(this);
 
         //Get backdrop_path and movie_title from intent
         Movie movie = (Movie) getIntent().getSerializableExtra(Intent.EXTRA_TEXT);
         collapsingToolbarLayout.setTitle(movie.title);
-        ImageView imageView = (ImageView) collapsingToolbarLayout.findViewById(R.id.image_backdrop);
-        imageView.setAdjustViewBounds(true);
+        backdropImage.setAdjustViewBounds(true);
         Picasso.with(this)
-                .load(Parser.formatImageUrl(movie.backdropPath, getString(R.string.image_size_medium)))
+                .load(Parser.formatImageUrl(movie.backdropPath, getString(R.string.image_size_large)))
                 .placeholder(new ColorDrawable(0xFFFFFF))
-                .into(imageView);
+                .into(backdropImage);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

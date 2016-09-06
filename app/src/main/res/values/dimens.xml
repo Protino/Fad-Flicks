@@ -6,11 +6,6 @@
     <dimen name="baseMargin">16dp</dimen>
 
     <dimen name="card_margin">5dp</dimen>
-    <dimen name="movie_poster_height">250dp</dimen>
-    <dimen name="movie_title_padding">10dp</dimen>
-    <dimen name="movie_title">15dp</dimen>
-    <dimen name="movie_rating_padding_bottom">5dp</dimen>
-    <dimen name="movie_rating">12dp</dimen>
-    <dimen name="ic_poster_overflow_width">20dp</dimen>
+    <dimen name="base_padding">5dp</dimen>
     <dimen name="card_elevation">3dp</dimen>
 </resources>

@@ -29,25 +29,24 @@ import butterknife.OnClick;
  * Created by Gurupad on 25-Aug-16.
  * You asked me to change it for no reason.
  */
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> implements AdapterView.OnItemClickListener {
-    private static final String TAG = MovieAdapter.class.getSimpleName();
+public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder> implements AdapterView.OnItemClickListener {
+    private static final String TAG = GridMovieAdapter.class.getSimpleName();
     private Context mContext;
     private List<Movie> movieList;
 
-    public MovieAdapter(Context mContext, List<Movie> movieList) {
+    public GridMovieAdapter(Context mContext, List<Movie> movieList) {
         this.mContext = mContext;
         this.movieList = movieList;
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent, false);
-
-        return new MyViewHolder(view);
+    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_movies_grid, parent, false);
+        return new MovieViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MovieViewHolder holder, int position) {
         Movie movie = movieList.get(position);
 
         try {
@@ -72,21 +71,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         Log.d(TAG, "onItemClick: " + view.toString());
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder {
         //@formatter:off
         @BindView(R.id.title) public TextView title;
-        @BindView(R.id.user_rating) public TextView rating;
+        @BindView(R.id.movie_rating) public TextView rating;
         @BindView(R.id.poster) public ImageView poster;
         @BindView(R.id.card_view) public CardView cardView;
         //@formatter:on
 
-        public MyViewHolder(View itemView) {
+        public MovieViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick({R.id.user_rating, R.id.title, R.id.poster})
-        public void onClick(View view) {
+        @OnClick({R.id.movie_rating, R.id.title, R.id.poster})
+        public void onClick() {
             Movie movie = movieList.get(getLayoutPosition());
             Intent intent = new Intent(mContext, DetailActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, movie);
