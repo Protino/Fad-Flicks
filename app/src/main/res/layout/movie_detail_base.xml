@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="@dimen/baseMargin"
     android:orientation="vertical">
 
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:background="@color/cardview_light_background"
-            android:paddingRight="8dp"
+            android:contentDescription="Movie poster"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher"/>
 
@@ -60,7 +60,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/runtime"
                 android:clickable="false"
-                android:numStars="5"
                 android:paddingBottom="4dp"
                 android:paddingTop="4dp"
                 android:stepSize="0.1"/>
@@ -87,16 +86,24 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cast_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/trailer_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/review_recycler"
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/all_reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="?attr/selectableItemBackground"
+        android:text="@string/all_reviews"/>
 </LinearLayout>

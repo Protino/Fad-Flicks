@@ -48,5 +48,4 @@ public class DetailActivity extends AppCompatActivity {
         super.onPause();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
-
 }

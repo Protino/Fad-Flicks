@@ -46,7 +46,7 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         Movie movie = movieDetails.movie;
 
-        Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_medium)))
+        Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
                 .into(holder.poster);
         holder.title.setText(movie.getTitle());
         holder.releaseDate.setText(movie.getReleaseDate());
@@ -58,17 +58,21 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
 
         // Now initialize recycler views and assign them new adapters
         ReviewAdapter reviewAdapter = new ReviewAdapter(context, movieDetails.reviewResponse);
-        holder.cardReview.setLayoutManager(new LinearLayoutManager(context));
+        holder.cardReview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        holder.cardReview.setNestedScrollingEnabled(false);
         holder.cardReview.setAdapter(reviewAdapter);
 
         CreditsAdapter creditsAdapter = new CreditsAdapter(context, movieDetails.credits);
         holder.cardCast.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        holder.cardCast.setHasFixedSize(true);
+        holder.cardCast.setNestedScrollingEnabled(false);
         holder.cardCast.setAdapter(creditsAdapter);
 
         VideosAdapter videosAdapter = new VideosAdapter(context, movieDetails.videoResponse);
-        holder.cardTrailer.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        holder.cardTrailer.setAdapter(videosAdapter);
-
+        holder.cardVideo.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        holder.cardVideo.setHasFixedSize(true);
+        holder.cardVideo.setNestedScrollingEnabled(false);
+        holder.cardVideo.setAdapter(videosAdapter);
 
 
     }
@@ -88,7 +92,7 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         @BindView(R.id.plot_text) TextView plot;
         @BindView(R.id.read_more_details) Button moreDetails;
         @BindView(R.id.cast_recycler) RecyclerView cardCast;
-        @BindView(R.id.trailer_recycler) RecyclerView cardTrailer;
+        @BindView(R.id.trailer_recycler) RecyclerView cardVideo;
         @BindView(R.id.review_recycler) RecyclerView cardReview;
         //@formatter:on
         public BaseViewHolder(View itemView) {
@@ -98,7 +102,7 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
 
         @OnClick(R.id.read_more_details)
         public void OnClick() {
-            // TODO: 06-Sep-16 display more info when read more is clicked
+
         }
     }
 }

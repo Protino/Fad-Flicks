@@ -63,6 +63,7 @@ public class MovieDetailFragment extends Fragment {
         detailMovieAdapter = new DetailMovieAdapter(getContext(), movieDetails);
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         baseRecyclerView.setLayoutManager(linearLayoutManager);
+        baseRecyclerView.setNestedScrollingEnabled(false);
         baseRecyclerView.setItemAnimator(new DefaultItemAnimator());
         baseRecyclerView.setAdapter(detailMovieAdapter);
         return rootView;
