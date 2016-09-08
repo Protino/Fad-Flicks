@@ -20,6 +20,7 @@ import com.calgen.prodek.fadflicks.Utility.Network;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.Movie;
+import com.calgen.prodek.fadflicks.model.MovieBundle;
 import com.calgen.prodek.fadflicks.model.MovieDetails;
 import com.calgen.prodek.fadflicks.model.ReviewResponse;
 import com.calgen.prodek.fadflicks.model.VideoResponse;
@@ -37,11 +38,12 @@ public class MovieDetailFragment extends Fragment {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
     public byte jobsDone = 0;
-    public MovieDetails movieDetails;
+    public MovieBundle movieBundle;
     public Movie movie;
     public ReviewResponse reviewResponse;
     public VideoResponse videoResponse;
     public Credits credits;
+    public MovieDetails movieDetails;
     @BindView(R.id.detail_recycler_view)
     RecyclerView baseRecyclerView;
     private DetailMovieAdapter detailMovieAdapter;
@@ -57,10 +59,10 @@ public class MovieDetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         movie = (Movie) getActivity().getIntent().getSerializableExtra(Intent.EXTRA_TEXT);
-        movieDetails = new MovieDetails();
+        movieBundle = new MovieBundle();
         jobsDone = 0;
 
-        detailMovieAdapter = new DetailMovieAdapter(getContext(), movieDetails);
+        detailMovieAdapter = new DetailMovieAdapter(getContext(), movieBundle);
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         baseRecyclerView.setLayoutManager(linearLayoutManager);
         baseRecyclerView.setNestedScrollingEnabled(false);
@@ -130,17 +132,34 @@ public class MovieDetailFragment extends Fragment {
                 }
             });
 
+            //extra details : such as duration, website,
+            Call<MovieDetails> movieDetailsCall = apiClient.movieInterface().getMovieDetails(movie.getId());
+            movieDetailsCall.enqueue(new Callback<MovieDetails>() {
+                @Override
+                public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
+                    movieDetails = response.body();
+                    jobsDone++;
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onFailure(Call<MovieDetails> call, Throwable t) {
+                    Log.d(TAG, "onFailure: ", t);
+                }
+            });
+
         } else {
             //snackbar
         }
     }
 
     private void notifyDataSetChanged() {
-        if (jobsDone == 3) {
-            movieDetails.movie = movie;
-            movieDetails.reviewResponse = reviewResponse;
-            movieDetails.credits = credits;
-            movieDetails.videoResponse = videoResponse;
+        if (jobsDone == 4) {
+            movieBundle.movie = movie;
+            movieBundle.reviewResponse = reviewResponse;
+            movieBundle.credits = credits;
+            movieBundle.videoResponse = videoResponse;
+            movieBundle.movieDetails = movieDetails;
             detailMovieAdapter.notifyDataSetChanged();
         }
     }

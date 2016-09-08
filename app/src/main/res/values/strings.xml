@@ -30,4 +30,21 @@
     <!--Movie Details -->
     <string name="read_more">READ_MORE</string>
     <string name="all_reviews">READ ALL REVIEWS</string>
+    <string name="cast_and_credits">Cast and Credits</string>
+    <string name="actors">Actors</string>
+    <string name="directors">Directors</string>
+    <string name="writers">Writers</string>
+    <string name="music">Music</string>
+    <string name="producers">Producers</string>
+    <string name="genre">Genre</string>
+    <string name="votes">Votes</string>
+    <string name="duration">Duration</string>
+    <string name="language">Language</string>
+    <string name="rating">Rating</string>
+    <string name="official_website">Official Website</string>
+    <string name="release_date">Release Date</string>
+    <string name="minutes">min</string>
+    <string name="max_votes">10</string>
+    <string name="adult_rating">A</string>
+    <string name="non_adult_rating">UA</string>
 </resources>

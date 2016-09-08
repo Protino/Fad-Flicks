@@ -107,13 +107,13 @@ public class TopRatedFragment extends Fragment {
 
     private void fetchData() {
         ApiClient apiClient = new ApiClient().setIsDebug(false);
-        Call<MovieResponse> call = apiClient.movieInterface().getMovies(sort_type,MIN_VOTE_COUNT);
+        Call<MovieResponse> call = apiClient.movieInterface().getMovies(sort_type, MIN_VOTE_COUNT);
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 movieList.clear();
-                List<Movie> movies= response.body().getMovies();
+                List<Movie> movies = response.body().getMovies();
                 for (Movie movie : movies) {
                     movieList.add(movie);
                 }

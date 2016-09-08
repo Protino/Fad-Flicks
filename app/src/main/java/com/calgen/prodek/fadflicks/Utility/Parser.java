@@ -7,6 +7,11 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
+import com.calgen.prodek.fadflicks.model.Cast;
+import com.calgen.prodek.fadflicks.model.Credits;
+import com.calgen.prodek.fadflicks.model.Crew;
+import com.calgen.prodek.fadflicks.model.Genre;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,15 +19,16 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Gurupad on 05-Jul-16.
  */
 public class Parser {
 
-    private static final String TAG = Parser.class.getSimpleName();
     public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
     public static final String IMAGE_SIZE = "w185";
+    private static final String TAG = Parser.class.getSimpleName();
 
     /**
      * @param movieData a JSON formatted string data fetched from movieDb.
@@ -78,9 +84,8 @@ public class Parser {
     }
 
 
-
     /**
-     * @param imageUrl Relative image path that is supposed to be appended.
+     * @param imageUrl  Relative image path that is supposed to be appended.
      * @param imageSize Size of the image according to tmdb.org
      * @return Complete Url to locate the image resource.
      */
@@ -121,5 +126,63 @@ public class Parser {
             Log.e(TAG, "formatReleaseDate:", e);
         }
         return releaseDate;
+    }
+
+    public static String getActors(Credits credits) {
+        String actors = "";
+        List<Cast> castList = credits.getCast();
+        int listSize = castList.size();
+
+        for (int i = 0; i < listSize - 2; i++) {
+            actors += castList.get(i).getName() + ", ";
+        }
+        actors += castList.get(listSize - 2).getName() + " and " + castList.get(listSize - 1).getName();
+        return actors;
+    }
+
+    public static String getDirectors(Credits credits) {
+        String directors = "";
+        for (Crew crew : credits.getCrew()) {
+            if (crew.getJob().toLowerCase().contains("director"))
+                directors += crew.getName() + " ";
+        }
+        return directors;
+    }
+
+
+    public static String getProducers(Credits credits) {
+        String producers = "";
+        for (Crew crew : credits.getCrew()) {
+            if (crew.getJob().toLowerCase().contains("producer"))
+                producers += crew.getName() + " ";
+        }
+        return producers;
+    }
+
+
+    public static String getMusicians(Credits credits) {
+        String musicians = "";
+        for (Crew crew : credits.getCrew()) {
+            if (crew.getJob().toLowerCase().contains("music"))
+                musicians += crew.getName() + " ";
+        }
+        return musicians;
+    }
+
+    public static String getWriters(Credits credits) {
+        String writers = "";
+        for (Crew crew : credits.getCrew()) {
+            if (crew.getJob().toLowerCase().contains("writer"))
+                writers += crew.getName() + " ";
+        }
+        return writers;
+    }
+
+    public static String getGenre(List<Genre> genreList) {
+        String genres = "";
+        for (Genre genre : genreList) {
+            genres += genre.getName() + " ";
+        }
+        return genres;
     }
 }

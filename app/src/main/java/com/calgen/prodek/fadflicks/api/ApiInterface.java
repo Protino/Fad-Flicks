@@ -1,10 +1,10 @@
 package com.calgen.prodek.fadflicks.api;
 
 import com.calgen.prodek.fadflicks.model.Credits;
-import com.calgen.prodek.fadflicks.model.Genres;
 import com.calgen.prodek.fadflicks.model.MovieResponse;
 import com.calgen.prodek.fadflicks.model.ReviewResponse;
 import com.calgen.prodek.fadflicks.model.VideoResponse;
+import com.calgen.prodek.fadflicks.model.MovieDetails;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -13,9 +13,8 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-
-    @GET("genre/movie/list")
-    Call<Genres> getGenres();
+    @GET("movie/{id}")
+    Call<MovieDetails> getMovieDetails(@Path("id") int movieId);
 
     @GET("movie/{id}/credits")
     Call<Credits> getCredits(@Path("id") int movieId);

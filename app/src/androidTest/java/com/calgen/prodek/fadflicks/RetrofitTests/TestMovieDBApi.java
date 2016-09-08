@@ -5,7 +5,7 @@ import android.test.AndroidTestCase;
 import com.calgen.prodek.fadflicks.Utility.ApplicationConstants;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Credits;
-import com.calgen.prodek.fadflicks.model.Genres;
+import com.calgen.prodek.fadflicks.model.MovieDetails;
 import com.calgen.prodek.fadflicks.model.MovieResponse;
 import com.calgen.prodek.fadflicks.model.ReviewResponse;
 import com.calgen.prodek.fadflicks.model.VideoResponse;
@@ -21,6 +21,7 @@ import retrofit2.Response;
  */
 public class TestMovieDBApi extends AndroidTestCase {
 
+    private static final String TAG = TestMovieDBApi.class.getSimpleName();
     public static ApiClient apiClient;
 
     public TestMovieDBApi() {
@@ -36,14 +37,6 @@ public class TestMovieDBApi extends AndroidTestCase {
         assertEquals(response.code(), 200);
         assertEquals(true, response.isSuccessful());
 
-    }
-
-    public void testGenresEndpoint() throws IOException {
-        Call<Genres> call = apiClient.movieInterface().getGenres();
-        Response<Genres> response = call.execute();
-
-        assertEquals(response.code(), 200);
-        assertEquals(true, response.isSuccessful());
     }
 
     public void testVideosEndpoint() throws IOException {
@@ -66,6 +59,14 @@ public class TestMovieDBApi extends AndroidTestCase {
     public void testCreditsEndpoint() throws IOException {
         Call<Credits> call = apiClient.movieInterface().getCredits(TestData.MOVIE_ID);
         Response<Credits> response = call.execute();
+
+        assertEquals(response.code(), 200);
+        assertEquals(true, response.isSuccessful());
+    }
+
+    public void testMovieDetailsEndpoint() throws IOException {
+        Call<MovieDetails> call = apiClient.movieInterface().getMovieDetails(TestData.MOVIE_ID);
+        Response<MovieDetails> response = call.execute();
 
         assertEquals(response.code(), 200);
         assertEquals(true, response.isSuccessful());
