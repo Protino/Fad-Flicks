@@ -2,7 +2,7 @@ package com.calgen.prodek.fadflicks.RetrofitTests;
 
 import android.test.AndroidTestCase;
 
-import com.calgen.prodek.fadflicks.Utility.ApplicationConstants;
+import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.MovieDetails;

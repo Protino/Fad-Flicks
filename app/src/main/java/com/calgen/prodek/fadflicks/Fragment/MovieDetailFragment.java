@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Fragment;
+package com.calgen.prodek.fadflicks.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,11 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.calgen.prodek.fadflicks.Activity.DetailActivity;
-import com.calgen.prodek.fadflicks.Adapter.DetailMovieAdapter;
+import com.calgen.prodek.fadflicks.activity.DetailActivity;
+import com.calgen.prodek.fadflicks.adapter.DetailMovieAdapter;
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.ApplicationConstants;
-import com.calgen.prodek.fadflicks.Utility.Network;
+import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
+import com.calgen.prodek.fadflicks.utils.Network;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.Movie;

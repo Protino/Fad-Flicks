@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Activity;
+package com.calgen.prodek.fadflicks.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

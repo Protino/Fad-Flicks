@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Utility;
+package com.calgen.prodek.fadflicks.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

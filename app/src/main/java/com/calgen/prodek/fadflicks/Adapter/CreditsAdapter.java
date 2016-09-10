@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Adapter;
+package com.calgen.prodek.fadflicks.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.Parser;
+import com.calgen.prodek.fadflicks.utils.Parser;
 import com.calgen.prodek.fadflicks.model.Cast;
 import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.Crew;

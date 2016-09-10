@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Utility;
+package com.calgen.prodek.fadflicks.utils;
 
 import android.graphics.Typeface;
 import android.net.Uri;

@@ -1,12 +1,12 @@
-package com.calgen.prodek.fadflicks.Adapter;
+package com.calgen.prodek.fadflicks.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,11 +17,11 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.calgen.prodek.fadflicks.Fragment.ReadMoreDialog;
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.Parser;
+import com.calgen.prodek.fadflicks.fragment.ReadMoreDialog;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieBundle;
+import com.calgen.prodek.fadflicks.utils.Parser;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -115,7 +115,7 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         }
 
         private void showDialog() {
-            FragmentManager fragmentManager = ((FragmentActivity) context).getFragmentManager();
+            FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
             ReadMoreDialog newFragment = new ReadMoreDialog();
             Bundle bundle = new Bundle();
             bundle.putSerializable(Intent.EXTRA_TEXT, movieBundle);

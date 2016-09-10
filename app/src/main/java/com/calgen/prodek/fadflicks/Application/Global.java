@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Application;
+package com.calgen.prodek.fadflicks.application;
 
 import android.app.Application;
 

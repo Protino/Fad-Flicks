@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Adapter;
+package com.calgen.prodek.fadflicks.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

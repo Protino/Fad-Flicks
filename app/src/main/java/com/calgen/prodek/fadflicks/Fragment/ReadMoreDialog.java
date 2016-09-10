@@ -1,17 +1,21 @@
-package com.calgen.prodek.fadflicks.Fragment;
+package com.calgen.prodek.fadflicks.fragment;
 
-import android.app.DialogFragment;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.Parser;
 import com.calgen.prodek.fadflicks.model.MovieBundle;
 import com.calgen.prodek.fadflicks.model.MovieDetails;
+import com.calgen.prodek.fadflicks.utils.Parser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +30,8 @@ public class ReadMoreDialog extends DialogFragment {
     public MovieBundle movieBundle;
     public MovieDetails movieDetails;
     //@formatter:off
+    @BindView(R.id.status_bar) View status_bar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.plot_text) TextView plotText;
     @BindView(R.id.actors) TextView actors;
     @BindView(R.id.directors) TextView directors;
@@ -46,13 +52,16 @@ public class ReadMoreDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         movieBundle = (MovieBundle) getArguments().getSerializable(Intent.EXTRA_TEXT);
         movieDetails = movieBundle.movieDetails;
-        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.AppTheme);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.more_movie_details, container, false);
         ButterKnife.bind(this, rootView);
+        status_bar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight() ));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(5);
+        }
 
         plotText.setText(movieDetails.getOverview());
         actors.setText(Parser.getActors(movieBundle.credits));
@@ -67,6 +76,23 @@ public class ReadMoreDialog extends DialogFragment {
         language.setText(movieDetails.getOriginalLanguage());
         website.setText(movieDetails.getHomepage());
         releaseDate.setText(movieDetails.getReleaseDate());
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         return rootView;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        Log.d(TAG, "getStatusBarHeight: " + result);
+        return result;
     }
 }

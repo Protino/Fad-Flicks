@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Utility;
+package com.calgen.prodek.fadflicks.utils;
 
 /**
  * Created by Gurupad on 01-Sep-16.

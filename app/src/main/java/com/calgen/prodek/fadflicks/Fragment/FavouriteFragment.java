@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Fragment;
+package com.calgen.prodek.fadflicks.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

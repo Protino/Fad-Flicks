@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Activity;
+package com.calgen.prodek.fadflicks.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -9,9 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.calgen.prodek.fadflicks.Fragment.FavouriteFragment;
-import com.calgen.prodek.fadflicks.Fragment.PopularFragment;
-import com.calgen.prodek.fadflicks.Fragment.TopRatedFragment;
+import com.calgen.prodek.fadflicks.fragment.FavouriteFragment;
+import com.calgen.prodek.fadflicks.fragment.PopularFragment;
+import com.calgen.prodek.fadflicks.fragment.TopRatedFragment;
 import com.calgen.prodek.fadflicks.R;
 
 import java.util.ArrayList;

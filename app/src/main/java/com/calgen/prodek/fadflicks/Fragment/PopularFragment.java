@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Fragment;
+package com.calgen.prodek.fadflicks.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.calgen.prodek.fadflicks.Adapter.GridMovieAdapter;
+import com.calgen.prodek.fadflicks.adapter.GridMovieAdapter;
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.Network;
+import com.calgen.prodek.fadflicks.utils.Network;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieResponse;

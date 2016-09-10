@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Activity;
+package com.calgen.prodek.fadflicks.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.Utility.Parser;
+import com.calgen.prodek.fadflicks.utils.Parser;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.squareup.picasso.Picasso;
 

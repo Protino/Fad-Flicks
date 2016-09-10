@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.Adapter;
+package com.calgen.prodek.fadflicks.adapter;
 
 import android.app.Activity;
 import android.content.Context;

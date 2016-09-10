@@ -1,6 +1,6 @@
 package com.calgen.prodek.fadflicks.api;
 
-import com.calgen.prodek.fadflicks.Utility.ApplicationConstants;
+import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 
 import java.util.concurrent.TimeUnit;
 
