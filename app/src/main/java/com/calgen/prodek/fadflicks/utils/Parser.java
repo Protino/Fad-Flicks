@@ -3,6 +3,7 @@ package com.calgen.prodek.fadflicks.utils;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -141,47 +143,48 @@ public class Parser {
     }
 
     public static String getDirectors(Credits credits) {
-        String directors = "";
+        List<String> directors = new ArrayList<>();
         for (Crew crew : credits.getCrew()) {
             if (crew.getJob().toLowerCase().contains("director"))
-                directors += crew.getName() + " ";
+                directors.add(crew.getName());
         }
-        return directors;
+        return TextUtils.join(", ", directors);
     }
 
 
     public static String getProducers(Credits credits) {
-        String producers = "";
+        List<String> producers = new ArrayList<>();
         for (Crew crew : credits.getCrew()) {
             if (crew.getJob().toLowerCase().contains("producer"))
-                producers += crew.getName() + " ";
+                producers.add(crew.getName());
         }
-        return producers;
+        return TextUtils.join(", ", producers);
     }
 
 
     public static String getMusicians(Credits credits) {
-        String musicians = "";
+        List<String> musicians = new ArrayList<>();
         for (Crew crew : credits.getCrew()) {
             if (crew.getJob().toLowerCase().contains("music"))
-                musicians += crew.getName() + " ";
+                musicians.add(crew.getName());
         }
-        return musicians;
+        return TextUtils.join(", ", musicians);
     }
 
     public static String getWriters(Credits credits) {
-        String writers = "";
+        List<String> writers = new ArrayList<>();
         for (Crew crew : credits.getCrew()) {
-            if (crew.getJob().toLowerCase().contains("writer"))
-                writers += crew.getName() + " ";
+            String job = crew.getJob().toLowerCase();
+            if (job.contains("writer") || job.contains("script") || job.contains("screenplay"))
+                writers.add(crew.getName());
         }
-        return writers;
+        return TextUtils.join(", ", writers);
     }
 
     public static String getGenre(List<Genre> genreList) {
         String genres = "";
         for (Genre genre : genreList) {
-            genres += genre.getName() + " ";
+            genres += genre.getName().toUpperCase() + "  ";
         }
         return genres;
     }
