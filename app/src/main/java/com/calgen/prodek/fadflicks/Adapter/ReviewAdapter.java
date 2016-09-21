@@ -26,10 +26,12 @@ import butterknife.ButterKnife;
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
     private Context context;
     private List<Review> reviewList;
+    private boolean glimpse;
 
-    public ReviewAdapter(Context context, ReviewResponse review) {
+    public ReviewAdapter(Context context, ReviewResponse review, boolean glimpse) {
         this.context = context;
         reviewList = review.getReviewResponses();
+        this.glimpse = glimpse;
     }
 
     @Override
@@ -42,17 +44,22 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         Review review = reviewList.get(position);
         holder.reviewerName.setText(review.getAuthor());
-
         holder.reviewText.setText(review.getContent());
-        holder.reviewText.setMaxLines(3);
-        holder.reviewText.setEllipsize(TextUtils.TruncateAt.END);
+
+        if (glimpse) {
+            holder.reviewText.setMaxLines(3);
+            holder.reviewText.setEllipsize(TextUtils.TruncateAt.END);
+        }
 
     }
 
     @Override
     public int getItemCount() {
         int size = reviewList.size();
-        return (size > 2) ? 3 : size;
+        if (glimpse)
+            return (size > 2) ? 3 : size;
+        else
+            return size;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

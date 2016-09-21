@@ -10,12 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.calgen.prodek.fadflicks.adapter.GridMovieAdapter;
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.utils.Network;
+import com.calgen.prodek.fadflicks.adapter.GridMovieAdapter;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieResponse;
+import com.calgen.prodek.fadflicks.utils.Network;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +70,8 @@ public class PopularFragment extends Fragment {
         if (savedInstanceState == null) {
             movieList = new ArrayList<>();
         }
-        adapter = new GridMovieAdapter(getActivity(), movieList);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        adapter = new GridMovieAdapter(getContext(), movieList);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);

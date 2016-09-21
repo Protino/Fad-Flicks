@@ -4,7 +4,9 @@ package com.calgen.prodek.fadflicks.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductionCompany {
+import java.io.Serializable;
+
+public class ProductionCompany implements Serializable{
 
     @SerializedName("name")
     @Expose

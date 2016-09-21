@@ -9,7 +9,7 @@
     <string name="movie_data_prefs_key" translatable="false">movie_data</string>
     <string name="pref_sort_type_key" translatable="false">sort_type</string>
 
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_detail">Details</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Sort Type Settings-->
@@ -28,8 +28,8 @@
     <string name="favourites_tab_title">Favourites</string>
 
     <!--Movie Details -->
-    <string name="read_more">READ_MORE</string>
-    <string name="all_reviews">READ ALL REVIEWS</string>
+    <string name="read_more">READ MORE</string>
+    <string name="all_reviews">ALL REVIEWS</string>
     <string name="cast_and_credits">Cast and Credits</string>
     <string name="actors">Actors</string>
     <string name="directors">Directors</string>
@@ -47,4 +47,9 @@
     <string name="max_votes">10</string>
     <string name="adult_rating">A</string>
     <string name="non_adult_rating">UA</string>
+    <string name="title_activity_review">Reviews</string>
+    <string name="fav_movies_file_name">fav_movies</string>
+    <string name="INTERNAL_STORAGE">data</string>
+    <string name="fav_movies_prefs_key">FAV_MOVIES</string>
+    <string name="fav_movie_base_key">FAV_MOVIE_BASE_KEY</string>
 </resources>

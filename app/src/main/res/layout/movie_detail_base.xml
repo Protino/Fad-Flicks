@@ -6,7 +6,6 @@
     android:layout_margin="@dimen/baseMargin"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +18,6 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:background="@color/cardview_light_background"
-            android:contentDescription="Movie poster"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher"/>
 
@@ -32,16 +30,14 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="4dp"
-                android:text="Dr Strangelove and How I Learned to Love The Bomb"/>
+                android:paddingTop="4dp"/>
 
             <TextView
                 android:id="@+id/release_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title"
-                android:paddingTop="4dp"
-                android:text="Jan 2015"/>
+                android:paddingTop="4dp"/>
 
             <TextView
                 android:id="@+id/runtime"
@@ -51,8 +47,7 @@
                 android:layout_toEndOf="@+id/release_date"
                 android:layout_toRightOf="@+id/release_date"
                 android:paddingLeft="4dp"
-                android:paddingTop="4dp"
-                android:text="151 minutes"/>
+                android:paddingTop="4dp"/>
 
             <RatingBar
                 android:id="@+id/movie_rating"
@@ -73,7 +68,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="5"
-        android:text="some bullshit stiry balda askdlaj askdlaj askdlajaskdlaj"
         android:textSize="@dimen/abc_text_size_medium_material"/>
 
     <Button

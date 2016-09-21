@@ -1,13 +1,13 @@
-
 package com.calgen.prodek.fadflicks.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReviewResponse {
+public class ReviewResponse implements Serializable{
 
     @SerializedName("id")
     @Expose
@@ -27,13 +27,11 @@ public class ReviewResponse {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public ReviewResponse() {
     }
 
     /**
-     * 
      * @param id
      * @param reviewResponses
      * @param totalResults
@@ -49,90 +47,70 @@ public class ReviewResponse {
     }
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The page
+     * @return The page
      */
     public Integer getPage() {
         return page;
     }
 
     /**
-     * 
-     * @param page
-     *     The page
+     * @param page The page
      */
     public void setPage(Integer page) {
         this.page = page;
     }
 
     /**
-     * 
-     * @return
-     *     The results
+     * @return The results
      */
     public List<Review> getReviewResponses() {
         return reviewResponses;
     }
 
     /**
-     * 
-     * @param reviewResponses
-     *     The results
+     * @param reviewResponses The results
      */
     public void setReviewResponses(List<Review> reviewResponses) {
         this.reviewResponses = reviewResponses;
     }
 
     /**
-     * 
-     * @return
-     *     The totalPages
+     * @return The totalPages
      */
     public Integer getTotalPages() {
         return totalPages;
     }
 
     /**
-     * 
-     * @param totalPages
-     *     The total_pages
+     * @param totalPages The total_pages
      */
     public void setTotalPages(Integer totalPages) {
         this.totalPages = totalPages;
     }
 
     /**
-     * 
-     * @return
-     *     The totalResults
+     * @return The totalResults
      */
     public Integer getTotalResults() {
         return totalResults;
     }
 
     /**
-     * 
-     * @param totalResults
-     *     The total_results
+     * @param totalResults The total_results
      */
     public void setTotalResults(Integer totalResults) {
         this.totalResults = totalResults;

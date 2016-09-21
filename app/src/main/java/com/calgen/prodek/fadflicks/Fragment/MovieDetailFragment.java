@@ -16,6 +16,7 @@ import com.calgen.prodek.fadflicks.activity.DetailActivity;
 import com.calgen.prodek.fadflicks.adapter.DetailMovieAdapter;
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
+import com.calgen.prodek.fadflicks.utils.Cache;
 import com.calgen.prodek.fadflicks.utils.Network;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Credits;
@@ -75,6 +76,11 @@ public class MovieDetailFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fetchData();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     private void fetchData() {
@@ -162,5 +168,13 @@ public class MovieDetailFragment extends Fragment {
             movieBundle.movieDetails = movieDetails;
             detailMovieAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (DetailActivity.isFavourite){
+            Cache.cacheMovieData(getContext(),movieBundle);
+        }
+        super.onDestroyView();
     }
 }

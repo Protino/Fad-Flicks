@@ -13,10 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.calgen.prodek.fadflicks.activity.DetailActivity;
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.utils.Parser;
+import com.calgen.prodek.fadflicks.activity.DetailActivity;
 import com.calgen.prodek.fadflicks.model.Movie;
+import com.calgen.prodek.fadflicks.utils.Parser;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -31,11 +31,11 @@ import butterknife.OnClick;
  */
 public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder> implements AdapterView.OnItemClickListener {
     private static final String TAG = GridMovieAdapter.class.getSimpleName();
-    private Context mContext;
+    private Context context;
     private List<Movie> movieList;
 
-    public GridMovieAdapter(Context mContext, List<Movie> movieList) {
-        this.mContext = mContext;
+    public GridMovieAdapter(Context context, List<Movie> movieList) {
+        this.context = context;
         this.movieList = movieList;
     }
 
@@ -52,8 +52,8 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
         try {
             holder.title.setText(movie.getTitle());
             holder.rating.setText(movie.getVoteAverage().toString());
-            Picasso.with(mContext)
-                    .load(Parser.formatImageUrl(movie.getPosterPath(), mContext.getString(R.string.image_size_small)))
+            Picasso.with(context)
+                    .load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
                     .placeholder(new ColorDrawable(0xB6B6B6))
                     .into(holder.poster);
         } catch (Exception e) {
@@ -87,9 +87,9 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
         @OnClick({R.id.movie_rating, R.id.title, R.id.poster})
         public void onClick() {
             Movie movie = movieList.get(getLayoutPosition());
-            Intent intent = new Intent(mContext, DetailActivity.class);
+            Intent intent = new Intent(context, DetailActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, movie);
-            mContext.startActivity(intent);
+            context.startActivity(intent);
         }
     }
 }

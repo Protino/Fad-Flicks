@@ -1,4 +1,4 @@
-package com.calgen.prodek.fadflicks.RetrofitTests;
+package com.calgen.prodek.fadflicks.retrofitTests;
 
 import android.test.AndroidTestCase;
 

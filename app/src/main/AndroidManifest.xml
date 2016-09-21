@@ -26,11 +26,19 @@
         </activity>
         <activity
             android:name=".activity.DetailActivity"
-            android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity"/>
+        </activity>
+        <activity
+            android:name=".activity.ReviewActivity"
+            android:label="@string/title_activity_review"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.DetailActivity"
+                />
         </activity>
     </application>
 

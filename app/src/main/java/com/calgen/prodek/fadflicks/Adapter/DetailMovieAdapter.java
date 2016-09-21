@@ -1,6 +1,5 @@
 package com.calgen.prodek.fadflicks.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.activity.ReviewActivity;
 import com.calgen.prodek.fadflicks.fragment.ReadMoreDialog;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieBundle;
@@ -51,7 +51,6 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         return new BaseViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         Movie movie = movieBundle.movie;
@@ -66,8 +65,8 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         holder.plot.setText(movie.getOverview());
 
         // Now initialize recycler views and assign them new adapters
-        ReviewAdapter reviewAdapter = new ReviewAdapter(context, movieBundle.reviewResponse);
-        holder.cardReview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        ReviewAdapter reviewAdapter = new ReviewAdapter(context, movieBundle.reviewResponse, true);
+        holder.cardReview.setLayoutManager(new LinearLayoutManager(context));
         holder.cardReview.setNestedScrollingEnabled(false);
         holder.cardReview.setAdapter(reviewAdapter);
 
@@ -82,14 +81,13 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         holder.cardVideo.setHasFixedSize(true);
         holder.cardVideo.setNestedScrollingEnabled(false);
         holder.cardVideo.setAdapter(videosAdapter);
-
-
     }
 
     @Override
     public int getItemCount() {
         return (movieBundle.movie == null) ? 0 : 1;
     }
+
 
     public class BaseViewHolder extends RecyclerView.ViewHolder {
         //@formatter:off
@@ -103,15 +101,25 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         @BindView(R.id.cast_recycler) RecyclerView cardCast;
         @BindView(R.id.trailer_recycler) RecyclerView cardVideo;
         @BindView(R.id.review_recycler) RecyclerView cardReview;
+        @BindView(R.id.all_reviews) Button allReviews;
         //@formatter:on
         public BaseViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick(R.id.read_more_details)
-        public void OnClick() {
-            showDialog();
+        @OnClick({R.id.read_more_details, R.id.all_reviews})
+        public void OnClick(View v) {
+            switch (v.getId()) {
+                case R.id.read_more_details:
+                    showDialog();
+                    break;
+                case R.id.all_reviews:
+                    Intent intent = new Intent(context, ReviewActivity.class);
+                    intent.putExtra(Intent.EXTRA_TEXT, movieBundle);
+                    context.startActivity(intent);
+                    break;
+            }
         }
 
         private void showDialog() {

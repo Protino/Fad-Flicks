@@ -84,7 +84,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
             Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                     (Activity) context,
                     BuildConfig.YOUTUBE_API_KEY,
-                    keys.get(getLayoutPosition()),0,false,false);
+                    keys.get(getLayoutPosition()), 0, false, false);
             context.startActivity(intent);
         }
     }
