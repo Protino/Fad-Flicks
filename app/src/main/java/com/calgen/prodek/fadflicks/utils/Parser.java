@@ -54,7 +54,6 @@ public class Parser {
                         .appendEncodedPath(IMAGE_SIZE)
                         .appendEncodedPath(relativePath)
                         .build();
-
                 posterUrls[i] = uri.toString();
             }
         } catch (JSONException e) {

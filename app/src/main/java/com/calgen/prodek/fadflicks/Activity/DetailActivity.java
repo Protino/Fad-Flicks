@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.calgen.prodek.fadflicks.R;
@@ -23,15 +24,15 @@ import butterknife.OnClick;
 public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
+    //@formatter:on
+    public boolean isFavourite;
+    public boolean isFavouriteOriginal;
     //@formatter:off
     @BindView(R.id.fav_fab) FloatingActionButton fav_fab;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.image_backdrop) ImageView backdropImage;
     @BindDrawable(R.drawable.ic_favorite_border_white_24dp) Drawable notFavouriteDrawable;
     @BindDrawable(R.drawable.ic_favorite_white_24dp) Drawable favouriteDrawable;
-    //@formatter:on
-    public static boolean isFavourite;
-
     private Movie movie;
 
     @Override
@@ -45,8 +46,9 @@ public class DetailActivity extends AppCompatActivity {
                 .load(Parser.formatImageUrl(movie.backdropPath, getString(R.string.image_size_large)))
                 .placeholder(new ColorDrawable(0xFFFFFF))
                 .into(backdropImage);
-        isFavourite = false; // check if movie id in fav, if set true else false
-        onFabClick();
+        isFavourite = movie.isFavourite;
+        isFavouriteOriginal = isFavourite;
+        setFavButtonDrawable();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -60,14 +62,33 @@ public class DetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.fav_fab)
     public void onFabClick() {
-        //store movie Id in prefs for now
-        fav_fab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
         isFavourite = !isFavourite;
+        setFavButtonDrawable();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    protected void onDestroy() {
-        Cache.setFavouriteMovie(this, movie.getId(), isFavourite);
-        super.onDestroy();
+    public void onBackPressed() {
+        if (isFavouriteOriginal != isFavourite) {
+            Cache.setFavouriteMovie(this, movie.getId(), isFavourite);
+            setResult(RESULT_OK, new Intent().putExtra(getString(R.string.favourite_changed_key), true));
+            finish();
+        }
+        super.onBackPressed();
+    }
+
+    private void setFavButtonDrawable() {
+        fav_fab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
     }
 }

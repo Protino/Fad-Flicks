@@ -1,8 +1,10 @@
 package com.calgen.prodek.fadflicks.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,6 +33,7 @@ import butterknife.OnClick;
  */
 public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder> implements AdapterView.OnItemClickListener {
     private static final String TAG = GridMovieAdapter.class.getSimpleName();
+    public static final int FAV_REQUEST_CODE = 2764;
     private Context context;
     private List<Movie> movieList;
 
@@ -52,6 +55,12 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
         try {
             holder.title.setText(movie.getTitle());
             holder.rating.setText(movie.getVoteAverage().toString());
+
+            Log.d(TAG, "onBindViewHolder: "+movie.isFavourite);
+            Drawable drawable = (movie.isFavourite)
+                    ? context.getResources().getDrawable(R.drawable.ic_favorite_accent_24dp)
+                    : context.getResources().getDrawable(R.drawable.ic_favorite_border_accent_24dp);
+            holder.favouriteIcon.setImageDrawable(drawable);
             Picasso.with(context)
                     .load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
                     .placeholder(new ColorDrawable(0xB6B6B6))
@@ -76,6 +85,7 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
         @BindView(R.id.title) public TextView title;
         @BindView(R.id.movie_rating) public TextView rating;
         @BindView(R.id.poster) public ImageView poster;
+        @BindView(R.id.favourite_icon) public ImageView favouriteIcon;
         @BindView(R.id.card_view) public CardView cardView;
         //@formatter:on
 
@@ -89,7 +99,7 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
             Movie movie = movieList.get(getLayoutPosition());
             Intent intent = new Intent(context, DetailActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, movie);
-            context.startActivity(intent);
+            ((Activity)context).startActivityForResult(intent, FAV_REQUEST_CODE);
         }
     }
 }

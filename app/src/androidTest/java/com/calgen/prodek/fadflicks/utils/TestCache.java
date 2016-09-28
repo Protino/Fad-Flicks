@@ -35,14 +35,26 @@ public class TestCache extends AndroidTestCase {
         if (originalMap == null) {
             originalMap = new HashMap<>();
         }
+        /*
         Random random = new Random();
         for (int i = 0; i < random.nextInt(10) + 10; i++) {
             int randomId = random.nextInt();
             boolean randomFav = random.nextBoolean();
             originalMap.put(randomId, randomFav);
             Cache.setFavouriteMovie(mContext, randomId, randomFav);
-        }
+        }*/
+        originalMap.put(123, false);
+        originalMap.put(321, true);
+        originalMap.put(1000, true);
+
+        Cache.setFavouriteMovie(mContext, 123, false);
+        Cache.setFavouriteMovie(mContext, 321, true);
+        Cache.setFavouriteMovie(mContext, 1000, true);
+
         assertTrue("Incorrect storage of favourite movies", originalMap.equals(Cache.getFavouriteMovies(mContext)));
+
+        Cache.setFavouriteMovie(mContext, 123, true);
+        assertTrue("Incorrect update", Cache.isFavouriteMovie(mContext, 123));
     }
 
     public void testBulkInsertFavouriteMovies() {
@@ -89,8 +101,8 @@ public class TestCache extends AndroidTestCase {
         MovieBundle cachedData = Cache.getMovieData(mContext, movieBundle.movie.getId());
 
         assertEquals(cachedData.movie.getTitle(), movieBundle.movie.getTitle());
-        assertEquals(cachedData.movie.getAdult(),movieBundle.movie.getAdult());
+        assertEquals(cachedData.movie.getAdult(), movieBundle.movie.getAdult());
 
-        assertEquals(cachedData.videoResponse.getVideos().get(0).getName(),movieBundle.videoResponse.getVideos().get(0).getName());
+        assertEquals(cachedData.videoResponse.getVideos().get(0).getName(), movieBundle.videoResponse.getVideos().get(0).getName());
     }
 }

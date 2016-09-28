@@ -53,6 +53,8 @@ public class Movie implements Serializable {
     @Expose
     public Double voteAverage;
 
+    public boolean isFavourite;
+
     public Movie() {
     }
 
@@ -252,4 +254,11 @@ public class Movie implements Serializable {
         this.voteAverage = voteAverage;
     }
 
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
+    }
 }

@@ -11,6 +11,9 @@ public class ApplicationConstants {
      * releasing the app.
      */
     public static final boolean DEBUG = false;
+
+
+    public static final boolean CLEAR_PREFS = true;
     /**
      * API Endpoint
      */

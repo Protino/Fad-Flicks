@@ -1,11 +1,13 @@
 package com.calgen.prodek.fadflicks.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,11 @@ import com.calgen.prodek.fadflicks.adapter.GridMovieAdapter;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieResponse;
+import com.calgen.prodek.fadflicks.utils.Cache;
 import com.calgen.prodek.fadflicks.utils.Network;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -39,7 +43,9 @@ public class PopularFragment extends Fragment {
     @BindView(R.id.recycler_view) public RecyclerView recyclerView;
     @State public String sort_type;
     @State public ArrayList<Movie> movieList;
-    private GridMovieAdapter adapter;
+    private GridMovieAdapter movieAdapter;
+    private Context context;
+    //@formatter:on
 
     public PopularFragment() {
     }
@@ -67,14 +73,16 @@ public class PopularFragment extends Fragment {
 
         ButterKnife.bind(this, rootView);
 
+        context = getContext();
+
         if (savedInstanceState == null) {
             movieList = new ArrayList<>();
         }
-        adapter = new GridMovieAdapter(getContext(), movieList);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
+        movieAdapter = new GridMovieAdapter(context, movieList);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(movieAdapter);
         return rootView;
     }
 
@@ -87,49 +95,54 @@ public class PopularFragment extends Fragment {
 
     private void updateMovieData() {
         //Check for network connection beforehand
-        if (Network.isConnected(getContext())) {
+        if (Network.isConnected(context)) {
             fetchData();
         } else {
-//            dynamicBox.showInternetOffLayout();
-//            dynamicBox.setClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    updateMovieData();
-//                }
-//            });
-            //Also display snackBar to get latest content
-//            final Snackbar snackbar = Snackbar.make(rootView,
-//                    getString(R.string.internet_error_message),
-//                    Snackbar.LENGTH_INDEFINITE);
-//            snackbar.setAction(R.string.try_again, new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    MainActivity.viewPagerAdapter.notifyDataSetChanged();
-//                }
-//            }).show();
-//        }
         }
     }
 
     private void fetchData() {
         ApiClient apiClient = new ApiClient().setIsDebug(false);
-        Call<MovieResponse> call = apiClient.movieInterface().getMovies(sort_type,MIN_VOTE_COUNT);
+        Call<MovieResponse> call = apiClient.movieInterface().getMovies(sort_type, MIN_VOTE_COUNT);
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 movieList.clear();
-                List<Movie> movies= response.body().getMovies();
+                List<Movie> movies = response.body().getMovies();
                 for (Movie movie : movies) {
                     movieList.add(movie);
                 }
-                adapter.notifyDataSetChanged();
+                initializeFavourites();
+                movieAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-
+                Log.e(TAG, "onFailure: ", t);
             }
         });
+    }
+
+    public void initializeFavourites() {
+        HashMap<Integer, Boolean> map = Cache.getFavouriteMovies(context);
+        if (map == null) {
+            for (Movie movie : movieList) {
+                movie.setFavourite(false);
+            }
+        } else {
+            if (movieList != null) {
+                for (Movie movie : movieList) {
+                    if (map.containsKey(movie.getId())) {
+                        movie.setFavourite(map.get(movie.getId()));
+                    }
+                }
+            }
+        }
+    }
+
+    public void notifyChange() {
+        initializeFavourites();
+        movieAdapter.notifyDataSetChanged();
     }
 }

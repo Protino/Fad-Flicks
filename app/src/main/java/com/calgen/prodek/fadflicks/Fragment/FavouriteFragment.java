@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +33,7 @@ import icepick.State;
  */
 public class FavouriteFragment extends Fragment {
 
-    private static final String TAG = PopularFragment.class.getSimpleName();
-    private static final int MIN_VOTE_COUNT = 1000;
+    private static final String TAG = FavouriteFragment.class.getSimpleName();
     //@formatter:off
     @BindView(R.id.recycler_view) public RecyclerView recyclerView;
     @State public ArrayList<Movie> movieList;
@@ -84,17 +84,21 @@ public class FavouriteFragment extends Fragment {
     private void fetchData() {
         // get favourite movies HashMap from sharedPrefs
         HashMap<Integer,Boolean> map = Cache.getFavouriteMovies(context);
+        if (map==null)
+                return;
         List<Integer> favouriteMovieIdList = new ArrayList<>();
-        for(HashMap.Entry<Integer,Boolean> entry: map.entrySet()){
-            if(entry.getValue()){
-                favouriteMovieIdList.add(entry.getKey());
+            for(HashMap.Entry<Integer,Boolean> entry: map.entrySet()){
+                if(entry.getValue()){
+                    favouriteMovieIdList.add(entry.getKey());
+                }
             }
-        }
-        List<MovieBundle> movieBundleList = new ArrayList<>();
+        List<MovieBundle> movieBundleList;
+        movieList.clear();
         movieBundleList = Cache.bulkReadMovieData(context,favouriteMovieIdList);
         for(MovieBundle movieBundle:movieBundleList){
             movieList.add(movieBundle.movie);
         }
+        Log.d(TAG, "fetchData: "+favouriteMovieIdList.toString());
         adapter.notifyDataSetChanged();
     }
 }

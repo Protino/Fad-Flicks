@@ -12,12 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.activity.DetailActivity;
 import com.calgen.prodek.fadflicks.adapter.DetailMovieAdapter;
-import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
-import com.calgen.prodek.fadflicks.utils.Cache;
-import com.calgen.prodek.fadflicks.utils.Network;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.Movie;
@@ -25,6 +22,8 @@ import com.calgen.prodek.fadflicks.model.MovieBundle;
 import com.calgen.prodek.fadflicks.model.MovieDetails;
 import com.calgen.prodek.fadflicks.model.ReviewResponse;
 import com.calgen.prodek.fadflicks.model.VideoResponse;
+import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
+import com.calgen.prodek.fadflicks.utils.Network;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -168,13 +167,5 @@ public class MovieDetailFragment extends Fragment {
             movieBundle.movieDetails = movieDetails;
             detailMovieAdapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        if (DetailActivity.isFavourite){
-            Cache.cacheMovieData(getContext(),movieBundle);
-        }
-        super.onDestroyView();
     }
 }

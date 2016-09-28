@@ -19,6 +19,5 @@ public class Global extends Application {
         built.setIndicatorsEnabled(false);
         built.setLoggingEnabled(false);
         Picasso.setSingletonInstance(built);
-
     }
 }
