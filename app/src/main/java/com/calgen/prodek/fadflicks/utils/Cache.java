@@ -3,7 +3,6 @@ package com.calgen.prodek.fadflicks.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.model.MovieBundle;
@@ -19,11 +18,9 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * Created by Gurupad on 06-Jul-16.
- * You asked me to change it for no reason.
  */
 public class Cache {
     private static final String TAG = "Cache";
-    public static HashMap<Integer, Boolean> favouriteMovies = null;
 
     public Cache() {
     }
@@ -39,7 +36,7 @@ public class Cache {
         String data = gson.toJson(movieBundle);
         String key = context.getResources().getString(R.string.fav_movie_base_key) + movieBundle.movie.getId();
         sharedPreferencesEditor.putString(key, data);
-        sharedPreferencesEditor.apply();
+        sharedPreferencesEditor.commit();
     }
 
     /**
@@ -80,8 +77,6 @@ public class Cache {
             map = new HashMap<>();
         }
         map.put(movieId, isFavourite);
-        favouriteMovies = map;
-        Log.d(TAG, "setFavouriteMovie: "+map.toString());
         Gson gson = new Gson();
         String data = gson.toJson(map);
         sharedPreferencesEditor.putString(context.getResources().getString(R.string.fav_movies_prefs_key), data);
@@ -98,8 +93,7 @@ public class Cache {
             Gson gson = new Gson();
             Type type = new TypeToken<HashMap<Integer, Boolean>>() {
             }.getType();
-            favouriteMovies = gson.fromJson(data, type);
-            return favouriteMovies;
+            return gson.fromJson(data, type);
         } else {
             return null;
         }
@@ -112,35 +106,23 @@ public class Cache {
         if (map == null) {
             cachedMap = new HashMap<>();
         }
-        for (HashMap.Entry<Integer, Boolean> entry : map.entrySet()) {
-            cachedMap.put(entry.getKey(), entry.getValue());
+        if (map != null) {
+            for (HashMap.Entry<Integer, Boolean> entry : map.entrySet()) {
+                if (cachedMap != null) {
+                    cachedMap.put(entry.getKey(), entry.getValue());
+                }
+            }
         }
-        favouriteMovies = cachedMap;
         Gson gson = new Gson();
         String data = gson.toJson(cachedMap);
         sharedPreferencesEditor.putString(context.getResources().getString(R.string.fav_movies_prefs_key), data);
         sharedPreferencesEditor.apply();
     }
 
-    public static void clearFavouriteMovies(Context context) {
+    public static void clearCache(Context context) {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         Editor sharedPreferencesEditor = sharedPreferences.edit();
-        HashMap<Integer, Boolean> map = new HashMap<>();
-        Gson gson = new Gson();
-        String data = gson.toJson(map);
-        sharedPreferencesEditor.putString(context.getResources().getString(R.string.fav_movies_prefs_key), data);
-        sharedPreferencesEditor.commit();
-    }
-
-    public static boolean isFavouriteMovie(Context context, Integer id) {
-        if (favouriteMovies == null) {
-            getFavouriteMovies(context);
-            return false;
-        }
-        if (favouriteMovies.containsKey(id)){
-            return favouriteMovies.get(id);
-        }else{
-            return false;
-        }
+        sharedPreferencesEditor.clear();
+        sharedPreferencesEditor.apply();
     }
 }

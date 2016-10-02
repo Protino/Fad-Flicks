@@ -55,8 +55,6 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
         try {
             holder.title.setText(movie.getTitle());
             holder.rating.setText(movie.getVoteAverage().toString());
-
-            Log.d(TAG, "onBindViewHolder: "+movie.isFavourite);
             Drawable drawable = (movie.isFavourite)
                     ? context.getResources().getDrawable(R.drawable.ic_favorite_accent_24dp)
                     : context.getResources().getDrawable(R.drawable.ic_favorite_border_accent_24dp);

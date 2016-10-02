@@ -32,6 +32,7 @@ public class TestCache extends AndroidTestCase {
 
     public void testStoreFavouriteMovie() {
         HashMap<Integer, Boolean> originalMap = Cache.getFavouriteMovies(mContext);
+
         if (originalMap == null) {
             originalMap = new HashMap<>();
         }
@@ -47,14 +48,12 @@ public class TestCache extends AndroidTestCase {
         originalMap.put(321, true);
         originalMap.put(1000, true);
 
+
         Cache.setFavouriteMovie(mContext, 123, false);
         Cache.setFavouriteMovie(mContext, 321, true);
         Cache.setFavouriteMovie(mContext, 1000, true);
 
         assertTrue("Incorrect storage of favourite movies", originalMap.equals(Cache.getFavouriteMovies(mContext)));
-
-        Cache.setFavouriteMovie(mContext, 123, true);
-        assertTrue("Incorrect update", Cache.isFavouriteMovie(mContext, 123));
     }
 
     public void testBulkInsertFavouriteMovies() {
@@ -70,8 +69,8 @@ public class TestCache extends AndroidTestCase {
         assertTrue("Bulk insert error.", originalMap.equals(Cache.getFavouriteMovies(mContext)));
     }
 
-    public void testClearFavouriteMovies() {
-        Cache.clearFavouriteMovies(mContext);
+    public void testClearCache() {
+        Cache.clearCache(mContext);
         assertTrue("Could not delete the favourite movies correctly", (Cache.getFavouriteMovies(mContext)).isEmpty());
     }
 

@@ -13,7 +13,7 @@ public class ApplicationConstants {
     public static final boolean DEBUG = false;
 
 
-    public static final boolean CLEAR_PREFS = true;
+    public static final boolean CLEAR_PREFS = false;
     /**
      * API Endpoint
      */

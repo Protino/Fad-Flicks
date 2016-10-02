@@ -16,7 +16,9 @@ import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.adapter.GridMovieAdapter;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Movie;
+import com.calgen.prodek.fadflicks.model.MovieBundle;
 import com.calgen.prodek.fadflicks.model.MovieResponse;
+import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 import com.calgen.prodek.fadflicks.utils.Cache;
 import com.calgen.prodek.fadflicks.utils.Network;
 
@@ -24,39 +26,47 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
+import mehdi.sakout.dynamicbox.DynamicBox;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Created by Gurupad on 28-Sep-16.
  */
-public class PopularFragment extends Fragment {
+public class GridFragment extends Fragment {
 
-    private static final String TAG = PopularFragment.class.getSimpleName();
+    private static final String TAG = GridFragment.class.getSimpleName();
     private static final int MIN_VOTE_COUNT = 1000;
     //@formatter:off
     @BindView(R.id.recycler_view) public RecyclerView recyclerView;
     @State public String sort_type;
     @State public ArrayList<Movie> movieList;
+    @BindString(R.string.topRatedData) public String topRatedData;
+    @BindString(R.string.popularData) public String popularData;
+    @BindString(R.string.favouritesData) public String favouritesData;
+
+    @State public String fragmentDataType;
+
     private GridMovieAdapter movieAdapter;
     private Context context;
+    private DynamicBox dynamicBox;
     //@formatter:on
 
-    public PopularFragment() {
+    public GridFragment() {
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
-        if (savedInstanceState == null) {
-            sort_type = getString(R.string.sort_type_popular);
-        }
+        fragmentDataType = getArguments().getString(getContext().getString(R.string.fragment_data_key), null);
+        Log.d(TAG, "onCreate: " + fragmentDataType);
         setRetainInstance(true);
     }
 
@@ -66,15 +76,14 @@ public class PopularFragment extends Fragment {
         Icepick.saveInstanceState(this, outState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_popular, container, false);
 
         ButterKnife.bind(this, rootView);
-
         context = getContext();
-
         if (savedInstanceState == null) {
             movieList = new ArrayList<>();
         }
@@ -89,8 +98,36 @@ public class PopularFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null) updateMovieData();
+        dynamicBox = new DynamicBox(context, recyclerView);
+        if (fragmentDataType.equals(popularData)) {
+            sort_type = context.getString(R.string.sort_type_popular);
+            updateMovieData();
+        } else if (fragmentDataType.equals(topRatedData)) {
+            sort_type = context.getString(R.string.sort_type_top_rated);
+            updateMovieData();
+        } else {
+            fetchCacheData();
+        }
+    }
 
+    private void fetchCacheData() {
+        HashMap<Integer, Boolean> map = Cache.getFavouriteMovies(context);
+        if (map == null) // TODO: 28-Sep-16  Inflate a drawable that displays empty favourites or something
+            return;
+        List<Integer> favouriteMovieIdList = new ArrayList<>();
+        for (HashMap.Entry<Integer, Boolean> entry : map.entrySet()) {
+            if (entry.getValue()) {
+                favouriteMovieIdList.add(entry.getKey());
+            }
+        }
+        List<MovieBundle> movieBundleList;
+        movieList.clear();
+        movieBundleList = Cache.bulkReadMovieData(context, favouriteMovieIdList);
+        for (MovieBundle movieBundle : movieBundleList) {
+            movieList.add(movieBundle.movie);
+        }
+        initializeFavourites();
+        movieAdapter.notifyDataSetChanged();
     }
 
     private void updateMovieData() {
@@ -102,7 +139,7 @@ public class PopularFragment extends Fragment {
     }
 
     private void fetchData() {
-        ApiClient apiClient = new ApiClient().setIsDebug(false);
+        ApiClient apiClient = new ApiClient().setIsDebug(ApplicationConstants.DEBUG);
         Call<MovieResponse> call = apiClient.movieInterface().getMovies(sort_type, MIN_VOTE_COUNT);
 
         call.enqueue(new Callback<MovieResponse>() {
@@ -141,8 +178,37 @@ public class PopularFragment extends Fragment {
         }
     }
 
-    public void notifyChange() {
-        initializeFavourites();
-        movieAdapter.notifyDataSetChanged();
+    public void notifyChange(Integer movieId, boolean isFavourite) {
+        if (movieList != null) {
+            if (fragmentDataType.equals(favouritesData)) {
+                if (!isFavourite) {
+                    for (Movie movie : movieList) {
+                        if (movie.getId().equals(movieId)) {
+                            movieList.remove(movie);
+                            initializeFavourites();
+                            movieAdapter.notifyDataSetChanged();
+                            return;
+                        }
+                    }
+                } else {
+                    MovieBundle movieBundle = Cache.getMovieData(context, movieId);
+                    if (movieBundle != null && !movieList.contains(movieBundle.movie)) {
+                        movieList.add(movieBundle.movie);
+                        initializeFavourites();
+                        movieAdapter.notifyDataSetChanged();
+                    }
+                }
+
+            } else {
+                for (Movie movie : movieList) {
+                    if (movie.getId().equals(movieId)) {
+                        movie.setFavourite(isFavourite);
+                        initializeFavourites();
+                        movieAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

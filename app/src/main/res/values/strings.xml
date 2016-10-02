@@ -53,4 +53,10 @@
     <string name="fav_movies_prefs_key">FAV_MOVIES</string>
     <string name="fav_movie_base_key">FAV_MOVIE_BASE_KEY</string>
     <string name="favourite_changed_key">FAV_CHANGED</string>
+    <string name="fragment_data_key">FRAGMENT_DATA_KEY</string>
+    <string name="popularData">POPULAR</string>
+    <string name="topRatedData">TOP_RATED</string>
+    <string name="favouritesData">FAVOURITES</string>
+    <string name="favourite_movie_id_key">FAV_MOVIE_ID</string>
+    <string name="fav_movie_bool_key">FAV_MOVIE_BOOLEAN_KEY</string>
 </resources>

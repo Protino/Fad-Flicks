@@ -2,6 +2,8 @@ package com.calgen.prodek.fadflicks.application;
 
 import android.app.Application;
 
+import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
+import com.calgen.prodek.fadflicks.utils.Cache;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -19,5 +21,9 @@ public class Global extends Application {
         built.setIndicatorsEnabled(false);
         built.setLoggingEnabled(false);
         Picasso.setSingletonInstance(built);
+
+        if(ApplicationConstants.CLEAR_PREFS){
+            Cache.clearCache(getApplicationContext());
+        }
     }
 }

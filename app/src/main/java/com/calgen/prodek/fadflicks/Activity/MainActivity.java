@@ -14,9 +14,7 @@ import android.view.ViewGroup;
 
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.adapter.GridMovieAdapter;
-import com.calgen.prodek.fadflicks.fragment.FavouriteFragment;
-import com.calgen.prodek.fadflicks.fragment.PopularFragment;
-import com.calgen.prodek.fadflicks.fragment.TopRatedFragment;
+import com.calgen.prodek.fadflicks.fragment.GridFragment;
 import com.calgen.prodek.fadflicks.utils.Cache;
 
 import java.util.ArrayList;
@@ -31,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String POSITION = "position";
+    private static final int FAVOURITE_FRAGMENT_POSITION = 2;
+    private static final int TOP_RATED_FRAGMENT_POSITION = 1;
+    private static final int POPULAR_FRAGMENT_POSITION = 0;
     //@formatter:off
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.tabs) public TabLayout tabLayout;
@@ -70,10 +71,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new PopularFragment(), getString(R.string.popular_tab_title));
-        viewPagerAdapter.addFragment(new TopRatedFragment(), getString(R.string.top_rated_tab_title));
-        viewPagerAdapter.addFragment(new FavouriteFragment(), getString(R.string.favourites_tab_title));
+
+        GridFragment popularFragment = new GridFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(getString(R.string.fragment_data_key), getString(R.string.popularData));
+        popularFragment.setArguments(bundle);
+        viewPagerAdapter.addFragment(popularFragment, getString(R.string.popular_tab_title));
+
+
+        GridFragment topRatedFragment = new GridFragment();
+        bundle = new Bundle();
+        bundle.putString(getString(R.string.fragment_data_key), getString(R.string.topRatedData));
+        topRatedFragment.setArguments(bundle);
+        viewPagerAdapter.addFragment(topRatedFragment, getString(R.string.top_rated_tab_title));
+
+        GridFragment favouriteFragment = new GridFragment();
+        bundle = new Bundle();
+        bundle.putString(getString(R.string.fragment_data_key), getString(R.string.favouritesData));
+        favouriteFragment.setArguments(bundle);
+
+        viewPagerAdapter.addFragment(favouriteFragment, getString(R.string.favourites_tab_title));
+
         viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setOffscreenPageLimit(2);
     }
 
 
@@ -88,8 +108,38 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == GridMovieAdapter.FAV_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data.getBooleanExtra(getString(R.string.favourite_changed_key), true)) {
-                    PopularFragment popularFragment = (PopularFragment) viewPagerAdapter.getFragment(viewPager.getCurrentItem());
-                    popularFragment.notifyChange();
+                    int movieId = data.getIntExtra(getString(R.string.favourite_movie_id_key), -1);
+                    boolean isFavourite;
+                    GridFragment gridFragment;
+
+                    if (movieId == -1)
+                        return;
+                    if (data.hasExtra(getString(R.string.fav_movie_bool_key)))
+                        isFavourite = data.getBooleanExtra(getString(R.string.fav_movie_bool_key), false);
+                    else
+                        return;
+
+                    int currentPosition = viewPager.getCurrentItem();
+                    switch (currentPosition) {
+                        case 0:
+                        case 1:
+                            gridFragment = (GridFragment) viewPagerAdapter.getFragment(currentPosition);
+                            gridFragment.notifyChange(movieId, isFavourite);
+                            break;
+                        case 2:
+                            gridFragment = (GridFragment) viewPagerAdapter.getFragment(FAVOURITE_FRAGMENT_POSITION);
+                            gridFragment.notifyChange(movieId, isFavourite);
+
+                            gridFragment = (GridFragment) viewPagerAdapter.getFragment(TOP_RATED_FRAGMENT_POSITION);
+                            gridFragment.notifyChange(movieId, isFavourite);
+
+                            gridFragment = (GridFragment) viewPagerAdapter.getFragment(POPULAR_FRAGMENT_POSITION);
+                            gridFragment.notifyChange(movieId, isFavourite);
+                            return;
+                    }
+                    gridFragment = (GridFragment) viewPagerAdapter.getFragment(FAVOURITE_FRAGMENT_POSITION);
+                    gridFragment.notifyChange(movieId, isFavourite);
+
                 }
             }
         }

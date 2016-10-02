@@ -23,6 +23,7 @@ import com.calgen.prodek.fadflicks.model.MovieDetails;
 import com.calgen.prodek.fadflicks.model.ReviewResponse;
 import com.calgen.prodek.fadflicks.model.VideoResponse;
 import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
+import com.calgen.prodek.fadflicks.utils.Cache;
 import com.calgen.prodek.fadflicks.utils.Network;
 
 import butterknife.BindView;
@@ -166,6 +167,7 @@ public class MovieDetailFragment extends Fragment {
             movieBundle.videoResponse = videoResponse;
             movieBundle.movieDetails = movieDetails;
             detailMovieAdapter.notifyDataSetChanged();
+            Cache.cacheMovieData(getContext(),movieBundle);
         }
     }
 }
