@@ -73,4 +73,7 @@ dependencies {
 
     //Dynamic box
     compile 'com.github.medyo:dynamicbox:1.2@aar'
+
+    //clan fab - fab menus
+    compile 'com.github.clans:fab:1.6.4'
 }

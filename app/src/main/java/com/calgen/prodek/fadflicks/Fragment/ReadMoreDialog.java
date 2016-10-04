@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,10 +57,7 @@ public class ReadMoreDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.more_movie_details, container, false);
         ButterKnife.bind(this, rootView);
-        status_bar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight() ));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(5);
-        }
+        handleStatusBar();
 
         plotText.setText(movieDetails.getOverview());
         actors.setText(Parser.getActors(movieBundle.credits));
@@ -77,6 +73,10 @@ public class ReadMoreDialog extends DialogFragment {
         website.setText(movieDetails.getHomepage());
         releaseDate.setText(movieDetails.getReleaseDate());
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(5);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,13 +86,19 @@ public class ReadMoreDialog extends DialogFragment {
         return rootView;
     }
 
+    private void handleStatusBar() {
+
+        if (!getContext().getResources().getBoolean(R.bool.large_layout)) {
+            status_bar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight()));
+        }
+    }
+
     public int getStatusBarHeight() {
         int result = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = getResources().getDimensionPixelSize(resourceId);
         }
-        Log.d(TAG, "getStatusBarHeight: " + result);
         return result;
     }
 }

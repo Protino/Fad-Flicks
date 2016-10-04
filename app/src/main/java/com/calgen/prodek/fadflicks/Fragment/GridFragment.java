@@ -88,7 +88,7 @@ public class GridFragment extends Fragment {
             movieList = new ArrayList<>();
         }
         movieAdapter = new GridMovieAdapter(context, movieList);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, 2);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, getSpanCount());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(movieAdapter);
@@ -210,5 +210,9 @@ public class GridFragment extends Fragment {
                 }
             }
         }
+    }
+
+    public int getSpanCount() {
+        return (context.getResources().getBoolean(R.bool.large_layout)) ? 3 : 2;
     }
 }

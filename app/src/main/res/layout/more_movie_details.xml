@@ -37,7 +37,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/cast_and_credits"/>
+                android:text="@string/cast_and_crew"/>
 
             <TextView
                 android:layout_width="match_parent"

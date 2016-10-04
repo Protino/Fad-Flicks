@@ -1,4 +1,4 @@
- <resources>
+<resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/accent</item>
         <item name="android:textColorPrimary">@color/primary_text</item>
         <item name="android:textColorSecondary">@color/secondary_text</item>
+        <item name="android:dividerVertical">@color/divider</item>
 
     </style>
 
@@ -16,14 +17,31 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="AppTheme.NoShadowUnderActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="elevation">0dp</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 
     <style name="TextAppearance.Design.CollapsingToolbar.Expanded.Shadow" parent="TextAppearance.AppCompat.Headline">
         <item name="android:shadowDy">0</item>
         <item name="android:shadowDx">0</item>
         <item name="android:shadowRadius">8</item>
         <item name="android:shadowColor">@android:color/black</item>
+    </style>
+
+    <style name="HorizontalDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/divider</item>
+    </style>
+
+    <style name="VerticalDivider">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/divider</item>
     </style>
 </resources>

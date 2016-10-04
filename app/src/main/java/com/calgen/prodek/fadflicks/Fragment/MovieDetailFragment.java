@@ -1,6 +1,8 @@
 package com.calgen.prodek.fadflicks.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,11 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.activity.DetailActivity;
+import com.calgen.prodek.fadflicks.activity.MainActivity;
 import com.calgen.prodek.fadflicks.adapter.DetailMovieAdapter;
 import com.calgen.prodek.fadflicks.api.ApiClient;
+import com.calgen.prodek.fadflicks.model.Cast;
 import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieBundle;
@@ -25,9 +30,15 @@ import com.calgen.prodek.fadflicks.model.VideoResponse;
 import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 import com.calgen.prodek.fadflicks.utils.Cache;
 import com.calgen.prodek.fadflicks.utils.Network;
+import com.calgen.prodek.fadflicks.utils.Parser;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import com.squareup.picasso.Picasso;
 
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,6 +48,7 @@ import retrofit2.Response;
  */
 public class MovieDetailFragment extends Fragment {
 
+    //@formatter:off
     private static final String TAG = DetailActivity.class.getSimpleName();
     public byte jobsDone = 0;
     public MovieBundle movieBundle;
@@ -45,11 +57,22 @@ public class MovieDetailFragment extends Fragment {
     public VideoResponse videoResponse;
     public Credits credits;
     public MovieDetails movieDetails;
-    @BindView(R.id.detail_recycler_view)
-    RecyclerView baseRecyclerView;
+    @BindView(R.id.detail_recycler_view) RecyclerView baseRecyclerView;
+    @BindView(R.id.image_backdrop) ImageView backDropImage;
+    @BindView(R.id.share_fab) FloatingActionButton shareFab;
+    @BindView(R.id.fav_fab) FloatingActionButton favFab;
+    @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
+    @BindDrawable(R.drawable.ic_favorite_border_white_24dp) Drawable notFavouriteDrawable;
+    @BindDrawable(R.drawable.ic_favorite_white_24dp) Drawable favouriteDrawable;
     private DetailMovieAdapter detailMovieAdapter;
+    private Context context;
+    private boolean isFavourite;
+    private String shareMessage;
+    //@formatter:on
 
-    public MovieDetailFragment() {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         jobsDone = 0;
     }
 
@@ -58,13 +81,24 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
+        Bundle arguments = getArguments();
+        context = getContext();
 
-        movie = (Movie) getActivity().getIntent().getSerializableExtra(Intent.EXTRA_TEXT);
+        if (arguments != null) {
+            movie = (Movie) arguments.getSerializable(Intent.EXTRA_TEXT);
+
+            Picasso.with(context)
+                    .load(Parser.formatImageUrl(movie.backdropPath, context.getString(R.string.image_size_large)))
+                    .into(backDropImage);
+
+            isFavourite = movie.isFavourite;
+            setFavButtonDrawable();
+        }
+
         movieBundle = new MovieBundle();
-        jobsDone = 0;
 
-        detailMovieAdapter = new DetailMovieAdapter(getContext(), movieBundle);
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        detailMovieAdapter = new DetailMovieAdapter(context, movieBundle);
+        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         baseRecyclerView.setLayoutManager(linearLayoutManager);
         baseRecyclerView.setNestedScrollingEnabled(false);
         baseRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -72,10 +106,16 @@ public class MovieDetailFragment extends Fragment {
         return rootView;
     }
 
+    private void setFavButtonDrawable() {
+        favFab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchData();
+        if (savedInstanceState == null && movie != null) {
+            fetchData();
+        }
     }
 
     @Override
@@ -85,7 +125,7 @@ public class MovieDetailFragment extends Fragment {
 
     private void fetchData() {
         //handle network connection
-        if (Network.isConnected(getContext())) {
+        if (Network.isConnected(context)) {
             //fetch extra details about the movie by id
 
             ApiClient apiClient = new ApiClient().setIsDebug(ApplicationConstants.DEBUG);
@@ -159,6 +199,27 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
+    @OnClick({R.id.fav_fab, R.id.share_fab})
+    public void onFabClick(View view) {
+        switch (view.getId()) {
+            case R.id.fav_fab:
+                isFavourite = !isFavourite;
+                notifyFavouriteChange();
+                setFavButtonDrawable();
+                break;
+            case R.id.share_fab:
+                if (shareMessage != null) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    sendIntent.setType("text/plain");
+                    context.startActivity(sendIntent);
+                }
+                break;
+        }
+        fabMenu.close(true);
+    }
+
     private void notifyDataSetChanged() {
         if (jobsDone == 4) {
             movieBundle.movie = movie;
@@ -167,7 +228,38 @@ public class MovieDetailFragment extends Fragment {
             movieBundle.videoResponse = videoResponse;
             movieBundle.movieDetails = movieDetails;
             detailMovieAdapter.notifyDataSetChanged();
-            Cache.cacheMovieData(getContext(),movieBundle);
+            setShareMessage();
+            Cache.cacheMovieData(context, movieBundle);
         }
+    }
+
+    private void setShareMessage() {
+        /*
+        Hey, "movie_name" is awesome.
+        It has actor1 actor2 and director is directing.
+        We need to check this out.
+
+
+        If (release > cur_data diff 4 months)
+         releasing on date.
+
+         */
+        Cast cast1 = movieBundle.credits.getCast().get(0);
+        Cast cast2 = movieBundle.credits.getCast().get(1);
+
+        // TODO: 05-Oct-16 More friendly release data message
+        String releaseMessage = "Release date :" + movie.getReleaseDate();
+
+        shareMessage = "Hey,"
+                + movie.getTitle()
+                + "is awesome.It has actors like "
+                + cast1.getName() + ","
+                + cast2.getName() + "..."
+                + releaseMessage;
+    }
+
+    private void notifyFavouriteChange() {
+        Cache.setFavouriteMovie(context, movie.getId(), isFavourite);
+        ((MainActivity) getActivity()).notifyFavouriteChange(movie.getId(), isFavourite);
     }
 }

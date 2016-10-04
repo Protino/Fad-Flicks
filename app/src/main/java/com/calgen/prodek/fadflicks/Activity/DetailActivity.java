@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.fragment.MovieDetailFragment;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.utils.Cache;
 import com.calgen.prodek.fadflicks.utils.Parser;
@@ -51,6 +52,17 @@ public class DetailActivity extends AppCompatActivity {
         setFavButtonDrawable();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if(savedInstanceState == null){
+            Bundle arguments = new Bundle();
+            arguments.putSerializable(Intent.EXTRA_TEXT,movie);
+            MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
+            movieDetailFragment.setArguments(arguments);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container, movieDetailFragment)
+                    .commit();
+        }
 
     }
 

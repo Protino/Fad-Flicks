@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.activity.DetailActivity;
+import com.calgen.prodek.fadflicks.activity.MainActivity;
+import com.calgen.prodek.fadflicks.fragment.MovieDetailFragment;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.utils.Parser;
 import com.squareup.picasso.Picasso;
@@ -32,8 +36,8 @@ import butterknife.OnClick;
  * You asked me to change it for no reason.
  */
 public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder> implements AdapterView.OnItemClickListener {
-    private static final String TAG = GridMovieAdapter.class.getSimpleName();
     public static final int FAV_REQUEST_CODE = 2764;
+    private static final String TAG = GridMovieAdapter.class.getSimpleName();
     private Context context;
     private List<Movie> movieList;
 
@@ -95,9 +99,19 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
         @OnClick({R.id.movie_rating, R.id.title, R.id.poster})
         public void onClick() {
             Movie movie = movieList.get(getLayoutPosition());
-            Intent intent = new Intent(context, DetailActivity.class);
-            intent.putExtra(Intent.EXTRA_TEXT, movie);
-            ((Activity)context).startActivityForResult(intent, FAV_REQUEST_CODE);
+            if (MainActivity.twoPane) {
+                MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
+                Bundle arguments = new Bundle();
+                arguments.putSerializable(Intent.EXTRA_TEXT, movie);
+                movieDetailFragment.setArguments(arguments);
+                ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, movieDetailFragment, MainActivity.MOVIE_DETAIL_FRAGMENT_TAG)
+                        .commit();
+            } else {
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, movie);
+                ((Activity) context).startActivityForResult(intent, FAV_REQUEST_CODE);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.calgen.prodek.fadflicks.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,6 +18,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.activity.MainActivity;
 import com.calgen.prodek.fadflicks.activity.ReviewActivity;
 import com.calgen.prodek.fadflicks.fragment.ReadMoreDialog;
 import com.calgen.prodek.fadflicks.model.Movie;
@@ -34,6 +36,7 @@ import butterknife.OnClick;
  */
 public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.BaseViewHolder> {
 
+    public static final Integer reviewLimit = 3;
     private static final String TAG = DetailMovieAdapter.class.getSimpleName();
     private boolean mIsLargeLayout;
     private MovieBundle movieBundle;
@@ -55,13 +58,22 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         Movie movie = movieBundle.movie;
 
-        Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
-                .into(holder.poster);
         holder.title.setText(movie.getTitle());
         holder.releaseDate.setText(movie.getReleaseDate());
         // TODO: 09-Sep-16 Make use of string formats, like it was done in sunshine
         holder.runtime.setText(movieBundle.movieDetails.getRuntime() + " " + context.getString(R.string.minutes));
-        holder.movieRating.setRating((float) (movie.getVoteAverage() / 2));
+
+        if (!MainActivity.twoPane) {
+            holder.movieRating.setRating((float) (movie.getVoteAverage() / 2));
+            Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
+                    .into(holder.poster);
+        } else {
+            holder.language.setText(movie.getOriginalLanguage());
+            holder.tagLine.setText(movieBundle.movieDetails.getTagline());
+            holder.movieRating.setRating((float) (movie.getVoteAverage() / 1));
+            holder.movieRating.setNumStars(10);
+        }
+
         holder.plot.setText(movie.getOverview());
 
         // Now initialize recycler views and assign them new adapters
@@ -91,7 +103,7 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
 
     public class BaseViewHolder extends RecyclerView.ViewHolder {
         //@formatter:off
-        @BindView(R.id.poster) ImageView poster;
+        @Nullable @BindView(R.id.poster) ImageView poster;
         @BindView(R.id.title) TextView title;
         @BindView(R.id.release_date) TextView releaseDate;
         @BindView(R.id.runtime) TextView runtime;
@@ -102,10 +114,20 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         @BindView(R.id.trailer_recycler) RecyclerView cardVideo;
         @BindView(R.id.review_recycler) RecyclerView cardReview;
         @BindView(R.id.all_reviews) Button allReviews;
+        @BindView(R.id.user_reviews) TextView userReview;
+        @Nullable @BindView(R.id.tagline) TextView tagLine;
+        @Nullable @BindView(R.id.language) TextView language;
         //@formatter:on
         public BaseViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            int reviewCount = movieBundle.reviewResponse.getTotalResults();
+            if (reviewCount < reviewLimit) {
+                allReviews.setVisibility(View.INVISIBLE);
+                if (reviewCount == 0) {
+                    userReview.setVisibility(View.INVISIBLE);
+                }
+            }
         }
 
         @OnClick({R.id.read_more_details, R.id.all_reviews})

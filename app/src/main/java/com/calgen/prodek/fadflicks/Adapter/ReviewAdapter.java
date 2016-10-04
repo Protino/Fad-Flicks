@@ -3,6 +3,7 @@ package com.calgen.prodek.fadflicks.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         Review review = reviewList.get(position);
         holder.reviewerName.setText(review.getAuthor());
         holder.reviewText.setText(review.getContent());
+        Linkify.addLinks(holder.reviewText,Linkify.ALL);
 
         if (glimpse) {
             holder.reviewText.setMaxLines(3);
@@ -57,7 +59,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     public int getItemCount() {
         int size = reviewList.size();
         if (glimpse)
-            return (size > 2) ? 3 : size;
+            return (size > 2) ? DetailMovieAdapter.reviewLimit : size;
         else
             return size;
     }
