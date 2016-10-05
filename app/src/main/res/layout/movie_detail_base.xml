@@ -61,6 +61,12 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/overview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/overview"
+        />
 
     <TextView
         android:id="@+id/plot_text"
@@ -79,15 +85,31 @@
         android:text="@string/read_more"
         />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cast_and_crew"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cast_recycler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/videos"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/trailer_recycler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/user_reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reviews"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/review_recycler"

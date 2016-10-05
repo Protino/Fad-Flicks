@@ -1,78 +1,101 @@
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/progressBarLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primary_light">
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/content_detail_wide"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <FrameLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/image_backdrop"
+                <FrameLayout
                     android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/image_backdrop"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        />
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/shadow_gradient"/>
+                </FrameLayout>
+
+                <include
+                    layout="@layout/content_wide_detail"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginTop="256dp"
                     />
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@drawable/shadow_gradient"/>
             </FrameLayout>
+        </ScrollView>
 
-            <include
-                layout="@layout/content_wide_detail"
-                android:layout_width="match_parent"
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fab_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            fab:menu_colorNormal="@color/accent"
+            fab:menu_colorPressed="@color/accent"
+            fab:menu_colorRipple="@color/accent"
+            fab:menu_fab_size="normal"
+            fab:menu_icon="@drawable/fab_add"
+            fab:menu_showShadow="true">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fav_fab"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginTop="256dp"
-                />
-        </FrameLayout>
-    </ScrollView>
+                android:src="@drawable/ic_favorite_border_white_24dp"
+                fab:fab_colorNormal="@color/accent"
+                fab:fab_colorPressed="@color/accent_pressed"
+                fab:fab_colorRipple="@color/accent_ripple"/>
 
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/fab_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        fab:menu_colorNormal="@color/accent"
-        fab:menu_colorPressed="@color/accent"
-        fab:menu_colorRipple="@color/accent"
-        fab:menu_fab_size="normal"
-        fab:menu_icon="@drawable/fab_add"
-        fab:menu_showShadow="true">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fav_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_favorite_border_white_24dp"
-            fab:fab_colorNormal="@color/accent"
-            fab:fab_colorPressed="@color/accent_pressed"
-            fab:fab_colorRipple="@color/accent_ripple"/>
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/share_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_share_white_24dp"
-            fab:fab_colorNormal="@color/accent"
-            fab:fab_colorPressed="@color/accent_pressed"
-            fab:fab_colorRipple="@color/accent_ripple"/>
-    </com.github.clans.fab.FloatingActionMenu>
-</FrameLayout>
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/share_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_share_white_24dp"
+                fab:fab_colorNormal="@color/accent"
+                fab:fab_colorPressed="@color/accent_pressed"
+                fab:fab_colorRipple="@color/accent_ripple"/>
+        </com.github.clans.fab.FloatingActionMenu>
+    </FrameLayout>
+</LinearLayout>

@@ -62,4 +62,5 @@
     <string name="overview">Overview</string>
     <string name="videos">Videos</string>
     <string name="reviews">User reviews</string>
+    <string name="action_share">Share</string>
 </resources>

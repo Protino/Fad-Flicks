@@ -11,12 +11,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.activity.DetailActivity;
 import com.calgen.prodek.fadflicks.activity.MainActivity;
 import com.calgen.prodek.fadflicks.adapter.DetailMovieAdapter;
 import com.calgen.prodek.fadflicks.api.ApiClient;
@@ -39,6 +43,9 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
+import icepick.Icepick;
+import icepick.State;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,31 +56,58 @@ import retrofit2.Response;
 public class MovieDetailFragment extends Fragment {
 
     //@formatter:off
-    private static final String TAG = DetailActivity.class.getSimpleName();
-    public byte jobsDone = 0;
-    public MovieBundle movieBundle;
-    public Movie movie;
-    public ReviewResponse reviewResponse;
-    public VideoResponse videoResponse;
-    public Credits credits;
-    public MovieDetails movieDetails;
+    private static final String TAG = MovieDetailFragment.class.getSimpleName();
+    @State public byte jobsDone = 0;
+    @State public MovieBundle movieBundle;
+    @State public Movie movie;
+    @State public ReviewResponse reviewResponse;
+    @State public VideoResponse videoResponse;
+    @State public Credits credits;
+    @State public MovieDetails movieDetails;
+    public DetailMovieAdapter detailMovieAdapter;
+    @State public boolean isFavourite;
+    @State public String shareMessage;
     @BindView(R.id.detail_recycler_view) RecyclerView baseRecyclerView;
-    @BindView(R.id.image_backdrop) ImageView backDropImage;
-    @BindView(R.id.share_fab) FloatingActionButton shareFab;
-    @BindView(R.id.fav_fab) FloatingActionButton favFab;
-    @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
+    @Nullable @BindView(R.id.image_backdrop) ImageView backDropImage;
+    @Nullable @BindView(R.id.share_fab) FloatingActionButton shareFab;
+    @Nullable @BindView(R.id.fav_fab) FloatingActionButton favFab;
+    @Nullable @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
+    @BindView(R.id.progressBarLayout) LinearLayout progressBarLayout;
+    @BindView(R.id.content_detail_wide) FrameLayout detailContentLayout;
     @BindDrawable(R.drawable.ic_favorite_border_white_24dp) Drawable notFavouriteDrawable;
     @BindDrawable(R.drawable.ic_favorite_white_24dp) Drawable favouriteDrawable;
-    private DetailMovieAdapter detailMovieAdapter;
     private Context context;
-    private boolean isFavourite;
-    private String shareMessage;
     //@formatter:on
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         jobsDone = 0;
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        setRetainInstance(true);
+        if (!MainActivity.twoPane)
+            setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            sendShareIntent();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -87,15 +121,19 @@ public class MovieDetailFragment extends Fragment {
         if (arguments != null) {
             movie = (Movie) arguments.getSerializable(Intent.EXTRA_TEXT);
 
-            Picasso.with(context)
-                    .load(Parser.formatImageUrl(movie.backdropPath, context.getString(R.string.image_size_large)))
-                    .into(backDropImage);
+            //Only in sw600dp
+            if (MainActivity.twoPane) {
+                Picasso.with(context)
+                        .load(Parser.formatImageUrl(movie.backdropPath, context.getString(R.string.image_size_large)))
+                        .into(backDropImage);
 
-            isFavourite = movie.isFavourite;
-            setFavButtonDrawable();
+                isFavourite = movie.isFavourite;
+                setFavButtonDrawable();
+            }
         }
 
-        movieBundle = new MovieBundle();
+        if (savedInstanceState == null)
+            movieBundle = new MovieBundle();
 
         detailMovieAdapter = new DetailMovieAdapter(context, movieBundle);
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -110,18 +148,22 @@ public class MovieDetailFragment extends Fragment {
         favFab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null && movie != null) {
+            // dynamicBox = new DynamicBox(context, getView());
+            //  dynamicBox.showLoadingLayout();
+            progressBarLayout.setVisibility(View.VISIBLE);
+            detailContentLayout.setVisibility(View.GONE);
             fetchData();
+        } else if (movieBundle != null) {
+            progressBarLayout.setVisibility(View.GONE);
+            detailContentLayout.setVisibility(View.VISIBLE);
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     private void fetchData() {
         //handle network connection
@@ -195,29 +237,37 @@ public class MovieDetailFragment extends Fragment {
             });
 
         } else {
-            //snackbar
+            // TODO: 05-Oct-16 snack bar or something
         }
     }
 
+    //Only in sw600dp
+    @Optional
     @OnClick({R.id.fav_fab, R.id.share_fab})
     public void onFabClick(View view) {
         switch (view.getId()) {
             case R.id.fav_fab:
+
+                Log.d(TAG, "onFabClick: fav fab clicked");
                 isFavourite = !isFavourite;
                 notifyFavouriteChange();
                 setFavButtonDrawable();
                 break;
             case R.id.share_fab:
-                if (shareMessage != null) {
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    sendIntent.setType("text/plain");
-                    context.startActivity(sendIntent);
-                }
+                sendShareIntent();
                 break;
         }
         fabMenu.close(true);
+    }
+
+    private void sendShareIntent() {
+        if (shareMessage != null) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            sendIntent.setType("text/plain");
+            context.startActivity(sendIntent);
+        }
     }
 
     private void notifyDataSetChanged() {
@@ -228,6 +278,10 @@ public class MovieDetailFragment extends Fragment {
             movieBundle.videoResponse = videoResponse;
             movieBundle.movieDetails = movieDetails;
             detailMovieAdapter.notifyDataSetChanged();
+            //   dynamicBox.hideAll();
+            progressBarLayout.setVisibility(View.GONE);
+            detailContentLayout.setVisibility(View.VISIBLE);
+
             setShareMessage();
             Cache.cacheMovieData(context, movieBundle);
         }
@@ -258,6 +312,7 @@ public class MovieDetailFragment extends Fragment {
                 + releaseMessage;
     }
 
+    // TODO: 05-Oct-16 replace with event bus
     private void notifyFavouriteChange() {
         Cache.setFavouriteMovie(context, movie.getId(), isFavourite);
         ((MainActivity) getActivity()).notifyFavouriteChange(movie.getId(), isFavourite);

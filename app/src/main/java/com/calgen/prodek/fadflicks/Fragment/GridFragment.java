@@ -1,6 +1,7 @@
 package com.calgen.prodek.fadflicks.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -75,7 +76,6 @@ public class GridFragment extends Fragment {
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -213,6 +213,9 @@ public class GridFragment extends Fragment {
     }
 
     public int getSpanCount() {
-        return (context.getResources().getBoolean(R.bool.large_layout)) ? 3 : 2;
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            return 3;
+        else
+            return 2;
     }
 }

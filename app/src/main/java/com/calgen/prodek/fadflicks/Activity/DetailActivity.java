@@ -1,19 +1,26 @@
 package com.calgen.prodek.fadflicks.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.fragment.MovieDetailFragment;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.utils.Cache;
+import com.calgen.prodek.fadflicks.utils.MetricUtils;
 import com.calgen.prodek.fadflicks.utils.Parser;
 import com.squareup.picasso.Picasso;
 
@@ -32,6 +39,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.fav_fab) FloatingActionButton fav_fab;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.image_backdrop) ImageView backdropImage;
+    @BindView(R.id.nestedScrollView) NestedScrollView nestedScrollView;
     @BindDrawable(R.drawable.ic_favorite_border_white_24dp) Drawable notFavouriteDrawable;
     @BindDrawable(R.drawable.ic_favorite_white_24dp) Drawable favouriteDrawable;
     private Movie movie;
@@ -52,6 +60,7 @@ public class DetailActivity extends AppCompatActivity {
         setFavButtonDrawable();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         if(savedInstanceState == null){
             Bundle arguments = new Bundle();
@@ -64,6 +73,27 @@ public class DetailActivity extends AppCompatActivity {
                     .commit();
         }
 
+        setUpLayoutMargins();
+    }
+
+    private void setUpLayoutMargins() {
+        CoordinatorLayout.LayoutParams scrollViewParams = (CoordinatorLayout.LayoutParams) nestedScrollView.getLayoutParams();
+        CoordinatorLayout.LayoutParams fabParams = (CoordinatorLayout.LayoutParams) fav_fab.getLayoutParams();
+
+        AppBarLayout.ScrollingViewBehavior behavior = (AppBarLayout.ScrollingViewBehavior) scrollViewParams.getBehavior();
+        int overlayTopDimen = (int) getResources().getDimension(R.dimen.overlayTopDimen);
+        int wideMargin = (int) getResources().getDimension(R.dimen.content_detail_wide_margin);
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            behavior.setOverlayTop(MetricUtils.dpToPx(overlayTopDimen));
+            scrollViewParams.setMargins(MetricUtils.dpToPx(wideMargin),0,MetricUtils.dpToPx(wideMargin),0);
+            fabParams.setAnchorId(View.NO_ID);
+            fabParams.gravity = Gravity.BOTTOM | Gravity.END;
+        }else{
+            behavior.setOverlayTop(0);
+            scrollViewParams.setMargins(0,0,0,0);
+            fabParams.setAnchorId(R.id.app_bar_layout);
+        }
     }
 
     @Override

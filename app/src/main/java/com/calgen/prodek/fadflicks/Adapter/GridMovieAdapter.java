@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,7 +34,7 @@ import butterknife.OnClick;
  * Created by Gurupad on 25-Aug-16.
  * You asked me to change it for no reason.
  */
-public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder> implements AdapterView.OnItemClickListener {
+public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder>{
     public static final int FAV_REQUEST_CODE = 2764;
     private static final String TAG = GridMovieAdapter.class.getSimpleName();
     private Context context;
@@ -75,11 +74,6 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
     @Override
     public int getItemCount() {
         return movieList.size();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "onItemClick: " + view.toString());
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {

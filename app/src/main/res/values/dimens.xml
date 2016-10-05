@@ -9,4 +9,7 @@
     <dimen name="base_padding">5dp</dimen>
     <dimen name="card_elevation">3dp</dimen>
     <dimen name="material_spacing">16dp</dimen>
+
+    <dimen name="overlayTopDimen">64dp</dimen>
+    <dimen name="content_detail_wide_margin">32dp</dimen>
 </resources>
