@@ -71,9 +71,11 @@ dependencies {
     compile 'frankiesardo:icepick:3.2.0'
     provided 'frankiesardo:icepick-processor:3.2.0'
 
-    //Dynamic box
-    compile 'com.github.medyo:dynamicbox:1.2@aar'
-
     //clan fab - fab menus
     compile 'com.github.clans:fab:1.6.4'
+
+    //Leak canary
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }

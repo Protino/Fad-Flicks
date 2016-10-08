@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.activity.MainActivity;
 import com.calgen.prodek.fadflicks.adapter.DetailMovieAdapter;
+import com.calgen.prodek.fadflicks.adapter.VideosAdapter;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Cast;
 import com.calgen.prodek.fadflicks.model.Credits;
@@ -37,6 +38,7 @@ import com.calgen.prodek.fadflicks.utils.Network;
 import com.calgen.prodek.fadflicks.utils.Parser;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindDrawable;
@@ -118,9 +120,11 @@ public class MovieDetailFragment extends Fragment {
         Bundle arguments = getArguments();
         context = getContext();
 
+        if (savedInstanceState == null)
+            movieBundle = new MovieBundle();
+
         if (arguments != null) {
             movie = (Movie) arguments.getSerializable(Intent.EXTRA_TEXT);
-
             //Only in sw600dp
             if (MainActivity.twoPane) {
                 Picasso.with(context)
@@ -131,9 +135,6 @@ public class MovieDetailFragment extends Fragment {
                 setFavButtonDrawable();
             }
         }
-
-        if (savedInstanceState == null)
-            movieBundle = new MovieBundle();
 
         detailMovieAdapter = new DetailMovieAdapter(context, movieBundle);
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -153,14 +154,10 @@ public class MovieDetailFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null && movie != null) {
-            // dynamicBox = new DynamicBox(context, getView());
-            //  dynamicBox.showLoadingLayout();
-            progressBarLayout.setVisibility(View.VISIBLE);
-            detailContentLayout.setVisibility(View.GONE);
+            showLoadingLayout();
             fetchData();
         } else if (movieBundle != null) {
-            progressBarLayout.setVisibility(View.GONE);
-            detailContentLayout.setVisibility(View.VISIBLE);
+            hideLoadingLayout();
         }
     }
 
@@ -169,7 +166,6 @@ public class MovieDetailFragment extends Fragment {
         //handle network connection
         if (Network.isConnected(context)) {
             //fetch extra details about the movie by id
-
             ApiClient apiClient = new ApiClient().setIsDebug(ApplicationConstants.DEBUG);
 
             //reviews
@@ -184,7 +180,8 @@ public class MovieDetailFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<ReviewResponse> call, Throwable t) {
-                    Log.e(TAG, "onFailure: ", t);
+                    Log.e(TAG, "onFailure: ReviewResponseCall", t);
+                    progressBarLayout.setVisibility(View.GONE);
                 }
             });
 
@@ -200,7 +197,8 @@ public class MovieDetailFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<VideoResponse> call, Throwable t) {
-                    Log.e(TAG, "onFailure: ", t);
+                    Log.e(TAG, "onFailure: videoResponseCall", t);
+                    progressBarLayout.setVisibility(View.GONE);
                 }
             });
 
@@ -216,7 +214,8 @@ public class MovieDetailFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<Credits> call, Throwable t) {
-                    Log.e(TAG, "onFailure: ", t);
+                    Log.e(TAG, "onFailure credits call: ", t);
+                    progressBarLayout.setVisibility(View.GONE);
                 }
             });
 
@@ -232,13 +231,36 @@ public class MovieDetailFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<MovieDetails> call, Throwable t) {
-                    Log.d(TAG, "onFailure: ", t);
+                    Log.d(TAG, "onFailure: movieDetails call", t);
+                    progressBarLayout.setVisibility(View.GONE);
                 }
             });
 
         } else {
-            // TODO: 05-Oct-16 snack bar or something
+            //check if data is present in the cache to load
+            MovieBundle cacheData = Cache.getMovieData(context, movie.getId());
+
+            if (cacheData != null) {
+                movieBundle.movie = cacheData.movie;
+                movieBundle.reviewResponse = cacheData.reviewResponse;
+                movieBundle.credits = cacheData.credits;
+                movieBundle.videoResponse = cacheData.videoResponse;
+                movieBundle.movieDetails = cacheData.movieDetails;
+                detailMovieAdapter.notifyDataSetChanged();
+                hideLoadingLayout();
+                setShareMessage();
+            }
         }
+    }
+
+    private void showLoadingLayout() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        detailContentLayout.setVisibility(View.GONE);
+    }
+
+    private void hideLoadingLayout() {
+        progressBarLayout.setVisibility(View.GONE);
+        detailContentLayout.setVisibility(View.VISIBLE);
     }
 
     //Only in sw600dp
@@ -278,10 +300,7 @@ public class MovieDetailFragment extends Fragment {
             movieBundle.videoResponse = videoResponse;
             movieBundle.movieDetails = movieDetails;
             detailMovieAdapter.notifyDataSetChanged();
-            //   dynamicBox.hideAll();
-            progressBarLayout.setVisibility(View.GONE);
-            detailContentLayout.setVisibility(View.VISIBLE);
-
+            hideLoadingLayout();
             setShareMessage();
             Cache.cacheMovieData(context, movieBundle);
         }
@@ -316,5 +335,13 @@ public class MovieDetailFragment extends Fragment {
     private void notifyFavouriteChange() {
         Cache.setFavouriteMovie(context, movie.getId(), isFavourite);
         ((MainActivity) getActivity()).notifyFavouriteChange(movie.getId(), isFavourite);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
+            loader.release();
+        }
     }
 }

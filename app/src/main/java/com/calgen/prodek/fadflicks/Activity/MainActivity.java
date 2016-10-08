@@ -2,6 +2,7 @@ package com.calgen.prodek.fadflicks.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int TOP_RATED_FRAGMENT_POSITION = 1;
     private static final int POPULAR_FRAGMENT_POSITION = 0;
     private static final int PAGE_LIMIT = 2;
-    public  static boolean twoPane;
+    public static boolean twoPane;
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.tabs) public TabLayout tabLayout;
     @BindView(R.id.viewpager) public ViewPager viewPager;
@@ -87,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setupViewPager();
         tabLayout.setupWithViewPager(viewPager);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
+        }
     }
 
     private void setupViewPager() {

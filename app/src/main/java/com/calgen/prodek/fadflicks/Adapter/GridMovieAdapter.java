@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.utils.Parser;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,15 +37,17 @@ import butterknife.OnClick;
  * Created by Gurupad on 25-Aug-16.
  * You asked me to change it for no reason.
  */
-public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder>{
+public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder> implements Filterable {
     public static final int FAV_REQUEST_CODE = 2764;
     private static final String TAG = GridMovieAdapter.class.getSimpleName();
     private Context context;
     private List<Movie> movieList;
+    private List<Movie> movieListCopy;
 
     public GridMovieAdapter(Context context, List<Movie> movieList) {
         this.context = context;
         this.movieList = movieList;
+        this.movieListCopy = movieList;
     }
 
     @Override
@@ -76,6 +81,45 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
         return movieList.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<Movie> filteredResults = null;
+                if (constraint.length() == 0) {
+                    filteredResults = movieListCopy;
+                } else {
+                    filteredResults = getFilteredResults(constraint.toString().toLowerCase());
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredResults;
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                movieList = (List<Movie>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    private List<Movie> getFilteredResults(String constraint) {
+        List<Movie> results = new ArrayList<>();
+
+        for (Movie movie : movieList) {
+            String movieName = movie.getTitle().toLowerCase();
+            String movieReleaseDate = movie.getReleaseDate().toLowerCase();
+            if (movieName.contains(constraint) || movieReleaseDate.contains(constraint)) {
+                results.add(movie);
+            }
+        }
+        return results;
+    }
+
     public class MovieViewHolder extends RecyclerView.ViewHolder {
         //@formatter:off
         @BindView(R.id.title) public TextView title;
@@ -90,7 +134,7 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick({R.id.movie_rating, R.id.title, R.id.poster})
+        @OnClick(R.id.card_view)
         public void onClick() {
             Movie movie = movieList.get(getLayoutPosition());
             if (MainActivity.twoPane) {
@@ -101,6 +145,7 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
                 ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_detail_container, movieDetailFragment, MainActivity.MOVIE_DETAIL_FRAGMENT_TAG)
                         .commit();
+                notifyDataSetChanged();
             } else {
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, movie);

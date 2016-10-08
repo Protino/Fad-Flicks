@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        style="@style/CardViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/card_margin"
         android:clickable="true"
         >
 
         <RelativeLayout
+            android:id="@+id/card_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/poster"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:background="@color/cardview_light_background"
-                android:clickable="true"
+                android:layout_height="200dp"
                 android:scaleType="centerCrop"
                 />
 
@@ -31,15 +29,17 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/movie_rating"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_alignRight="@+id/movie_rating"
                 android:layout_below="@+id/poster"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
                 android:textStyle="bold"
-                />
+                android:layout_alignRight="@+id/favourite_icon"
+                android:layout_alignEnd="@+id/favourite_icon"/>
 
 
             <TextView
@@ -49,58 +49,38 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/title"
-                android:layout_toLeftOf="@+id/favourite_icon"
-                android:layout_toStartOf="@+id/favourite_icon"/>
+                android:paddingBottom="8dp"
+                android:text="9.99"
+                android:paddingLeft="8dp"
+                android:paddingRight="4dp"
+                android:paddingTop="4dp"
+                />
+
+            <ImageView
+                android:src="@drawable/ic_star_grey_900_18dp"
+                android:layout_width="wrap_content"
+                android:paddingTop="5dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/movie_rating"
+                android:layout_toEndOf="@+id/movie_rating"
+                android:layout_below="@+id/title"/>
 
 
             <ImageView
                 android:id="@+id/favourite_icon"
-                android:src="@drawable/ic_favorite_accent_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/movie_rating"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                />
+                android:paddingBottom="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp"
+                android:src="@drawable/ic_favorite_accent_24dp"
+                android:layout_below="@+id/title"/>
 
         </RelativeLayout>
 
-        <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="vertical">-->
-
-        <!--<ImageView-->
-        <!--android:id="@+id/poster"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:adjustViewBounds="true"-->
-        <!--android:background="@color/cardview_light_background"-->
-        <!--android:clickable="true"-->
-        <!--android:scaleType="centerCrop"/>-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/title"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:clickable="true"-->
-        <!--android:ellipsize="end"-->
-        <!--android:maxLines="1"-->
-        <!--android:paddingLeft="@dimen/base_padding"-->
-        <!--android:paddingRight="@dimen/base_padding"-->
-        <!--android:paddingTop="@dimen/base_padding"-->
-        <!--android:textStyle="bold"/>-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/movie_rating"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:clickable="true"-->
-        <!--android:paddingBottom="@dimen/base_padding"-->
-        <!--android:paddingLeft="@dimen/base_padding"-->
-        <!--android:paddingRight="@dimen/base_padding"/>-->
-        <!--</LinearLayout>-->
-
     </android.support.v7.widget.CardView>
 
-</LinearLayout>
+</FrameLayout>

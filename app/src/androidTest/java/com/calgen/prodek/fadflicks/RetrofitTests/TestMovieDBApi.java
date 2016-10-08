@@ -2,13 +2,13 @@ package com.calgen.prodek.fadflicks.retrofitTests;
 
 import android.test.AndroidTestCase;
 
-import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.MovieDetails;
 import com.calgen.prodek.fadflicks.model.MovieResponse;
 import com.calgen.prodek.fadflicks.model.ReviewResponse;
 import com.calgen.prodek.fadflicks.model.VideoResponse;
+import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 
 import java.io.IOException;
 

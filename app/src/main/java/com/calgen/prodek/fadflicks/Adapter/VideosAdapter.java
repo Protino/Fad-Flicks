@@ -18,7 +18,9 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,16 +28,17 @@ import butterknife.OnClick;
 
 /**
  * Created by Gurupad on 07-Sep-16.
- * You asked me to change it for no reason.
  */
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewHolder> {
 
+    public static Map<YouTubeThumbnailView, YouTubeThumbnailLoader> viewLoaderMap;
     private Context context;
     private List<String> keys;
 
 
     public VideosAdapter(Context context, VideoResponse videoResponse) {
         this.context = context;
+        viewLoaderMap = new HashMap<>();
         keys = new ArrayList<>();
         for (Video video : videoResponse.getVideos()) {
             keys.add(video.getKey());
@@ -49,12 +52,13 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
     }
 
     @Override
-    public void onBindViewHolder(VideoViewHolder holder, final int position) {
+    public void onBindViewHolder(final VideoViewHolder holder, int position) {
 
         holder.youTubeThumbnailView.initialize(BuildConfig.YOUTUBE_API_KEY, new YouTubeThumbnailView.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
-                youTubeThumbnailLoader.setVideo(keys.get(position));
+                viewLoaderMap.put(youTubeThumbnailView, youTubeThumbnailLoader);
+                youTubeThumbnailLoader.setVideo(keys.get(holder.getAdapterPosition()));
             }
 
             @Override
@@ -84,7 +88,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
             Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                     (Activity) context,
                     BuildConfig.YOUTUBE_API_KEY,
-                    keys.get(getLayoutPosition()), 0, false, false);
+                    keys.get(getAdapterPosition()), 0, false, false);
             context.startActivity(intent);
         }
     }

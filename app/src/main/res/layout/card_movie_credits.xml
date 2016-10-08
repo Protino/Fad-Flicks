@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/baseMargin"
     android:clickable="true"
-    android:padding="@dimen/base_padding"
+    android:padding="@dimen/content_padding"
     android:layout_marginLeft="@dimen/baseMargin">
 
     <LinearLayout
@@ -30,14 +30,14 @@
             android:clickable="true"
             android:ellipsize="end"
             android:maxLines="1"
-            android:padding="@dimen/base_padding"
+            android:padding="@dimen/content_padding"
             android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/role"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/base_padding"
+            android:padding="@dimen/content_padding"
             android:clickable="true"
             android:ellipsize="end"
             android:maxLines="1"/>

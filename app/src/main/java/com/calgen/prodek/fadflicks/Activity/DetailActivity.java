@@ -11,17 +11,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.adapter.VideosAdapter;
 import com.calgen.prodek.fadflicks.fragment.MovieDetailFragment;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.utils.Cache;
 import com.calgen.prodek.fadflicks.utils.MetricUtils;
 import com.calgen.prodek.fadflicks.utils.Parser;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindDrawable;
@@ -78,7 +78,6 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setUpLayoutMargins() {
         CoordinatorLayout.LayoutParams scrollViewParams = (CoordinatorLayout.LayoutParams) nestedScrollView.getLayoutParams();
-        CoordinatorLayout.LayoutParams fabParams = (CoordinatorLayout.LayoutParams) fav_fab.getLayoutParams();
 
         AppBarLayout.ScrollingViewBehavior behavior = (AppBarLayout.ScrollingViewBehavior) scrollViewParams.getBehavior();
         int overlayTopDimen = (int) getResources().getDimension(R.dimen.overlayTopDimen);
@@ -87,12 +86,9 @@ public class DetailActivity extends AppCompatActivity {
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             behavior.setOverlayTop(MetricUtils.dpToPx(overlayTopDimen));
             scrollViewParams.setMargins(MetricUtils.dpToPx(wideMargin),0,MetricUtils.dpToPx(wideMargin),0);
-            fabParams.setAnchorId(View.NO_ID);
-            fabParams.gravity = Gravity.BOTTOM | Gravity.END;
         }else{
             behavior.setOverlayTop(0);
             scrollViewParams.setMargins(0,0,0,0);
-            fabParams.setAnchorId(R.id.app_bar_layout);
         }
     }
 
@@ -137,5 +133,13 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setFavButtonDrawable() {
         fav_fab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
+            loader.release();
+        }
     }
 }

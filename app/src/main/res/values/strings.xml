@@ -63,4 +63,8 @@
     <string name="videos">Videos</string>
     <string name="reviews">User reviews</string>
     <string name="action_share">Share</string>
+    <string name="movie_bundle_key">MOVIE_BUNDLE_KEY</string>
+    <string name="empty_favourites_message">You do not have any favourites selected.</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search by movie name…</string>
 </resources>

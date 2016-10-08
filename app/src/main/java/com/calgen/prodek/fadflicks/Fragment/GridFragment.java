@@ -3,17 +3,26 @@ package com.calgen.prodek.fadflicks.fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.activity.MainActivity;
 import com.calgen.prodek.fadflicks.adapter.GridMovieAdapter;
 import com.calgen.prodek.fadflicks.api.ApiClient;
 import com.calgen.prodek.fadflicks.model.Movie;
@@ -30,9 +39,9 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.State;
-import mehdi.sakout.dynamicbox.DynamicBox;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,23 +49,24 @@ import retrofit2.Response;
 /**
  * Created by Gurupad on 28-Sep-16.
  */
-public class GridFragment extends Fragment {
+public class GridFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     private static final String TAG = GridFragment.class.getSimpleName();
-    private static final int MIN_VOTE_COUNT = 1000;
+    private static final int MIN_VOTE_COUNT = 100;
+    public boolean firstLaunch = true;
     //@formatter:off
-    @BindView(R.id.recycler_view) public RecyclerView recyclerView;
+    @BindView(R.id.grid_recycler_view) public RecyclerView recyclerView;
+    @BindView(R.id.try_again) public Button tryAgainButton;
+    @BindView(R.id.internet_error_layout) public LinearLayout internetErrorLayout;
     @State public String sort_type;
     @State public ArrayList<Movie> movieList;
     @BindString(R.string.topRatedData) public String topRatedData;
     @BindString(R.string.popularData) public String popularData;
     @BindString(R.string.favouritesData) public String favouritesData;
-
     @State public String fragmentDataType;
-
+    @BindView(R.id.empty_favourites_layout) LinearLayout emptyFavouritesLayout;
     private GridMovieAdapter movieAdapter;
     private Context context;
-    private DynamicBox dynamicBox;
     //@formatter:on
 
     public GridFragment() {
@@ -65,10 +75,22 @@ public class GridFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        setHasOptionsMenu(true);
         Icepick.restoreInstanceState(this, savedInstanceState);
         fragmentDataType = getArguments().getString(getContext().getString(R.string.fragment_data_key), null);
-        Log.d(TAG, "onCreate: " + fragmentDataType);
-        setRetainInstance(true);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_main, menu);
+
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(context.getString(R.string.search_hint));
+        searchView.setOnQueryTextListener(this);
     }
 
     @Override
@@ -80,7 +102,7 @@ public class GridFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_popular, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_grid, container, false);
 
         ButterKnife.bind(this, rootView);
         context = getContext();
@@ -98,7 +120,6 @@ public class GridFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        dynamicBox = new DynamicBox(context, recyclerView);
         if (fragmentDataType.equals(popularData)) {
             sort_type = context.getString(R.string.sort_type_popular);
             updateMovieData();
@@ -112,7 +133,7 @@ public class GridFragment extends Fragment {
 
     private void fetchCacheData() {
         HashMap<Integer, Boolean> map = Cache.getFavouriteMovies(context);
-        if (map == null) // TODO: 28-Sep-16  Inflate a drawable that displays empty favourites or something
+        if (map == null)
             return;
         List<Integer> favouriteMovieIdList = new ArrayList<>();
         for (HashMap.Entry<Integer, Boolean> entry : map.entrySet()) {
@@ -126,16 +147,47 @@ public class GridFragment extends Fragment {
         for (MovieBundle movieBundle : movieBundleList) {
             movieList.add(movieBundle.movie);
         }
+        if (movieList.isEmpty())
+            showEmptyFavouritesLayout();
+        else
+            hideEmptyFavouritesLayout();
         initializeFavourites();
         movieAdapter.notifyDataSetChanged();
     }
+
+    private void showEmptyFavouritesLayout() {
+        recyclerView.setVisibility(View.GONE);
+        emptyFavouritesLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmptyFavouritesLayout() {
+        recyclerView.setVisibility(View.VISIBLE);
+        emptyFavouritesLayout.setVisibility(View.GONE);
+    }
+
 
     private void updateMovieData() {
         //Check for network connection beforehand
         if (Network.isConnected(context)) {
             fetchData();
         } else {
+            showInternetErrorLayout();
         }
+    }
+
+    private void showInternetErrorLayout() {
+        internetErrorLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.try_again)
+    public void onClick() {
+        getActivity().recreate();
+    }
+
+    private void hideInternetErrorLayout() {
+        internetErrorLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     private void fetchData() {
@@ -145,6 +197,7 @@ public class GridFragment extends Fragment {
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                hideInternetErrorLayout();
                 movieList.clear();
                 List<Movie> movies = response.body().getMovies();
                 for (Movie movie : movies) {
@@ -152,13 +205,31 @@ public class GridFragment extends Fragment {
                 }
                 initializeFavourites();
                 movieAdapter.notifyDataSetChanged();
+                if (MainActivity.twoPane && firstLaunch && fragmentDataType == popularData) {
+                    clickFirstItem();
+                    firstLaunch = false;
+                }
             }
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
+                showInternetErrorLayout();
             }
         });
+    }
+
+    private void clickFirstItem() {
+        final int delay = 10;
+        final int position = 0;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                GridMovieAdapter.MovieViewHolder viewHolder = (GridMovieAdapter.MovieViewHolder)
+                        recyclerView.findViewHolderForAdapterPosition(position);
+                viewHolder.onClick();
+            }
+        }, delay);
     }
 
     public void initializeFavourites() {
@@ -185,6 +256,8 @@ public class GridFragment extends Fragment {
                     for (Movie movie : movieList) {
                         if (movie.getId().equals(movieId)) {
                             movieList.remove(movie);
+                            if (movieList.isEmpty())
+                                showEmptyFavouritesLayout();
                             initializeFavourites();
                             movieAdapter.notifyDataSetChanged();
                             return;
@@ -196,6 +269,7 @@ public class GridFragment extends Fragment {
                         movieList.add(movieBundle.movie);
                         initializeFavourites();
                         movieAdapter.notifyDataSetChanged();
+                        hideEmptyFavouritesLayout();
                     }
                 }
 
@@ -217,5 +291,16 @@ public class GridFragment extends Fragment {
             return 3;
         else
             return 2;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        movieAdapter.getFilter().filter(newText);
+        return false;
     }
 }
