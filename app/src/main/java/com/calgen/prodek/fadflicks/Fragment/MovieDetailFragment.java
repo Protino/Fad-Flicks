@@ -98,6 +98,7 @@ public class MovieDetailFragment extends Fragment {
     @BindDrawable(R.drawable.ic_favorite_border_white_24dp) Drawable notFavouriteDrawable;
     @BindDrawable(R.drawable.ic_favorite_white_24dp) Drawable favouriteDrawable;
     private Context context;
+    private Bundle arguments;
     //@formatter:on
 
     @Override
@@ -136,7 +137,7 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
-        Bundle arguments = getArguments();
+        arguments = getArguments();
         context = getContext();
 
         if (savedInstanceState == null)
@@ -162,7 +163,7 @@ public class MovieDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null && movie != null) {
             fetchData();
-        } else if (movieBundle != null) {
+        } else if (jobsDone == 4) {
             bindViews();
             hideLoadingLayout();
         }
@@ -176,16 +177,16 @@ public class MovieDetailFragment extends Fragment {
         runtime.setText(movieBundle.movieDetails.getRuntime() + " " + context.getString(R.string.minutes));
 
         if (!MainActivity.twoPane) {
-            movieRating.setRating((float) (movie.getVoteAverage() / 2));
             Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
                     .into(poster);
         } else {
             language.setText(movie.getOriginalLanguage());
             tagLine.setText(movieBundle.movieDetails.getTagline());
-            movieRating.setRating((float) (movie.getVoteAverage() / 1));
-            movieRating.setNumberOfStars(10);
-            movieRating.setStepSize((float) 0.5);
+            if (movieBundle.movieDetails.getTagline().isEmpty()){
+                tagLine.setHeight(0);
+            }
         }
+        movieRating.setRating((float) (movie.getVoteAverage() / 2));
 
         plot.setText(movie.getOverview());
 
@@ -428,6 +429,8 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if (VideosAdapter.viewLoaderMap == null)
+            return;
         for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
             loader.release();
         }

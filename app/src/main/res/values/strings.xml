@@ -68,4 +68,5 @@
     <string name="action_search">Search</string>
     <string name="search_hint">Search by movie name…</string>
     <string name="no_reviews_yet">No reviews yet.</string>
+    <string name="movie_backdrop_image">Movie backdrop image</string>
 </resources>

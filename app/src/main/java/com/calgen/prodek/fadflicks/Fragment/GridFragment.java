@@ -296,6 +296,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        movieAdapter.getFilter().filter(query);
         return false;
     }
 

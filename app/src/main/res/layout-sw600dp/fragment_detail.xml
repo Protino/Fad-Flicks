@@ -19,9 +19,9 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/content_detail_wide"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/content_detail_wide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -42,13 +42,13 @@
                     <ImageView
                         android:id="@+id/image_backdrop"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:scaleType="centerCrop"
-                        />
+                        android:layout_height="304dp"
+                        android:contentDescription="@string/movie_backdrop_image"
+                        android:scaleType="centerCrop"/>
 
                     <View
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="304dp"
                         android:layout_gravity="bottom"
                         android:background="@drawable/shadow_gradient"/>
                 </FrameLayout>
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="32dp"
                     android:layout_marginRight="32dp"
-                    android:layout_marginTop="256dp"
+                    android:layout_marginTop="160dp"
                     />
             </FrameLayout>
         </ScrollView>

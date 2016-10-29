@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -12,32 +13,48 @@
 
         <TextView
             android:id="@+id/title"
+            style="@style/Base.TextAppearance.AppCompat.Display1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp"
-            android:text="BLAH BLAH MOVIE"/>
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="BLAH BLAH MOVIE"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tagline"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/title"
-            android:text="MOINE IS A LASADS MOVIE"/>
+            android:layout_toLeftOf="@+id/movie_rating"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="MOINE IS A LASADS MOVIE"
+            android:textColor="@color/white"/>
 
-        <RatingBar
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
             android:id="@+id/movie_rating"
-            style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/tagline"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:clickable="false"
-            android:numStars="10"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:rating="8.7"
-            android:stepSize="0.1"/>
+            android:layout_alignTop="@+id/tagline"
+            android:paddingBottom="16dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="16dp"
+            android:paddingStart="0dp"
+            app:srb_isIndicator="true"
+            app:srb_numberOfStars="5"
+            app:srb_starBorderWidth="2"
+            app:srb_starSize="24dp"
+            app:srb_stepSize="0.1"/>
 
 
         <android.support.v7.widget.CardView
@@ -50,28 +67,34 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_margin="16dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="4"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingEnd="16dp"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="0dp">
 
                     <TextView
                         android:id="@+id/overview"
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/overview"
+                        android:textStyle="bold"
                         />
 
                     <TextView
                         android:id="@+id/plot_text"
+                        android:textSize="16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:maxLines="7"
-                        android:text="BALSH BAH BALCK SHEEP HAVE YOU ANY WHOLOE AYES ASIRE SIRE AIRIA ALLLOI HOAVFULLL LAOD OG FHSIT CUNBT SHIT"
-                        android:textSize="@dimen/abc_text_size_medium_material"/>
+                        android:text="BALSH BAH BALCK SHEEP HAVE YOU ANY WHOLOE AYES ASIRE SIRE AIRIA ALLLOI HOAVFULLL LAOD OG FHSIT CUNBT SHIT"/>
                 </LinearLayout>
 
 
@@ -82,12 +105,18 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingEnd="0dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="0dp"
+                    android:paddingStart="16dp">
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/release_date"
+                        android:textStyle="bold"
                         />
 
                     <TextView
@@ -97,9 +126,12 @@
                         android:text="2015-06-65"/>
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Duration"/>
+                        android:paddingTop="16dp"
+                        android:text="@string/duration"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/runtime"
@@ -109,9 +141,12 @@
                         />
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingTop="16dp"
                         android:text="@string/language"
+                        android:textStyle="bold"
                         />
 
                     <TextView
@@ -135,35 +170,57 @@
     </RelativeLayout>
 
     <TextView
+        style="@style/Base.TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:text="@string/cast_and_crew"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cast_recycler"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"/>
 
     <TextView
+        style="@style/Base.TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:text="@string/videos"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/trailer_recycler"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:textStyle="bold"/>
+
 
     <TextView
         android:id="@+id/user_reviews"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:text="@string/reviews"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/review_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"/>
+
+    <TextView
+        android:id="@+id/no_review_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:text="@string/no_reviews_yet"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/all_reviews"
@@ -172,4 +229,5 @@
         android:layout_gravity="center_horizontal"
         android:background="?attr/selectableItemBackground"
         android:text="@string/all_reviews"/>
+
 </LinearLayout>
