@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/detail_recycler_view"
+    <include
+        layout="@layout/movie_detail_base"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        />
 </RelativeLayout>

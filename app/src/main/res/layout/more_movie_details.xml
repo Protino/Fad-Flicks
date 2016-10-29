@@ -27,52 +27,83 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:orientation="vertical">
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/overview"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/plot_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:paddingBottom="32dp"
+                android:paddingTop="4dp"/>
+
+            <View
+                style="@style/HorizontalDivider"/>
 
             <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/cast_and_crew"/>
+                android:paddingTop="32dp"
+                android:text="@string/cast_and_crew"
+                android:textStyle="bold"/>
 
             <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/actors"/>
+                android:paddingTop="4dp"
+                android:text="@string/actors"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/actors"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                />
 
             <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/directors"/>
+                android:paddingTop="4dp"
+                android:text="@string/directors"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/directors"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                />
 
             <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/writers"/>
+                android:paddingTop="4dp"
+                android:text="@string/writers"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/writers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                />
 
             <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/music"/>
+                android:paddingTop="4dp"
+                android:text="@string/music"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/musicians"
@@ -80,46 +111,57 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/producers"/>
-
-            <android.support.v4.widget.Space
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:paddingTop="4dp"
+                android:text="@string/producers"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/producers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:paddingBottom="32dp"/>
+
+            <View
+                style="@style/HorizontalDivider"/>
 
             <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/genre"/>
+                android:paddingTop="32dp"
+                android:text="@string/genre"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/genre"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:paddingBottom="32dp"/>
+
+            <View
+                style="@style/HorizontalDivider"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:paddingTop="32dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/votes"/>
+                        android:text="@string/votes"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/votes"
@@ -127,9 +169,12 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/duration"/>
+                        android:paddingTop="16dp"
+                        android:text="@string/duration"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/duration"
@@ -137,9 +182,12 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/language"/>
+                        android:paddingTop="16dp"
+                        android:text="@string/language"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/language"
@@ -148,15 +196,17 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/rating"/>
+                        android:text="@string/rating"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/rating"
@@ -164,9 +214,12 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/official_website"/>
+                        android:paddingTop="16dp"
+                        android:text="@string/official_website"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/website"
@@ -174,9 +227,12 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        style="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/release_date"/>
+                        android:paddingTop="16dp"
+                        android:text="@string/release_date"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/release_date"
@@ -184,6 +240,10 @@
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
             </LinearLayout>
+
+            <android.support.v4.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

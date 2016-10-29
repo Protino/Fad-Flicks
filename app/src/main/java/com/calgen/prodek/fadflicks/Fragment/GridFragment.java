@@ -109,6 +109,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         if (savedInstanceState == null) {
             movieList = new ArrayList<>();
         }
+
         movieAdapter = new GridMovieAdapter(context, movieList);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, getSpanCount());
         recyclerView.setLayoutManager(mLayoutManager);

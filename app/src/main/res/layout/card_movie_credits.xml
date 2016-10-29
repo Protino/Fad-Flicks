@@ -4,10 +4,9 @@
     android:id="@+id/card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/baseMargin"
-    android:clickable="true"
-    android:padding="@dimen/content_padding"
-    android:layout_marginLeft="@dimen/baseMargin">
+    android:layout_marginLeft="4dp"
+    android:layout_marginStart="4dp"
+    android:clickable="true">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -37,9 +36,9 @@
             android:id="@+id/role"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/content_padding"
             android:clickable="true"
             android:ellipsize="end"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:padding="@dimen/content_padding"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

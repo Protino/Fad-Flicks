@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,8 +71,10 @@ public class ReadMoreDialog extends DialogFragment {
         rating.setText((movieDetails.getAdult()) ? getString(R.string.adult_rating) : getString(R.string.non_adult_rating));
         duration.setText(movieDetails.getRuntime() + " " + getString(R.string.minutes));
         language.setText(movieDetails.getOriginalLanguage());
-        website.setText(movieDetails.getHomepage());
+        website.setText((movieDetails.getHomepage().isEmpty()) ? "-" : movieDetails.getHomepage());
         releaseDate.setText(movieDetails.getReleaseDate());
+
+        Linkify.addLinks(website,Linkify.ALL);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

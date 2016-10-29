@@ -120,7 +120,6 @@ public class DetailActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (isFavouriteOriginal != isFavourite) {
             Cache.setFavouriteMovie(this, movie.getId(), isFavourite);
-
             Intent intent = new Intent();
             intent.putExtra(getString(R.string.favourite_changed_key), true);
             intent.putExtra(getString(R.string.fav_movie_bool_key),isFavourite);

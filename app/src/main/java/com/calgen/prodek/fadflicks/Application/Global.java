@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 import com.calgen.prodek.fadflicks.utils.Cache;
-import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -16,9 +15,9 @@ public class Global extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if (LeakCanary.isInAnalyzerProcess(this))
-            return;
-        LeakCanary.install(this);
+       // if (LeakCanary.isInAnalyzerProcess(this))
+         //   return;
+        //LeakCanary.install(this);
 
 
         Picasso.Builder builder = new Picasso.Builder(this);

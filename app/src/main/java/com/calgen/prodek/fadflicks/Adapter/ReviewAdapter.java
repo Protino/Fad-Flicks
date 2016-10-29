@@ -28,6 +28,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     private Context context;
     private List<Review> reviewList;
     private boolean glimpse;
+    private int reviewLimit = 3;
 
     public ReviewAdapter(Context context, ReviewResponse review, boolean glimpse) {
         this.context = context;
@@ -59,7 +60,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     public int getItemCount() {
         int size = reviewList.size();
         if (glimpse)
-            return (size > 2) ? DetailMovieAdapter.reviewLimit : size;
+            return (size > 2) ? reviewLimit : size;
         else
             return size;
     }

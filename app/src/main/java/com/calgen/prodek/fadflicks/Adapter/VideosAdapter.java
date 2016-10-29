@@ -92,4 +92,5 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
             context.startActivity(intent);
         }
     }
+
 }

@@ -40,6 +40,15 @@
                 android:value=".activity.DetailActivity"
                 />
         </activity>
+        <activity
+            android:label="@string/title_activity_review"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".Test">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.DetailActivity"
+                />
+        </activity>
     </application>
 
 </manifest>
