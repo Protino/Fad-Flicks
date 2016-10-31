@@ -19,8 +19,8 @@ import com.calgen.prodek.fadflicks.adapter.VideosAdapter;
 import com.calgen.prodek.fadflicks.fragment.MovieDetailFragment;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.utils.Cache;
-import com.calgen.prodek.fadflicks.utils.MetricUtils;
 import com.calgen.prodek.fadflicks.utils.Parser;
+import com.calgen.prodek.fadflicks.utils.UI;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.squareup.picasso.Picasso;
 
@@ -84,8 +84,8 @@ public class DetailActivity extends AppCompatActivity {
         int wideMargin = (int) getResources().getDimension(R.dimen.content_detail_wide_margin);
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            behavior.setOverlayTop(MetricUtils.dpToPx(overlayTopDimen));
-            scrollViewParams.setMargins(MetricUtils.dpToPx(wideMargin),0,MetricUtils.dpToPx(wideMargin),0);
+            behavior.setOverlayTop(UI.dpToPx(overlayTopDimen));
+            scrollViewParams.setMargins(UI.dpToPx(wideMargin),0,UI.dpToPx(wideMargin),0);
         }else{
             behavior.setOverlayTop(0);
             scrollViewParams.setMargins(0,0,0,0);
@@ -137,6 +137,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        if (VideosAdapter.viewLoaderMap == null) return;
         for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
             loader.release();
         }

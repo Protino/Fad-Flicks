@@ -2,6 +2,8 @@ package com.calgen.prodek.fadflicks.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.R;
@@ -37,17 +40,21 @@ import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieBundle;
 import com.calgen.prodek.fadflicks.model.MovieDetails;
+import com.calgen.prodek.fadflicks.model.Review;
 import com.calgen.prodek.fadflicks.model.ReviewResponse;
 import com.calgen.prodek.fadflicks.model.VideoResponse;
 import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 import com.calgen.prodek.fadflicks.utils.Cache;
 import com.calgen.prodek.fadflicks.utils.Network;
 import com.calgen.prodek.fadflicks.utils.Parser;
+import com.calgen.prodek.fadflicks.utils.UI;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import butterknife.BindDrawable;
 import butterknife.BindView;
@@ -81,8 +88,8 @@ public class MovieDetailFragment extends Fragment {
     @BindView(R.id.read_more_details) Button moreDetails;
     @BindView(R.id.cast_recycler) RecyclerView cardCast;
     @BindView(R.id.trailer_recycler) RecyclerView cardVideo;
-    @BindView(R.id.review_recycler) RecyclerView cardReview;
-    @BindView(R.id.all_reviews) Button allReviews;
+    @BindView(R.id.review_listView) ListView reviewListView;
+    @BindView(R.id.all_reviews_button) Button allReviews;
     @BindView(R.id.no_review_msg) TextView noReviewsMessage;
     @Nullable @BindView(R.id.image_backdrop) ImageView backDropImage;
     @Nullable @BindView(R.id.share_fab) FloatingActionButton shareFab;
@@ -104,9 +111,9 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        jobsDone = 0;
-        Icepick.restoreInstanceState(this, savedInstanceState);
         setRetainInstance(true);
+        if (savedInstanceState == null) jobsDone = 0;
+        Icepick.restoreInstanceState(this, savedInstanceState);
         if (!MainActivity.twoPane)
             setHasOptionsMenu(true);
     }
@@ -161,9 +168,10 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null && movie != null) {
+        if (movie==null) return;
+        if (savedInstanceState == null) {
             fetchData();
-        } else if (jobsDone == 4) {
+        } else if (movieBundle!=null) {
             bindViews();
             hideLoadingLayout();
         }
@@ -182,7 +190,7 @@ public class MovieDetailFragment extends Fragment {
         } else {
             language.setText(movie.getOriginalLanguage());
             tagLine.setText(movieBundle.movieDetails.getTagline());
-            if (movieBundle.movieDetails.getTagline().isEmpty()){
+            if (movieBundle.movieDetails.getTagline().isEmpty()) {
                 tagLine.setHeight(0);
             }
         }
@@ -206,18 +214,32 @@ public class MovieDetailFragment extends Fragment {
         int reviewCount = movieBundle.reviewResponse.getTotalResults();
         if (reviewCount == 0) {
             allReviews.setVisibility(View.GONE);
-            cardReview.setVisibility(View.GONE);
+            reviewListView.setVisibility(View.GONE);
             noReviewsMessage.setVisibility(View.VISIBLE);
         } else {
-            ReviewAdapter reviewAdapter = new ReviewAdapter(context, movieBundle.reviewResponse, true);
-            cardReview.setLayoutManager(new LinearLayoutManager(context));
-            cardReview.setNestedScrollingEnabled(false);
-            cardReview.setAdapter(reviewAdapter);
+            ReviewAdapter reviewAdapter = new ReviewAdapter(context, (ArrayList<Review>) movieBundle.reviewResponse.getReviewResponses(), true);
+            reviewListView.setAdapter(reviewAdapter);
+            reviewListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
+            reviewListView.setCacheColorHint(Color.TRANSPARENT);
+            UI.setListViewHeightBasedOnChildren(reviewListView);
         }
     }
 
     private void fetchData() {
         showLoadingLayout();
+        //check if data is present in the cache to load
+        MovieBundle cacheData = Cache.getMovieData(context, movie.getId());
+        if (cacheData != null) {
+            movieBundle.movie = cacheData.movie;
+            movieBundle.reviewResponse = cacheData.reviewResponse;
+            movieBundle.credits = cacheData.credits;
+            movieBundle.videoResponse = cacheData.videoResponse;
+            movieBundle.movieDetails = cacheData.movieDetails;
+            bindViews();
+            hideLoadingLayout();
+            setShareMessage();
+            return;
+        }
         //handle network connection
         if (Network.isConnected(context)) {
             //fetch extra details about the movie by id
@@ -294,31 +316,17 @@ public class MovieDetailFragment extends Fragment {
             });
 
         } else {
-            //check if data is present in the cache to load
-            MovieBundle cacheData = Cache.getMovieData(context, movie.getId());
-
-            if (cacheData != null) {
-                movieBundle.movie = cacheData.movie;
-                movieBundle.reviewResponse = cacheData.reviewResponse;
-                movieBundle.credits = cacheData.credits;
-                movieBundle.videoResponse = cacheData.videoResponse;
-                movieBundle.movieDetails = cacheData.movieDetails;
-                bindViews();
-                hideLoadingLayout();
-                setShareMessage();
-            } else {
-                Snackbar snackbar = Snackbar.make(detailContentLayout,
-                        getString(R.string.internet_error_message),
-                        Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        fetchData();
-                    }
-                });
-                snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
-                snackbar.show();
-            }
+            Snackbar snackbar = Snackbar.make(detailContentLayout,
+                    getString(R.string.internet_error_message),
+                    Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fetchData();
+                }
+            });
+            snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
+            snackbar.show();
         }
     }
 
@@ -380,16 +388,15 @@ public class MovieDetailFragment extends Fragment {
         fabMenu.close(true);
     }
 
-    @OnClick({R.id.read_more_details, R.id.all_reviews, R.id.review_recycler})
+    @OnClick({R.id.read_more_details, R.id.all_reviews_button})
     public void OnClick(View v) {
         switch (v.getId()) {
             case R.id.read_more_details:
                 showDialog();
                 break;
-            case R.id.all_reviews:
-            case R.id.review_recycler:
+            case R.id.all_reviews_button:
                 Intent intent = new Intent(context, ReviewActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, movieBundle);
+                intent.putExtra(Intent.EXTRA_TEXT, movieBundle.reviewResponse);
                 context.startActivity(intent);
                 break;
         }

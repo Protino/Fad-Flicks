@@ -1,16 +1,36 @@
 <resources>
     <string name="app_name">Fad Flicks</string>
-    <string name="action_sort">Sort</string>
 
-    <string name="try_again">Try Again</string>
-    <string name="internet_error_message">No Internet Connection</string>
+    <string name="title_activity_detail">Details</string>
+
+
+    <string name="try_again">Try Again.</string>
+    <string name="internet_error_message">No Internet Connection.</string>
+    <string name="empty_favourites_message">You do not have any favourites selected.</string>
+    <string name="no_reviews_yet">No reviews yet.</string>
+
+    <!--Action Bar-->
+    <string name="action_sort">Sort</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search by movie name…</string>
 
     <!-- Preference keys -->
     <string name="movie_data_prefs_key" translatable="false">movie_data</string>
     <string name="pref_sort_type_key" translatable="false">sort_type</string>
+    <string name="fav_movies_prefs_key" translatable="false">FAV_MOVIES</string>
+    <string name="fav_movie_base_key" translatable="false">FAV_MOVIE_BASE_KEY</string>
+    <string name="favourite_changed_key" translatable="false">FAV_CHANGED</string>
+    <string name="favourite_movie_id_key" translatable="false">FAV_MOVIE_ID</string>
+    <string name="fav_movie_bool_key" translatable="false">FAV_MOVIE_BOOLEAN_KEY</string>
+    <string name="movie_bundle_key">MOVIE_BUNDLE_KEY</string>
+    <string name="movie_title_key">MOVIE_TITLE_KEY</string>
 
-    <string name="title_activity_detail">Details</string>
-    <string name="title_activity_settings">Settings</string>
+    <!--Grid Fragment data keys-->
+    <string name="popularData" translatable="false">POPULAR</string>
+    <string name="topRatedData" translatable="false">TOP_RATED</string>
+    <string name="favouritesData" translatable="false">FAVOURITES</string>
+    <string name="INTERNAL_STORAGE" translatable="false">data</string>
+    <string name="fragment_data_key" translatable="false">FRAGMENT_DATA_KEY</string>
 
     <!-- Sort Type Settings-->
     <string name="sort_type_default" translatable="false">popularity.desc</string>
@@ -48,25 +68,14 @@
     <string name="adult_rating">A</string>
     <string name="non_adult_rating">UA</string>
     <string name="title_activity_review">Reviews</string>
-    <string name="fav_movies_file_name">fav_movies</string>
-    <string name="INTERNAL_STORAGE">data</string>
-    <string name="fav_movies_prefs_key">FAV_MOVIES</string>
-    <string name="fav_movie_base_key">FAV_MOVIE_BASE_KEY</string>
-    <string name="favourite_changed_key">FAV_CHANGED</string>
-    <string name="fragment_data_key">FRAGMENT_DATA_KEY</string>
-    <string name="popularData">POPULAR</string>
-    <string name="topRatedData">TOP_RATED</string>
-    <string name="favouritesData">FAVOURITES</string>
-    <string name="favourite_movie_id_key">FAV_MOVIE_ID</string>
-    <string name="fav_movie_bool_key">FAV_MOVIE_BOOLEAN_KEY</string>
     <string name="overview">Overview</string>
     <string name="videos">Videos</string>
     <string name="reviews">User reviews</string>
     <string name="action_share">Share</string>
-    <string name="movie_bundle_key">MOVIE_BUNDLE_KEY</string>
-    <string name="empty_favourites_message">You do not have any favourites selected.</string>
-    <string name="action_search">Search</string>
-    <string name="search_hint">Search by movie name…</string>
-    <string name="no_reviews_yet">No reviews yet.</string>
     <string name="movie_backdrop_image">Movie backdrop image</string>
+    <string name="title_activity_review_detail">Review Detail</string>
+
+    <string name="time_of_last_usage_key">TIME_OF_LAST_USAGE_KEY</string>
+    <string name="last_usage_timezone">LAST_USAGE_TIMEZONE</string>
+
 </resources>

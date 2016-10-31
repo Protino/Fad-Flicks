@@ -15,8 +15,8 @@ public class Global extends Application {
     public void onCreate() {
         super.onCreate();
 
-       // if (LeakCanary.isInAnalyzerProcess(this))
-         //   return;
+        // if (LeakCanary.isInAnalyzerProcess(this))
+        //   return;
         //LeakCanary.install(this);
 
 
@@ -27,8 +27,10 @@ public class Global extends Application {
         built.setLoggingEnabled(false);
         Picasso.setSingletonInstance(built);
 
-        if (ApplicationConstants.CLEAR_PREFS) {
-            Cache.clearCache(getApplicationContext());
+        if (ApplicationConstants.PURGE_CACHE || Cache.isPurgeRequired(getApplicationContext())) {
+            Cache.purgeCache(getApplicationContext());
+        } else {
+            Cache.cacheTimeOfLastUsage(getApplicationContext());
         }
     }
 }

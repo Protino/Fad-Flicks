@@ -75,10 +75,10 @@
                 android:paddingLeft="4dp"
                 android:paddingRight="0dp"
                 android:paddingStart="4dp"
-                app:srb_starBorderWidth="2"
                 app:srb_isIndicator="true"
                 app:srb_numberOfStars="5"
                 app:srb_rating="5"
+                app:srb_starBorderWidth="2"
                 app:srb_starSize="24dp"
                 app:srb_stepSize="0.1"
                 />
@@ -91,7 +91,7 @@
         style="@style/Base.TextAppearance.AppCompat.Subhead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="16dp"
         android:text="@string/overview"
         android:textStyle="bold"
         />
@@ -110,7 +110,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="@android:color/transparent"
+        android:clickable="true"
         android:text="@string/read_more"
         />
 
@@ -118,7 +119,7 @@
         style="@style/Base.TextAppearance.AppCompat.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="16dp"
         android:text="@string/cast_and_crew"
         android:textStyle="bold"/>
 
@@ -126,13 +127,13 @@
         android:id="@+id/cast_recycler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"/>
+        android:layout_margin="@dimen/cast_and_credits_margin"/>
 
     <TextView
         style="@style/Base.TextAppearance.AppCompat.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="16dp"
         android:text="@string/videos"
         android:textStyle="bold"/>
 
@@ -150,31 +151,32 @@
         style="@style/Base.TextAppearance.AppCompat.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="16dp"
         android:text="@string/reviews"
         android:textStyle="bold"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/review_recycler"
+    <ListView
+        android:id="@+id/review_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp"/>
+        android:divider="@null"
+        android:padding="8dp"/>
 
     <TextView
         android:id="@+id/no_review_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp"
+        android:padding="8dp"
         android:text="@string/no_reviews_yet"
         android:visibility="gone"/>
 
     <Button
-        android:id="@+id/all_reviews"
+        android:id="@+id/all_reviews_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="?attr/selectableItemBackground"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:padding="8dp"
         android:text="@string/all_reviews"/>
 </LinearLayout>

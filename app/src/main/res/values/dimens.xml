@@ -16,7 +16,9 @@
     <dimen name="card_grid_margin">4dp</dimen>
     <dimen name="card_corner_radius">2dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
-    <dimen name="card_movie_credits_margin">80dp</dimen>
+    <dimen name="card_movie_credits_margin">4dp</dimen>
     <dimen name="movie_cast_image_size">80dp</dimen>
-    <dimen name="movie_poster_height">100dp</dimen>
+    <dimen name="movie_poster_height">176dp</dimen>
+    <dimen name="review_body_margin">4dp</dimen>
+    <dimen name="cast_and_credits_margin">4dp</dimen>
 </resources>

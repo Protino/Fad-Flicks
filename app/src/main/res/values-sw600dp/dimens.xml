@@ -5,7 +5,9 @@
 
     <item name="wrap_content" format="integer" type="dimen">-2</item>
 
-    <dimen name="card_movie_credits_margin">16dp</dimen>
+    <dimen name="card_movie_credits_margin">8dp</dimen>
     <dimen name="movie_cast_image_size">128dp</dimen>
     <dimen name="movie_poster_height">@dimen/wrap_content</dimen>
+    <dimen name="review_body_margin">8dp</dimen>
+    <dimen name="cast_and_credits_margin">8dp</dimen>
 </resources>

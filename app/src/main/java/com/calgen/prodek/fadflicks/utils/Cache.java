@@ -11,8 +11,11 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -119,10 +122,40 @@ public class Cache {
         sharedPreferencesEditor.apply();
     }
 
-    public static void clearCache(Context context) {
+    public static void purgeCache(Context context) {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         Editor sharedPreferencesEditor = sharedPreferences.edit();
         sharedPreferencesEditor.clear();
         sharedPreferencesEditor.apply();
+    }
+
+    public static void cacheTimeOfLastUsage(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        Editor sharedPreferencesEditor = sharedPreferences.edit();
+        Date date = new Date();
+        long currentTimeMillis = date.getTime();
+        sharedPreferencesEditor.putLong(context.getString(R.string.time_of_last_usage_key), currentTimeMillis);
+        sharedPreferencesEditor.putString(context.getString(R.string.last_usage_timezone), TimeZone.getDefault().getID());
+        sharedPreferencesEditor.apply();
+    }
+
+    public static Long readTimeOfLastUsage(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        if (sharedPreferences.contains(context.getString(R.string.time_of_last_usage_key))) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(sharedPreferences.getLong(context.getString(R.string.time_of_last_usage_key), 0));
+            calendar.setTimeZone(TimeZone.getTimeZone(sharedPreferences.getString(context.getString(R.string.last_usage_timezone), TimeZone.getDefault().getID())));
+            return calendar.getTime().getTime();
+
+        } else {
+            cacheTimeOfLastUsage(context);
+            return readTimeOfLastUsage(context);
+        }
+    }
+
+    public static boolean isPurgeRequired(Context context) {
+        long currentDate = new Date().getTime();
+        long lastUsageDate = readTimeOfLastUsage(context);
+        return (currentDate - lastUsageDate > ApplicationConstants.CACHE_PURGE_PERIOD);
     }
 }

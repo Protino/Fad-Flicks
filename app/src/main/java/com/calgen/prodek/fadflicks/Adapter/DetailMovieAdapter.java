@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -23,8 +24,12 @@ import com.calgen.prodek.fadflicks.activity.ReviewActivity;
 import com.calgen.prodek.fadflicks.fragment.ReadMoreDialog;
 import com.calgen.prodek.fadflicks.model.Movie;
 import com.calgen.prodek.fadflicks.model.MovieBundle;
+import com.calgen.prodek.fadflicks.model.Review;
 import com.calgen.prodek.fadflicks.utils.Parser;
+import com.calgen.prodek.fadflicks.utils.UI;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,10 +82,9 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         holder.plot.setText(movie.getOverview());
 
         // Now initialize recycler views and assign them new adapters
-        ReviewAdapter reviewAdapter = new ReviewAdapter(context, movieBundle.reviewResponse, true);
-        holder.cardReview.setLayoutManager(new LinearLayoutManager(context));
-        holder.cardReview.setNestedScrollingEnabled(false);
-        holder.cardReview.setAdapter(reviewAdapter);
+        ReviewAdapter reviewAdapter = new ReviewAdapter(context, (ArrayList<Review>) movieBundle.reviewResponse.getReviewResponses(), true);
+        holder.reviewListView.setAdapter(reviewAdapter);
+        UI.setListViewHeightBasedOnChildren(holder.reviewListView);
 
         CreditsAdapter creditsAdapter = new CreditsAdapter(context, movieBundle.credits);
         holder.cardCast.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -112,8 +116,8 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
         @BindView(R.id.read_more_details) Button moreDetails;
         @BindView(R.id.cast_recycler) RecyclerView cardCast;
         @BindView(R.id.trailer_recycler) RecyclerView cardVideo;
-        @BindView(R.id.review_recycler) RecyclerView cardReview;
-        @BindView(R.id.all_reviews) Button allReviews;
+        @BindView(R.id.review_listView) ListView reviewListView;
+        @BindView(R.id.all_reviews_button) Button allReviews;
         @BindView(R.id.user_reviews) TextView userReview;
         @Nullable @BindView(R.id.tagline) TextView tagLine;
         @Nullable @BindView(R.id.language) TextView language;
@@ -130,13 +134,13 @@ public class DetailMovieAdapter extends RecyclerView.Adapter<DetailMovieAdapter.
             }
         }
 
-        @OnClick({R.id.read_more_details, R.id.all_reviews})
+        @OnClick({R.id.read_more_details, R.id.all_reviews_button})
         public void OnClick(View v) {
             switch (v.getId()) {
                 case R.id.read_more_details:
                     showDialog();
                     break;
-                case R.id.all_reviews:
+                case R.id.all_reviews_button:
                     Intent intent = new Intent(context, ReviewActivity.class);
                     intent.putExtra(Intent.EXTRA_TEXT, movieBundle);
                     context.startActivity(intent);

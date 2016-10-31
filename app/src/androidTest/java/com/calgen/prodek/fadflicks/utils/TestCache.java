@@ -70,7 +70,7 @@ public class TestCache extends AndroidTestCase {
     }
 
     public void testClearCache() {
-        Cache.clearCache(mContext);
+        Cache.purgeCache(mContext);
         assertTrue("Could not delete the favourite movies correctly", (Cache.getFavouriteMovies(mContext)).isEmpty());
     }
 

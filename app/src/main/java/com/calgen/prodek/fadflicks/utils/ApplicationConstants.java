@@ -2,18 +2,14 @@ package com.calgen.prodek.fadflicks.utils;
 
 /**
  * Created by Gurupad on 01-Sep-16.
- * You asked me to change it for no reason.
  */
 public class ApplicationConstants {
 
-    /**
-     * Set to true to Enable Debugging in the API false to disable. This should be false when
-     * releasing the app.
-     */
     public static final boolean DEBUG = false;
 
+    public static final boolean PURGE_CACHE = false;
 
-    public static final boolean CLEAR_PREFS = false;
+    public static final int CACHE_PURGE_PERIOD = 24*60*60*100;
     /**
      * API Endpoint
      */

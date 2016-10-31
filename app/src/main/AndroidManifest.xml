@@ -41,12 +41,12 @@
                 />
         </activity>
         <activity
-            android:label="@string/title_activity_review"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:name=".Test">
+            android:name=".activity.ReviewDetailActivity"
+            android:label="@string/title_activity_review_detail"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.DetailActivity"
+                android:value=".activity.ReviewActivity"
                 />
         </activity>
     </application>

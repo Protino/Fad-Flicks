@@ -1,18 +1,19 @@
 package com.calgen.prodek.fadflicks.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.model.Review;
-import com.calgen.prodek.fadflicks.model.ReviewResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,58 +24,69 @@ import butterknife.ButterKnife;
  * You asked me to change it for no reason.
  */
 
-// TODO: 07-Sep-16 LOGIC : add min of two reviewList and show more button if more exists
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
+public class ReviewAdapter extends ArrayAdapter<Review> {
     private Context context;
     private List<Review> reviewList;
     private boolean glimpse;
-    private int reviewLimit = 3;
 
-    public ReviewAdapter(Context context, ReviewResponse review, boolean glimpse) {
+    public ReviewAdapter(Context context, ArrayList<Review> reviewList, boolean glimpse) {
+        super(context, 0, reviewList);
         this.context = context;
-        reviewList = review.getReviewResponses();
+        this.reviewList = reviewList;
         this.glimpse = glimpse;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_movie_reviews, parent, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Review review = reviewList.get(position);
-        holder.reviewerName.setText(review.getAuthor());
-        holder.reviewText.setText(review.getContent());
-        Linkify.addLinks(holder.reviewText,Linkify.ALL);
-
-        if (glimpse) {
-            holder.reviewText.setMaxLines(3);
-            holder.reviewText.setEllipsize(TextUtils.TruncateAt.END);
-        }
-
-    }
-
-    @Override
-    public int getItemCount() {
+    public int getCount() {
         int size = reviewList.size();
+        int reviewLimit = 3;
         if (glimpse)
             return (size > 2) ? reviewLimit : size;
         else
             return size;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    @NonNull
+    @Override
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
-        private final String TAG = ViewHolder.class.getSimpleName();
+        Review review = reviewList.get(position);
+        ViewHolder viewHolder;
+
+        if (convertView == null) {
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            convertView = layoutInflater.inflate(R.layout.list_item_review, parent, false);
+            viewHolder = new ViewHolder(convertView);
+
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        if (glimpse) {
+            viewHolder.reviewText.setMaxLines(3);
+            viewHolder.reviewText.setEllipsize(TextUtils.TruncateAt.END);
+            viewHolder.listItemLayout.setEnabled(false);
+            viewHolder.listItemLayout.setLongClickable(false);
+        }
+
+        viewHolder.author.setText(review.getAuthor());
+        viewHolder.reviewText.setText(review.getContent());
+        viewHolder.author.setTag(position);
+        viewHolder.reviewText.setTag(position);
+        return convertView;
+    }
+
+    class ViewHolder {
+
         //@formatter:off
-        @BindView(R.id.reviewer_name) TextView reviewerName;
-        @BindView(R.id.review) TextView reviewText;
+        @BindView(R.id.review_author) TextView author;
+        @BindView(R.id.review_text) TextView reviewText;
+        @BindView(R.id.list_item_layout) LinearLayout listItemLayout;
         //@formatter:on
-        public ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
         }
     }
 }

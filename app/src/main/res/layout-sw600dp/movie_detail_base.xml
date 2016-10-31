@@ -67,8 +67,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_margin="16dp">
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -91,10 +91,10 @@
 
                     <TextView
                         android:id="@+id/plot_text"
-                        android:textSize="16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="BALSH BAH BALCK SHEEP HAVE YOU ANY WHOLOE AYES ASIRE SIRE AIRIA ALLLOI HOAVFULLL LAOD OG FHSIT CUNBT SHIT"/>
+                        android:text="BALSH BAH BALCK SHEEP HAVE YOU ANY WHOLOE AYES ASIRE SIRE AIRIA ALLLOI HOAVFULLL LAOD OG FHSIT CUNBT SHIT"
+                        android:textSize="16sp"/>
                 </LinearLayout>
 
 
@@ -160,8 +160,9 @@
                         android:id="@+id/read_more_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
                         android:layout_gravity="center_horizontal"
-                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="8dp"
                         android:text="@string/read_more"
                         />
                 </LinearLayout>
@@ -180,7 +181,7 @@
         android:id="@+id/cast_recycler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"/>
+        android:layout_margin="@dimen/cast_and_credits_margin"/>
 
     <TextView
         style="@style/Base.TextAppearance.AppCompat.Headline"
@@ -206,28 +207,29 @@
         android:paddingTop="16dp"
         android:text="@string/reviews"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/review_recycler"
+    <ListView
+        android:id="@+id/review_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"/>
+        android:divider="@null"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"/>
 
     <TextView
         android:id="@+id/no_review_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
+        android:padding="8dp"
         android:text="@string/no_reviews_yet"
         android:visibility="gone"/>
 
     <Button
-        android:id="@+id/all_reviews"
+        android:id="@+id/all_reviews_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="?attr/selectableItemBackground"
+        android:background="@android:color/transparent"
+        android:padding="8dp"
         android:text="@string/all_reviews"/>
 
 </LinearLayout>
