@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="BLAH BLAH MOVIE"
             android:textColor="@color/white"
             android:textStyle="bold"/>
 
@@ -34,7 +33,6 @@
             android:paddingBottom="16dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="MOINE IS A LASADS MOVIE"
             android:textColor="@color/white"/>
 
         <com.iarcuschin.simpleratingbar.SimpleRatingBar
@@ -93,7 +91,6 @@
                         android:id="@+id/plot_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="BALSH BAH BALCK SHEEP HAVE YOU ANY WHOLOE AYES ASIRE SIRE AIRIA ALLLOI HOAVFULLL LAOD OG FHSIT CUNBT SHIT"
                         android:textSize="16sp"/>
                 </LinearLayout>
 
@@ -122,8 +119,7 @@
                     <TextView
                         android:id="@+id/release_date"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2015-06-65"/>
+                        android:layout_height="wrap_content"/>
 
                     <TextView
                         style="@style/Base.TextAppearance.AppCompat.Subhead"
@@ -137,7 +133,6 @@
                         android:id="@+id/runtime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2hrs 56min"
                         />
 
                     <TextView
@@ -153,7 +148,6 @@
                         android:id="@+id/language"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="en"
                         />
 
                     <Button

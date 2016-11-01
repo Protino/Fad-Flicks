@@ -21,7 +21,6 @@ import butterknife.ButterKnife;
 
 /**
  * Created by Gurupad on 07-Sep-16.
- * You asked me to change it for no reason.
  */
 
 public class ReviewAdapter extends ArrayAdapter<Review> {
@@ -80,9 +79,9 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
     class ViewHolder {
 
         //@formatter:off
-        @BindView(R.id.review_author) TextView author;
-        @BindView(R.id.review_text) TextView reviewText;
-        @BindView(R.id.list_item_layout) LinearLayout listItemLayout;
+        @BindView(R.id.review_author) public TextView author;
+        @BindView(R.id.review_text) public TextView reviewText;
+        @BindView(R.id.list_item_layout) public LinearLayout listItemLayout;
         //@formatter:on
 
         ViewHolder(View view) {

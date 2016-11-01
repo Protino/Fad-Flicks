@@ -1,10 +1,12 @@
 package com.calgen.prodek.fadflicks.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -12,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.activity.MainActivity;
@@ -67,10 +71,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements VideosAdapter.Callback {
 
     //@formatter:off
     private static final String TAG = MovieDetailFragment.class.getSimpleName();
@@ -80,32 +81,31 @@ public class MovieDetailFragment extends Fragment {
     @State public boolean isFavourite;
     @State public String shareMessage;
 
-    @BindView(R.id.title) TextView title;
-    @BindView(R.id.release_date) TextView releaseDate;
-    @BindView(R.id.runtime) TextView runtime;
-    @BindView(R.id.movie_rating) SimpleRatingBar movieRating;
-    @BindView(R.id.plot_text) TextView plot;
-    @BindView(R.id.read_more_details) Button moreDetails;
-    @BindView(R.id.cast_recycler) RecyclerView cardCast;
-    @BindView(R.id.trailer_recycler) RecyclerView cardVideo;
-    @BindView(R.id.review_listView) ListView reviewListView;
-    @BindView(R.id.all_reviews_button) Button allReviews;
-    @BindView(R.id.no_review_msg) TextView noReviewsMessage;
-    @Nullable @BindView(R.id.image_backdrop) ImageView backDropImage;
-    @Nullable @BindView(R.id.share_fab) FloatingActionButton shareFab;
-    @Nullable @BindView(R.id.fav_fab) FloatingActionButton favFab;
-    @Nullable @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
-    @Nullable @BindView(R.id.poster) ImageView poster;
-    @Nullable @BindView(R.id.tagline) TextView tagLine;
-    @Nullable @BindView(R.id.language) TextView language;
+    @BindView(R.id.title) public TextView title;
+    @BindView(R.id.release_date) public TextView releaseDate;
+    @BindView(R.id.runtime) public TextView runtime;
+    @BindView(R.id.movie_rating) public SimpleRatingBar movieRating;
+    @BindView(R.id.plot_text) public TextView plot;
+    @BindView(R.id.read_more_details) public Button moreDetails;
+    @BindView(R.id.cast_recycler) public RecyclerView cardCast;
+    @BindView(R.id.trailer_recycler) public RecyclerView cardVideo;
+    @BindView(R.id.review_listView) public ListView reviewListView;
+    @BindView(R.id.all_reviews_button) public Button allReviews;
+    @BindView(R.id.no_review_msg) public TextView noReviewsMessage;
+    @Nullable @BindView(R.id.image_backdrop) public ImageView backDropImage;
+    @Nullable @BindView(R.id.share_fab) public FloatingActionButton shareFab;
+    @Nullable @BindView(R.id.fav_fab) public FloatingActionButton favFab;
+    @Nullable @BindView(R.id.fab_menu) public FloatingActionMenu fabMenu;
+    @Nullable @BindView(R.id.poster) public ImageView poster;
+    @Nullable @BindView(R.id.tagline) public TextView tagLine;
+    @Nullable @BindView(R.id.language) public TextView language;
 
-    @BindView(R.id.progressBarLayout) LinearLayout progressBarLayout;
-    @BindView(R.id.content_detail_wide) FrameLayout detailContentLayout;
+    @BindView(R.id.progressBarLayout) public LinearLayout progressBarLayout;
+    @BindView(R.id.content_detail_wide) public FrameLayout detailContentLayout;
 
-    @BindDrawable(R.drawable.ic_favorite_border_white_24dp) Drawable notFavouriteDrawable;
-    @BindDrawable(R.drawable.ic_favorite_white_24dp) Drawable favouriteDrawable;
+    @BindDrawable(R.drawable.ic_favorite_border_white_24dp) public Drawable notFavouriteDrawable;
+    @BindDrawable(R.drawable.ic_favorite_white_24dp) public Drawable favouriteDrawable;
     private Context context;
-    private Bundle arguments;
     //@formatter:on
 
     @Override
@@ -144,8 +144,8 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
-        arguments = getArguments();
-        context = getContext();
+        Bundle arguments = getArguments();
+        context = getActivity();
 
         if (savedInstanceState == null)
             movieBundle = new MovieBundle();
@@ -168,10 +168,10 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (movie==null) return;
+        if (movie == null) return;
         if (savedInstanceState == null) {
             fetchData();
-        } else if (movieBundle!=null) {
+        } else if (movieBundle != null) {
             bindViews();
             hideLoadingLayout();
         }
@@ -179,10 +179,9 @@ public class MovieDetailFragment extends Fragment {
 
     private void bindViews() {
         title.setText(movie.getTitle());
-        releaseDate.setText(movie.getReleaseDate());
+        releaseDate.setText(Parser.formatReleaseDate(movie.getReleaseDate()));
 
-        // TODO: 09-Sep-16 Make use of string formats, like it was done in sunshine
-        runtime.setText(movieBundle.movieDetails.getRuntime() + " " + context.getString(R.string.minutes));
+        runtime.setText(String.format(getString(R.string.runtime),movieBundle.movieDetails.getRuntime()));
 
         if (!MainActivity.twoPane) {
             Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
@@ -205,7 +204,7 @@ public class MovieDetailFragment extends Fragment {
         cardCast.setNestedScrollingEnabled(false);
         cardCast.setAdapter(creditsAdapter);
 
-        VideosAdapter videosAdapter = new VideosAdapter(context, movieBundle.videoResponse);
+        VideosAdapter videosAdapter = new VideosAdapter(context, movieBundle.videoResponse,this);
         cardVideo.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         cardVideo.setHasFixedSize(true);
         cardVideo.setNestedScrollingEnabled(false);
@@ -242,79 +241,7 @@ public class MovieDetailFragment extends Fragment {
         }
         //handle network connection
         if (Network.isConnected(context)) {
-            //fetch extra details about the movie by id
-            ApiClient apiClient = new ApiClient().setIsDebug(ApplicationConstants.DEBUG);
-
-            //reviews
-            Call<ReviewResponse> reviewResponseCall = apiClient.movieInterface().getReviews(movie.getId());
-            reviewResponseCall.enqueue(new Callback<ReviewResponse>() {
-                @Override
-                public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
-                    movieBundle.reviewResponse = response.body();
-                    jobsDone++;
-                    notifyDataSetChanged();
-                }
-
-                @Override
-                public void onFailure(Call<ReviewResponse> call, Throwable t) {
-                    Log.e(TAG, "onFailure: ReviewResponseCall", t);
-                    progressBarLayout.setVisibility(View.GONE);
-                }
-            });
-
-            //trailers
-            Call<VideoResponse> videoResponseCall = apiClient.movieInterface().getVideos(movie.getId());
-            videoResponseCall.enqueue(new Callback<VideoResponse>() {
-                @Override
-                public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
-                    movieBundle.videoResponse = response.body();
-                    jobsDone++;
-                    notifyDataSetChanged();
-                }
-
-                @Override
-                public void onFailure(Call<VideoResponse> call, Throwable t) {
-                    Log.e(TAG, "onFailure: videoResponseCall", t);
-                    progressBarLayout.setVisibility(View.GONE);
-                }
-            });
-
-            //credits
-            Call<Credits> creditsCall = apiClient.movieInterface().getCredits(movie.getId());
-            creditsCall.enqueue(new Callback<Credits>() {
-                @Override
-                public void onResponse(Call<Credits> call, Response<Credits> response) {
-                    movieBundle.credits = response.body();
-                    jobsDone++;
-                    notifyDataSetChanged();
-                }
-
-                @Override
-                public void onFailure(Call<Credits> call, Throwable t) {
-                    Log.e(TAG, "onFailure credits call: ", t);
-                    progressBarLayout.setVisibility(View.GONE);
-                }
-            });
-
-            //extra details : such as duration, website,
-            Call<MovieDetails> movieDetailsCall = apiClient.movieInterface().getMovieDetails(movie.getId());
-            movieDetailsCall.enqueue(new Callback<MovieDetails>() {
-                @Override
-                public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
-                    MovieDetails movieDetails;
-                    movieDetails = response.body();
-                    movieBundle.movieDetails = movieDetails;
-                    jobsDone++;
-                    notifyDataSetChanged();
-                }
-
-                @Override
-                public void onFailure(Call<MovieDetails> call, Throwable t) {
-                    Log.d(TAG, "onFailure: movieDetails call", t);
-                    progressBarLayout.setVisibility(View.GONE);
-                }
-            });
-
+            fetchDataFromInternet();
         } else {
             Snackbar snackbar = Snackbar.make(detailContentLayout,
                     getString(R.string.internet_error_message),
@@ -328,6 +255,80 @@ public class MovieDetailFragment extends Fragment {
             snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
             snackbar.show();
         }
+    }
+
+    private void fetchDataFromInternet() {
+        //fetch extra details about the movie by id
+        ApiClient apiClient = new ApiClient().setIsDebug(ApplicationConstants.DEBUG);
+
+        //reviews
+        Call<ReviewResponse> reviewResponseCall = apiClient.movieInterface().getReviews(movie.getId());
+        reviewResponseCall.enqueue(new Callback<ReviewResponse>() {
+            @Override
+            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+                movieBundle.reviewResponse = response.body();
+                jobsDone++;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<ReviewResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure: ReviewResponseCall", t);
+                progressBarLayout.setVisibility(View.GONE);
+            }
+        });
+
+        //trailers
+        Call<VideoResponse> videoResponseCall = apiClient.movieInterface().getVideos(movie.getId());
+        videoResponseCall.enqueue(new Callback<VideoResponse>() {
+            @Override
+            public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
+                movieBundle.videoResponse = response.body();
+                jobsDone++;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<VideoResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure: videoResponseCall", t);
+                progressBarLayout.setVisibility(View.GONE);
+            }
+        });
+
+        //credits
+        Call<Credits> creditsCall = apiClient.movieInterface().getCredits(movie.getId());
+        creditsCall.enqueue(new Callback<Credits>() {
+            @Override
+            public void onResponse(Call<Credits> call, Response<Credits> response) {
+                movieBundle.credits = response.body();
+                jobsDone++;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<Credits> call, Throwable t) {
+                Log.e(TAG, "onFailure credits call: ", t);
+                progressBarLayout.setVisibility(View.GONE);
+            }
+        });
+
+        //extra details : such as duration, website,
+        Call<MovieDetails> movieDetailsCall = apiClient.movieInterface().getMovieDetails(movie.getId());
+        movieDetailsCall.enqueue(new Callback<MovieDetails>() {
+            @Override
+            public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
+                MovieDetails movieDetails;
+                movieDetails = response.body();
+                movieBundle.movieDetails = movieDetails;
+                jobsDone++;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<MovieDetails> call, Throwable t) {
+                progressBarLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void sendShareIntent() {
@@ -352,16 +353,13 @@ public class MovieDetailFragment extends Fragment {
     private void setShareMessage() {
         Cast cast1 = movieBundle.credits.getCast().get(0);
         Cast cast2 = movieBundle.credits.getCast().get(1);
+        String website = movieBundle.movieDetails.getHomepage();
 
-        // TODO: 05-Oct-16 More friendly release data message
-        String releaseMessage = "Release date :" + movie.getReleaseDate();
+        String greetingMessage = String.format(context.getString(R.string.share_welcome_message),movie.getTitle());
+        String movieInfo = String.format(context.getString(R.string.share_movie_info),
+                movie.getReleaseDate(),cast1.getName(),cast2.getName(),website);
 
-        shareMessage = "Hey, "
-                + movie.getTitle()
-                + " is awesome.It has actors like "
-                + cast1.getName() + ","
-                + cast2.getName() + "..."
-                + releaseMessage;
+        shareMessage = greetingMessage+movieInfo;
     }
 
     // TODO: 05-Oct-16 replace with event bus
@@ -376,7 +374,6 @@ public class MovieDetailFragment extends Fragment {
     public void onFabClick(View view) {
         switch (view.getId()) {
             case R.id.fav_fab:
-                Log.d(TAG, "onFabClick: fav fab clicked");
                 isFavourite = !isFavourite;
                 notifyFavouriteChange();
                 setFavButtonDrawable();
@@ -384,12 +381,14 @@ public class MovieDetailFragment extends Fragment {
             case R.id.share_fab:
                 sendShareIntent();
                 break;
+            default:
+                break;
         }
         fabMenu.close(true);
     }
 
     @OnClick({R.id.read_more_details, R.id.all_reviews_button})
-    public void OnClick(View v) {
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.read_more_details:
                 showDialog();
@@ -398,6 +397,8 @@ public class MovieDetailFragment extends Fragment {
                 Intent intent = new Intent(context, ReviewActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, movieBundle.reviewResponse);
                 context.startActivity(intent);
+                break;
+            default:
                 break;
         }
     }
@@ -441,5 +442,33 @@ public class MovieDetailFragment extends Fragment {
         for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
             loader.release();
         }
+    }
+
+    @Override
+    public void createAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.youtube_error_dialog_message))
+                .setTitle(getString(R.string.youtube_error_dialog_title))
+                .setIcon(getResources().getDrawable(R.drawable.ic_warning_black_24dp))
+                .setPositiveButton(getString(R.string.continue_installation), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(getString(R.string.youtube_package_id)));
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            Toast.makeText(context, R.string.play_store_app_error_message, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel",new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create().show();
     }
 }

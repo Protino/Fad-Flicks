@@ -16,13 +16,13 @@ import com.calgen.prodek.fadflicks.R;
 import com.calgen.prodek.fadflicks.model.MovieBundle;
 import com.calgen.prodek.fadflicks.model.MovieDetails;
 import com.calgen.prodek.fadflicks.utils.Parser;
+import com.calgen.prodek.fadflicks.utils.UI;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by Gurupad on 08-Sep-16.
- * You asked me to change it for no reason.
  */
 public class ReadMoreDialog extends DialogFragment {
 
@@ -30,21 +30,21 @@ public class ReadMoreDialog extends DialogFragment {
     public MovieBundle movieBundle;
     public MovieDetails movieDetails;
     //@formatter:off
-    @BindView(R.id.status_bar) View status_bar;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.status_bar) public View status_bar;
+    @BindView(R.id.toolbar) public Toolbar toolbar;
+    @BindView(R.id.actors) public TextView actors;
+    @BindView(R.id.directors) public TextView directors;
+    @BindView(R.id.writers) public TextView writers;
+    @BindView(R.id.musicians) public TextView musicians;
+    @BindView(R.id.producers) public TextView producers;
+    @BindView(R.id.genre) public TextView genre;
+    @BindView(R.id.votes) public TextView votes;
+    @BindView(R.id.rating) public TextView rating;
+    @BindView(R.id.duration) public TextView duration;
+    @BindView(R.id.language) public TextView language;
+    @BindView(R.id.website) public TextView website;
+    @BindView(R.id.release_date) public TextView releaseDate;
     @BindView(R.id.plot_text) TextView plotText;
-    @BindView(R.id.actors) TextView actors;
-    @BindView(R.id.directors) TextView directors;
-    @BindView(R.id.writers) TextView writers;
-    @BindView(R.id.musicians) TextView musicians;
-    @BindView(R.id.producers) TextView producers;
-    @BindView(R.id.genre) TextView genre;
-    @BindView(R.id.votes) TextView votes;
-    @BindView(R.id.rating) TextView rating;
-    @BindView(R.id.duration) TextView duration;
-    @BindView(R.id.language) TextView language;
-    @BindView(R.id.website) TextView website;
-    @BindView(R.id.release_date) TextView releaseDate;
     //@formatter:on
 
     @Override
@@ -69,12 +69,12 @@ public class ReadMoreDialog extends DialogFragment {
         genre.setText(Parser.getGenre(movieDetails.getGenres()));
         votes.setText(movieDetails.getVoteAverage() + "/" + getString(R.string.max_votes));
         rating.setText((movieDetails.getAdult()) ? getString(R.string.adult_rating) : getString(R.string.non_adult_rating));
-        duration.setText(movieDetails.getRuntime() + " " + getString(R.string.minutes));
+        duration.setText(String.format(getString(R.string.runtime), movieDetails.getRuntime()));
         language.setText(movieDetails.getOriginalLanguage());
         website.setText((movieDetails.getHomepage().isEmpty()) ? "-" : movieDetails.getHomepage());
         releaseDate.setText(movieDetails.getReleaseDate());
 
-        Linkify.addLinks(website,Linkify.ALL);
+        Linkify.addLinks(website, Linkify.ALL);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -90,18 +90,9 @@ public class ReadMoreDialog extends DialogFragment {
     }
 
     private void handleStatusBar() {
-
         if (!getContext().getResources().getBoolean(R.bool.large_layout)) {
-            status_bar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getStatusBarHeight()));
+            status_bar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UI.getStatusBarHeight(getContext())));
         }
     }
 
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
 }

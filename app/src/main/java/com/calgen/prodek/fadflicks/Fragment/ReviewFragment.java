@@ -30,12 +30,12 @@ import icepick.State;
 public class ReviewFragment extends Fragment {
 
     //@formatter:off
-    @BindView(R.id.listview_review) ListView reviewListView;
-    @State int selectedItemPosition;
+    @BindView(R.id.listview_review) public ListView reviewListView;
+    @State public int selectedItemPosition;
     //@formatter:on
 
     List<Review> reviewList;
-    ReviewAdapter reviewAdapter;
+    public ReviewAdapter reviewAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

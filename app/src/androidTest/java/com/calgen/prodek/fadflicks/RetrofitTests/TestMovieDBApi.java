@@ -21,8 +21,7 @@ import retrofit2.Response;
  */
 public class TestMovieDBApi extends AndroidTestCase {
 
-    private static final String TAG = TestMovieDBApi.class.getSimpleName();
-    public static ApiClient apiClient;
+    private static ApiClient apiClient;
 
     public TestMovieDBApi() {
         apiClient = new ApiClient();

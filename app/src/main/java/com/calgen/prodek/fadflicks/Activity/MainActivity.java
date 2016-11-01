@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String MOVIE_DETAIL_FRAGMENT_TAG = "M_D_F_TAG";
     //@formatter:off
-    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int FAVOURITE_FRAGMENT_POSITION = 2;
     private static final int TOP_RATED_FRAGMENT_POSITION = 1;
     private static final int POPULAR_FRAGMENT_POSITION = 0;
@@ -45,12 +44,38 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.viewpager) public ViewPager viewPager;
     @State public int currentItemPosition;
     //@formatter:on
-    public ViewPagerAdapter viewPagerAdapter;
+    private ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onStart() {
         super.onStart();
         Cache.getFavouriteMovies(this);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        if (findViewById(R.id.movie_detail_container) != null) {
+            twoPane = true;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new MovieDetailFragment(), MOVIE_DETAIL_FRAGMENT_TAG)
+                        .commit();
+            }
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        } else {
+            twoPane = false;
+        }
+        setSupportActionBar(toolbar);
+        setupViewPager();
+        tabLayout.setupWithViewPager(viewPager);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
+        }
     }
 
     @Override
@@ -65,32 +90,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
         viewPager.setCurrentItem(currentItemPosition);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        //check if it is a two pane mode
-        if (findViewById(R.id.movie_detail_container) != null) {
-            twoPane = true;
-
-            if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container, new MovieDetailFragment(), MOVIE_DETAIL_FRAGMENT_TAG)
-                        .commit();
-            }
-            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        } else {
-            twoPane = false;
-        }
-        setSupportActionBar(toolbar);
-        setupViewPager();
-        tabLayout.setupWithViewPager(viewPager);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.primary_dark));
-        }
     }
 
     private void setupViewPager() {
@@ -120,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(PAGE_LIMIT);
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -129,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == GridMovieAdapter.FAV_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            if (data.getBooleanExtra(getString(R.string.favourite_changed_key), true)) {
+        if (requestCode == GridMovieAdapter.FAV_REQUEST_CODE && resultCode == Activity.RESULT_OK &&
+                data.getBooleanExtra(getString(R.string.favourite_changed_key), true)) {
                 int movieId = data.getIntExtra(getString(R.string.favourite_movie_id_key), -1);
                 boolean isFavourite;
                 if (movieId == -1)
@@ -141,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                     return;
 
                 notifyFavouriteChange(movieId, isFavourite);
-            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -165,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
                 gridFragment = (GridFragment) viewPagerAdapter.getFragment(POPULAR_FRAGMENT_POSITION);
                 gridFragment.notifyChange(movieId, isFavourite);
                 return;
+            default:
+                break;
         }
         gridFragment = (GridFragment) viewPagerAdapter.getFragment(FAVOURITE_FRAGMENT_POSITION);
         gridFragment.notifyChange(movieId, isFavourite);

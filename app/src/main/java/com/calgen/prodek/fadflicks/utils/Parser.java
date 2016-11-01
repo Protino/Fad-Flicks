@@ -1,5 +1,6 @@
 package com.calgen.prodek.fadflicks.utils;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.SpannableString;
@@ -116,6 +117,7 @@ public class Parser {
      * @param releaseDate date in the form yyyy-mm-dd
      * @return date in friendly form like JUN 2015
      */
+    @SuppressLint("SimpleDateFormat")
     public static String formatReleaseDate(String releaseDate) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
         Date date;

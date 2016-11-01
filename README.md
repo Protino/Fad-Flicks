@@ -1,34 +1,102 @@
-# FAD FLICKS
-* [Naming the App](#naming-the-app)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fb93a49eba1941d695cab79d4359a9b0)](https://www.codacy.com/app/gurupadmamadapur/Fad-Flicks?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Protino/Fad-Flicks&amp;utm_campaign=Badge_Grade)
+
+FAD FLICKS
+=
+* [About](#about)
+* [Screenshots](#screenshots)
 * [What did I learn](#what-did-i-learn)
-* [For Udacity Reviewer](#for-udacity-reviewer)
+* [Build Configuration](#build-configuration)
+* [Libraries](#libraries)
+* [Todo](#todo)
+* [License](#license)
 
-### Naming the App
+### About
+This application is part of the [Udacity Android Developer Nanodegree]. It provides list of popular and top rated movies
+which are fetched from [TMDB - The Movie Database].
 
-I tried to find a unique name to this application. I thought of PoMos, but that would be misleading or
-incomprehensible or "making them think is this guy crazy?". So I checked for synonyms for popular and movies.
-Turns out Fad and Flicks kind of stick together. Ugh but this is not what I learnt in this project.
+### Screenshots
+
+![Phone Main View](https://github.com/Protino/Fad-Flicks/blob/master/captures/phone_main.png)
+
+![Phone Movie Detail](https://github.com/Protino/Fad-Flicks/blob/master/captures/phone_detail.png)
+
+![Phone Movie Detail2](https://github.com/Protino/Fad-Flicks/blob/master/captures/phone_cast.png)
+
+![Tablet View](https://github.com/Protino/Fad-Flicks/blob/master/captures/tablet_main.png)
+
+![Tablet View2](https://github.com/Protino/Fad-Flicks/blob/master/captures/tablet_more_details.png)
 
 ### What did I learn?
 
 ### Android stuff
-* AsyncTasks.
-* Fragments. Just a little.
-* Network calls.
+* AsyncTasks
+* Fragments - There usefulness in master-detail flow.
+* Network calls in both ways - Using Retrofit and `HttpURLConnection`.
 * SharedPreferences.
-* GridView. After all not that scary.
+* GridView and RecyclerView -  After all not that scary.
 * CustomAdapters.
-* Using Open-source libraries.
-* Coordinator layout and about scroll flags
-* A bit about Material design.
-* SnackBars.
+* Using Open-source libraries - [check them here](#libraries).
+* Coordinator layout and about scroll flags.
+* Material Design
 
 ### Non-Android stuff
-* Git. Seriously, I feel more comfortable with it now. There is a lot to learn though.
+* Git. Seriously, I feel more comfortable with it now. There is still a lot to learn though as I develop individually.
 * Debugging. Instead of creating hundreds of log messages better use the built-in android studio debugger.
-* How to properly edit README.md file.
-* I'll add more later.
+* Markdown.
+* UI Mockups and detailed plan before starting to code. Gathering all necessary information needed to develop a functionality beforehand helps to avoid bugs and saves time.
+
+### Build Configuration
+Add the following lines in `gradle.properties` file :
+
+    TMDB_API_KEY = "[KEY]"
+    YOUTUBE_API_KEY = "[KEY]"
+
+### Libraries
+I'm very thankful to the developers and contributors  of these libraries. They've saved lot of time and effort.
+
+* [Picasso]
+* [OkHttp]
+* [Gson]
+* [Retrofit]
+* [Butterknife]
+* [Icepick]
+* [FloatingActionButton]
+* [LeakCanary]
+* [SimpleRatingBar]
+
+### Todo
 
 
-### For Udacity Reviewer
-Add gradle.properties file with API_KEY as : MyMovieDbApiKey="[API_KEY]"
+* Add more categories like upcoming movies, In theaters, etc
+* Use event bus to communicate instead of cohesive callbacks
+* Implement content providers or use greenDao or other library to store data in a persistent database.
+* Add functionality to search for movies, actors etc. or search movies through cast names.
+* Fetch data from multiple sources (not just TMDB).
+
+### License
+    Copyright 2016 Gurupad Mamadapur
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+  [TMDB - The Movie Database]:https://www.themoviedb.org/?language=en
+  [Udacity Android Developer Nanodegree]::https://www.udacity.com/degrees/android-developer-nanodegree-by-google--nd801
+  [Picasso]::http://square.github.io/picasso/
+  [OkHttp]::http://square.github.io/okhttp/
+  [Gson]::https://github.com/google/gson
+  [Retrofit]::https://github.com/square/retrofit
+  [Butterknife]::http://jakewharton.github.io/butterknife/
+  [Icepick]::https://github.com/frankiesardo/icepick
+  [Fab Menus]::
+  [FloatingActionButton]::https://github.com/Clans/FloatingActionButton
+  [LeakCanary]::https://github.com/square/leakcanary
+  [SimpleRatingBar]::https://github.com/FlyingPumba/SimpleRatingBar

@@ -15,10 +15,10 @@ public class Credits implements Serializable{
     private Integer id;
     @SerializedName("cast")
     @Expose
-    private List<Cast> cast = new ArrayList<Cast>();
+    private List<Cast> cast = new ArrayList<>();
     @SerializedName("crew")
     @Expose
-    private List<Crew> crew = new ArrayList<Crew>();
+    private List<Crew> crew = new ArrayList<>();
 
     /**
      * No args constructor for use in serialization

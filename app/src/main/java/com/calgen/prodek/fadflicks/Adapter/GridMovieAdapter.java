@@ -35,7 +35,6 @@ import butterknife.OnClick;
 
 /**
  * Created by Gurupad on 25-Aug-16.
- * You asked me to change it for no reason.
  */
 public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.MovieViewHolder> implements Filterable {
     public static final int FAV_REQUEST_CODE = 2764;
@@ -62,7 +61,9 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
 
         try {
             holder.title.setText(movie.getTitle());
-            holder.rating.setText(movie.getVoteAverage().toString());
+            holder.rating.setText(String.format(
+                    context.getString(R.string.rating_format),
+                    movie.getVoteAverage()));
             Drawable drawable = (movie.isFavourite)
                     ? context.getResources().getDrawable(R.drawable.ic_favorite_accent_24dp)
                     : context.getResources().getDrawable(R.drawable.ic_favorite_border_accent_24dp);
@@ -86,7 +87,7 @@ public class GridMovieAdapter extends RecyclerView.Adapter<GridMovieAdapter.Movi
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                List<Movie> filteredResults = null;
+                List<Movie> filteredResults;
                 if (constraint.length() == 0) {
                     filteredResults = movieListCopy;
                 } else {

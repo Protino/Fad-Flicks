@@ -22,7 +22,8 @@
             android:adjustViewBounds="true"
             android:background="@color/primary_light"
             android:foregroundGravity="center_vertical"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/movie_poster_description"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -40,7 +41,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="BLAHD BLASH BLACK SHEEP"
                 android:textStyle="bold"
                 />
 
@@ -51,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title"
                 android:padding="8dp"
-                android:text="23 jun 2016"
                 />
 
             <TextView
@@ -63,7 +62,6 @@
                 android:layout_toEndOf="@+id/release_date"
                 android:layout_toRightOf="@+id/release_date"
                 android:padding="8dp"
-                android:text="2 hrs 45 min"
                 />
 
             <com.iarcuschin.simpleratingbar.SimpleRatingBar

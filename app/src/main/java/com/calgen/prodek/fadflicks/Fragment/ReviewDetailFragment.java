@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 public class ReviewDetailFragment extends Fragment {
     //@formatter:off
     @BindView(R.id.review_author) TextView reviewAuthor;
-    @BindView(R.id.review_text) TextView reviewText;
+    @BindView(R.id.review_text) public TextView reviewText;
     //@formatter:on
     Review review;
 

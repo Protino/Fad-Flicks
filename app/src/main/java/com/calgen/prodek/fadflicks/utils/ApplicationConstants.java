@@ -5,11 +5,12 @@ package com.calgen.prodek.fadflicks.utils;
  */
 public class ApplicationConstants {
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = false; //for debug purposes
 
     public static final boolean PURGE_CACHE = false;
 
     public static final int CACHE_PURGE_PERIOD = 24*60*60*100;
+
     /**
      * API Endpoint
      */

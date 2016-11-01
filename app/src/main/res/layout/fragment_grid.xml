@@ -38,6 +38,7 @@
         android:visibility="gone">
 
         <ImageView
+            android:contentDescription="@string/internet_error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/content_padding"

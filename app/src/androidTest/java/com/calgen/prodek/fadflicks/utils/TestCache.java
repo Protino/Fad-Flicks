@@ -18,10 +18,8 @@ import java.util.Random;
  */
 public class TestCache extends AndroidTestCase {
 
-    private static final String TAG = TestCache.class.getSimpleName();
 
-
-    public static HashMap<Integer, Boolean> generateTestData() {
+    private static HashMap<Integer, Boolean> generateTestData() {
         Random random = new Random();
         HashMap<Integer, Boolean> map = new HashMap<>();
         for (int i = 0; i < random.nextInt(10) + 10; i++) {
@@ -36,22 +34,13 @@ public class TestCache extends AndroidTestCase {
         if (originalMap == null) {
             originalMap = new HashMap<>();
         }
-        /*
         Random random = new Random();
         for (int i = 0; i < random.nextInt(10) + 10; i++) {
             int randomId = random.nextInt();
             boolean randomFav = random.nextBoolean();
             originalMap.put(randomId, randomFav);
             Cache.setFavouriteMovie(mContext, randomId, randomFav);
-        }*/
-        originalMap.put(123, false);
-        originalMap.put(321, true);
-        originalMap.put(1000, true);
-
-
-        Cache.setFavouriteMovie(mContext, 123, false);
-        Cache.setFavouriteMovie(mContext, 321, true);
-        Cache.setFavouriteMovie(mContext, 1000, true);
+        }
 
         assertTrue("Incorrect storage of favourite movies", originalMap.equals(Cache.getFavouriteMovies(mContext)));
     }

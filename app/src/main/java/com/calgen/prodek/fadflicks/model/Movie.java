@@ -24,7 +24,7 @@ public class Movie implements Serializable {
     public String releaseDate;
     @SerializedName("genre_ids")
     @Expose
-    public List<Integer> genreIds = new ArrayList<Integer>();
+    public List<Integer> genreIds = new ArrayList<>();
     @SerializedName("id")
     @Expose
     public Integer id;
@@ -54,9 +54,6 @@ public class Movie implements Serializable {
     public Double voteAverage;
 
     public boolean isFavourite;
-
-    public Movie() {
-    }
 
     /**
      * @return The posterPath

@@ -13,8 +13,4 @@ public class MovieBundle implements Serializable {
     public ReviewResponse reviewResponse;
     public Credits credits;
     public MovieDetails movieDetails;
-
-    public MovieBundle() {
-
-    }
 }

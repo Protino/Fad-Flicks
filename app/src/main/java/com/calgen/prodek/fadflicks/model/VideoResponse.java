@@ -15,7 +15,7 @@ public class VideoResponse implements Serializable{
     private Integer id;
     @SerializedName("results")
     @Expose
-    private List<Video> videos = new ArrayList<Video>();
+    private List<Video> videos = new ArrayList<>();
 
     /**
      * No args constructor for use in serialization

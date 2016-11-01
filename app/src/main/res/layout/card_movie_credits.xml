@@ -21,7 +21,8 @@
             android:background="@color/cardview_light_background"
             android:clickable="true"
             android:scaleType="centerCrop"
-            tools:src="@mipmap/ic_launcher"/>
+            tools:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/movie_poster_description"/>
 
         <TextView
             android:id="@+id/name"
@@ -33,8 +34,7 @@
             android:maxLines="1"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingTop="8dp"
-            tools:text="Benedit Cumberbatch"/>
+            android:paddingTop="8dp"/>
 
         <TextView
             android:id="@+id/role"
@@ -44,7 +44,6 @@
             android:layout_below="@+id/name"
             android:ellipsize="end"
             android:maxLines="1"
-            android:padding="8dp"
-            tools:text="Commander of Navy"/>
+            android:padding="8dp"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

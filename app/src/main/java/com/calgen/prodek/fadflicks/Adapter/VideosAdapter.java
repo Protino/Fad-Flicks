@@ -3,10 +3,12 @@ package com.calgen.prodek.fadflicks.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.calgen.prodek.fadflicks.BuildConfig;
 import com.calgen.prodek.fadflicks.R;
@@ -31,18 +33,19 @@ import butterknife.OnClick;
  */
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewHolder> {
 
-    public static Map<YouTubeThumbnailView, YouTubeThumbnailLoader> viewLoaderMap;
+    public static Map<YouTubeThumbnailView, YouTubeThumbnailLoader> viewLoaderMap = new HashMap<>();
     private Context context;
     private List<String> keys;
+    private Callback callback;
 
 
-    public VideosAdapter(Context context, VideoResponse videoResponse) {
+    public VideosAdapter(Context context, VideoResponse videoResponse, Callback callback) {
         this.context = context;
-        viewLoaderMap = new HashMap<>();
         keys = new ArrayList<>();
         for (Video video : videoResponse.getVideos()) {
             keys.add(video.getKey());
         }
+        this.callback = callback;
     }
 
     @Override
@@ -63,7 +66,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
 
             @Override
             public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
-
+                // TODO: 11/1/2016 Show Youtube loader error
+                holder.errorPlaceHolder.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -73,9 +77,11 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
         return keys.size();
     }
 
-    public class VideoViewHolder extends RecyclerView.ViewHolder {
+    class VideoViewHolder extends RecyclerView.ViewHolder {
         //@formatter:off
-        @BindView(R.id.videoView) YouTubeThumbnailView youTubeThumbnailView;
+        @BindView(R.id.videoView) public YouTubeThumbnailView youTubeThumbnailView;
+        @BindView(R.id.placeholder) public ImageView errorPlaceHolder;
+        @BindView(R.id.item_video) CardView itemVideo;
         //@formatter:on
 
         public VideoViewHolder(View itemView) {
@@ -83,14 +89,20 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick(R.id.videoView)
+        @OnClick({R.id.videoView,R.id.placeholder,R.id.item_video})
         public void onClick() {
-            Intent intent = YouTubeStandalonePlayer.createVideoIntent(
-                    (Activity) context,
-                    BuildConfig.YOUTUBE_API_KEY,
-                    keys.get(getAdapterPosition()), 0, false, false);
-            context.startActivity(intent);
+            try {
+                Intent intent = YouTubeStandalonePlayer.createVideoIntent(
+                        (Activity) context,
+                        BuildConfig.YOUTUBE_API_KEY,
+                        keys.get(getAdapterPosition()), 0, false, false);
+                context.startActivity(intent);
+            }catch (Exception e){
+                callback.createAlertDialog();
+            }
         }
     }
-
+    public interface Callback{
+        void createAlertDialog();
+    }
 }

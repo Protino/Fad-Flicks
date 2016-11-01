@@ -11,15 +11,8 @@ import okhttp3.Response;
 
 /**
  * Created by Gurupad on 01-Sep-16.
- * You asked me to change it for no reason.
  */
-public class AuthInterceptor implements Interceptor {
-
-    /**
-     * Default constructor.
-     */
-    public AuthInterceptor() {
-    }
+class AuthInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {

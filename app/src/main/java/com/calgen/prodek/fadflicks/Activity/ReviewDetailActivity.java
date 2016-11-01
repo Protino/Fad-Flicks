@@ -49,4 +49,10 @@ public class ReviewDetailActivity extends AppCompatActivity {
                 .add(R.id.review_detail_container, reviewDetailFragment)
                 .commit();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
 }

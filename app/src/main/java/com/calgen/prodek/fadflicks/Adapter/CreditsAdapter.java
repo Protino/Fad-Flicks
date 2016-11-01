@@ -2,7 +2,6 @@ package com.calgen.prodek.fadflicks.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.calgen.prodek.fadflicks.R;
-import com.calgen.prodek.fadflicks.utils.Parser;
 import com.calgen.prodek.fadflicks.model.Cast;
 import com.calgen.prodek.fadflicks.model.Credits;
 import com.calgen.prodek.fadflicks.model.Crew;
+import com.calgen.prodek.fadflicks.utils.Parser;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,21 +24,17 @@ import butterknife.OnClick;
 
 /**
  * Created by Gurupad on 07-Sep-16.
- * You asked me to change it for no reason.
  */
 public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditsViewHolder> {
 
-    public static final String TAG = CreditsAdapter.class.getSimpleName();
     private static final String[] jobsFilter = new String[]{"Director", "Music", "Screenplay"};
     private final Context context;
-    private final Credits credits;
     private final List<Cast> castList;
     private final List<Crew> crewList;
     private final List<Object> cards;
 
     public CreditsAdapter(Context context, Credits credits) {
         this.context = context;
-        this.credits = credits;
         this.castList = credits.getCast();
         this.crewList = credits.getCrew();
         cards = new ArrayList<>();
@@ -88,7 +83,7 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditsV
         Object object = cards.get(position);
         String name;
         String role;
-        String posterPath = "";
+        String posterPath;
         if (object instanceof Cast) {
             Cast cast = (Cast) object;
             name = cast.getName();
@@ -118,23 +113,22 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditsV
         return cards.size();
     }
 
-    public class CreditsViewHolder extends RecyclerView.ViewHolder {
+    class CreditsViewHolder extends RecyclerView.ViewHolder {
 
         //@formatter:off
-        @BindView(R.id.poster) ImageView poster;
-        @BindView(R.id.name) TextView name;
+        @BindView(R.id.poster) public ImageView poster;
+        @BindView(R.id.name) public TextView name;
         @BindView(R.id.role) TextView role;
         //@formatter:on
 
-        public CreditsViewHolder(View itemView) {
+        CreditsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         @OnClick({R.id.poster, R.id.name, R.id.role})
         public void onClick() {
-            // TODO: 07-Sep-16 show more details
-            Log.d(TAG, "onClick: ");
+            // TODO: 30-Nov-16 show more details
         }
     }
 }

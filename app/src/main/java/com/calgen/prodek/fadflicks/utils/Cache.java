@@ -23,10 +23,6 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
  * Created by Gurupad on 06-Jul-16.
  */
 public class Cache {
-    private static final String TAG = "Cache";
-
-    public Cache() {
-    }
 
     /**
      * @param context     Context needed to fetch DefaultSharedPreferences

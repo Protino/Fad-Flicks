@@ -20,15 +20,13 @@ import icepick.Icepick;
 
 /**
  * Created by Gurupad on 11-Sep-16.
- * You asked me to change it for no reason.
  */
 public class ReviewActivity extends AppCompatActivity implements ReviewFragment.Callback {
-    private static final String TAG = ReviewActivity.class.getSimpleName();
     //@formatter:off
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar) public Toolbar toolbar;
     //@formatter:on
 
-    String movieTitle;
+    public String movieTitle;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

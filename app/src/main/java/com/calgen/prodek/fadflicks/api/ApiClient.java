@@ -11,7 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Gurupad on 23-Aug-16.
- * You asked me to change it for no reason.
  */
 public class ApiClient {
     private Retrofit retrofit;
@@ -78,10 +77,8 @@ public class ApiClient {
             builder.addConverterFactory(GsonConverterFactory.create());
         }
 
-        if (isDebug) {
-            if (builder != null) {
-                httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            }
+        if (isDebug && builder != null) {
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         }
         if (builder != null) {
             retrofit = builder.build();

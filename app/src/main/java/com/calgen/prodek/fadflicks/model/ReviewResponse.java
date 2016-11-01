@@ -17,7 +17,7 @@ public class ReviewResponse implements Serializable{
     private Integer page;
     @SerializedName("results")
     @Expose
-    private List<Review> reviewResponses = new ArrayList<Review>();
+    private List<Review> reviewResponses = new ArrayList<>();
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;

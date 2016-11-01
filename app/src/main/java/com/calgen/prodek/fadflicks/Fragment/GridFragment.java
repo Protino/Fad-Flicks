@@ -49,11 +49,10 @@ import retrofit2.Response;
 /**
  * Created by Gurupad on 28-Sep-16.
  */
-public class GridFragment extends Fragment implements SearchView.OnQueryTextListener{
+public class GridFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private static final String TAG = GridFragment.class.getSimpleName();
     private static final int MIN_VOTE_COUNT = 100;
-    public boolean firstLaunch = true;
     //@formatter:off
     @BindView(R.id.grid_recycler_view) public RecyclerView recyclerView;
     @BindView(R.id.try_again) public Button tryAgainButton;
@@ -65,12 +64,10 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
     @BindString(R.string.favouritesData) public String favouritesData;
     @State public String fragmentDataType;
     @BindView(R.id.empty_favourites_layout) LinearLayout emptyFavouritesLayout;
+    private boolean firstLaunch = true;
     private GridMovieAdapter movieAdapter;
     private Context context;
     //@formatter:on
-
-    public GridFragment() {
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -206,7 +203,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
                 }
                 initializeFavourites();
                 movieAdapter.notifyDataSetChanged();
-                if (MainActivity.twoPane && firstLaunch && fragmentDataType == popularData) {
+                if (MainActivity.twoPane && firstLaunch && fragmentDataType.equals(popularData)) {
                     clickFirstItem();
                     firstLaunch = false;
                 }
@@ -233,7 +230,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         }, delay);
     }
 
-    public void initializeFavourites() {
+    private void initializeFavourites() {
         HashMap<Integer, Boolean> map = Cache.getFavouriteMovies(context);
         if (map == null) {
             for (Movie movie : movieList) {
@@ -250,6 +247,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         }
     }
 
+    // TODO: 11/23/2016 Use Event bus instead
     public void notifyChange(Integer movieId, boolean isFavourite) {
         if (movieList != null) {
             if (fragmentDataType.equals(favouritesData)) {
@@ -287,11 +285,8 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         }
     }
 
-    public int getSpanCount() {
-        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-            return 3;
-        else
-            return 2;
+    private int getSpanCount() {
+        return (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2;
     }
 
     @Override

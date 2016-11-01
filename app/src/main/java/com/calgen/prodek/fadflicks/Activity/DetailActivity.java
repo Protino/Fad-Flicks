@@ -31,17 +31,16 @@ import butterknife.OnClick;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private static final String TAG = DetailActivity.class.getSimpleName();
-    //@formatter:on
-    public boolean isFavourite;
-    public boolean isFavouriteOriginal;
     //@formatter:off
-    @BindView(R.id.fav_fab) FloatingActionButton fav_fab;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.image_backdrop) ImageView backdropImage;
-    @BindView(R.id.nestedScrollView) NestedScrollView nestedScrollView;
-    @BindDrawable(R.drawable.ic_favorite_border_white_24dp) Drawable notFavouriteDrawable;
-    @BindDrawable(R.drawable.ic_favorite_white_24dp) Drawable favouriteDrawable;
+    @BindView(R.id.fav_fab) public FloatingActionButton fav_fab;
+    @BindView(R.id.toolbar) public Toolbar toolbar;
+    @BindView(R.id.image_backdrop) public ImageView backdropImage;
+    @BindView(R.id.nestedScrollView) public NestedScrollView nestedScrollView;
+    @BindDrawable(R.drawable.ic_favorite_border_white_24dp) public Drawable notFavouriteDrawable;
+    @BindDrawable(R.drawable.ic_favorite_white_24dp) public Drawable favouriteDrawable;
+    //@formatter:on
+    private boolean isFavourite;
+    private boolean isFavouriteOriginal;
     private Movie movie;
 
     @Override
@@ -80,12 +79,16 @@ public class DetailActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams scrollViewParams = (CoordinatorLayout.LayoutParams) nestedScrollView.getLayoutParams();
 
         AppBarLayout.ScrollingViewBehavior behavior = (AppBarLayout.ScrollingViewBehavior) scrollViewParams.getBehavior();
-        int overlayTopDimen = (int) getResources().getDimension(R.dimen.overlayTopDimen);
-        int wideMargin = (int) getResources().getDimension(R.dimen.content_detail_wide_margin);
+        CoordinatorLayout.LayoutParams fabParams = (CoordinatorLayout.LayoutParams) fav_fab.getLayoutParams();
+
+        int overlayTopDimen = UI.dpToPx((int) getResources().getDimension(R.dimen.overlayTopDimen));
+        int wideMargin = UI.dpToPx((int)getResources().getDimension(R.dimen.content_detail_wide_margin));
+        int fabWideMargin = UI.dpToPx((int) getResources().getDimension(R.dimen.fab_margin));
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            behavior.setOverlayTop(UI.dpToPx(overlayTopDimen));
-            scrollViewParams.setMargins(UI.dpToPx(wideMargin),0,UI.dpToPx(wideMargin),0);
+            behavior.setOverlayTop(overlayTopDimen);
+            scrollViewParams.setMargins(wideMargin,0,wideMargin,0);
+            fabParams.setMargins(fabWideMargin,fabWideMargin,fabWideMargin,fabWideMargin);
         }else{
             behavior.setOverlayTop(0);
             scrollViewParams.setMargins(0,0,0,0);
@@ -112,6 +115,8 @@ public class DetailActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
