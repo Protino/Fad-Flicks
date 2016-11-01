@@ -34,7 +34,7 @@ public class ReviewFragment extends Fragment {
     @State public int selectedItemPosition;
     //@formatter:on
 
-    List<Review> reviewList;
+    public List<Review> reviewList;
     public ReviewAdapter reviewAdapter;
 
     @Override

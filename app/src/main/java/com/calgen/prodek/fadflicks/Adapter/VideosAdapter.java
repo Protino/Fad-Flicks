@@ -81,7 +81,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
         //@formatter:off
         @BindView(R.id.videoView) public YouTubeThumbnailView youTubeThumbnailView;
         @BindView(R.id.placeholder) public ImageView errorPlaceHolder;
-        @BindView(R.id.item_video) CardView itemVideo;
+        @BindView(R.id.item_video) public CardView itemVideo;
         //@formatter:on
 
         public VideoViewHolder(View itemView) {

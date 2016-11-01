@@ -118,7 +118,7 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditsV
         //@formatter:off
         @BindView(R.id.poster) public ImageView poster;
         @BindView(R.id.name) public TextView name;
-        @BindView(R.id.role) TextView role;
+        @BindView(R.id.role) public TextView role;
         //@formatter:on
 
         CreditsViewHolder(View itemView) {

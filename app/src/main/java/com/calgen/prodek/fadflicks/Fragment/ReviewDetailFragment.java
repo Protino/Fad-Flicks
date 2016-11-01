@@ -22,10 +22,10 @@ import butterknife.ButterKnife;
 
 public class ReviewDetailFragment extends Fragment {
     //@formatter:off
-    @BindView(R.id.review_author) TextView reviewAuthor;
+    @BindView(R.id.review_author) public TextView reviewAuthor;
     @BindView(R.id.review_text) public TextView reviewText;
     //@formatter:on
-    Review review;
+    private Review review;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

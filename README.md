@@ -12,7 +12,7 @@ FAD FLICKS
 
 ### About
 This application is part of the [Udacity Android Developer Nanodegree]. It provides list of popular and top rated movies
-which are fetched from [TMDB - The Movie Database].
+which are fetched from [TMDB - The Movie Database][TMDB].
 
 ### Screenshots
 
@@ -53,7 +53,6 @@ Add the following lines in `gradle.properties` file :
 
 ### Libraries
 I'm very thankful to the developers and contributors  of these libraries. They've saved lot of time and effort.
-
 * [Picasso]
 * [OkHttp]
 * [Gson]
@@ -88,15 +87,14 @@ I'm very thankful to the developers and contributors  of these libraries. They'v
     See the License for the specific language governing permissions and
     limitations under the License.
 
-  [TMDB - The Movie Database]:https://www.themoviedb.org/?language=en
-  [Udacity Android Developer Nanodegree]::https://www.udacity.com/degrees/android-developer-nanodegree-by-google--nd801
-  [Picasso]::http://square.github.io/picasso/
-  [OkHttp]::http://square.github.io/okhttp/
-  [Gson]::https://github.com/google/gson
-  [Retrofit]::https://github.com/square/retrofit
-  [Butterknife]::http://jakewharton.github.io/butterknife/
-  [Icepick]::https://github.com/frankiesardo/icepick
-  [Fab Menus]::
-  [FloatingActionButton]::https://github.com/Clans/FloatingActionButton
-  [LeakCanary]::https://github.com/square/leakcanary
-  [SimpleRatingBar]::https://github.com/FlyingPumba/SimpleRatingBar
+  [TMDB]:https://www.themoviedb.org/?language=en
+  [Udacity Android Developer Nanodegree]:https://www.udacity.com/degrees/android-developer-nanodegree-by-google--nd801
+  [Picasso]:http://square.github.io/picasso/
+  [OkHttp]:http://square.github.io/okhttp/
+  [Gson]:https://github.com/google/gson
+  [Retrofit]:https://github.com/square/retrofit
+  [Butterknife]:http://jakewharton.github.io/butterknife/
+  [Icepick]:https://github.com/frankiesardo/icepick
+  [FloatingActionButton]:https://github.com/Clans/FloatingActionButton
+  [LeakCanary]:https://github.com/square/leakcanary
+  [SimpleRatingBar]:https://github.com/FlyingPumba/SimpleRatingBar

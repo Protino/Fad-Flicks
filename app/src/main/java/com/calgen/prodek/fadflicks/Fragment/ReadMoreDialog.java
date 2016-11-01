@@ -44,7 +44,7 @@ public class ReadMoreDialog extends DialogFragment {
     @BindView(R.id.language) public TextView language;
     @BindView(R.id.website) public TextView website;
     @BindView(R.id.release_date) public TextView releaseDate;
-    @BindView(R.id.plot_text) TextView plotText;
+    @BindView(R.id.plot_text) public TextView plotText;
     //@formatter:on
 
     @Override

@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 public class ReviewDetailActivity extends AppCompatActivity {
 
     //@formatter:off
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar) public Toolbar toolbar;
     //@formatter:on
 
     @Override

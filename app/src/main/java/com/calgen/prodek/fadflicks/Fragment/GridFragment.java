@@ -63,7 +63,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
     @BindString(R.string.popularData) public String popularData;
     @BindString(R.string.favouritesData) public String favouritesData;
     @State public String fragmentDataType;
-    @BindView(R.id.empty_favourites_layout) LinearLayout emptyFavouritesLayout;
+    @BindView(R.id.empty_favourites_layout) public LinearLayout emptyFavouritesLayout;
     private boolean firstLaunch = true;
     private GridMovieAdapter movieAdapter;
     private Context context;
