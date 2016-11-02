@@ -32,7 +32,7 @@ import butterknife.OnClick;
 public class DetailActivity extends AppCompatActivity {
 
     //@formatter:off
-    @BindView(R.id.fav_fab) public FloatingActionButton fav_fab;
+    @BindView(R.id.fav_fab) public FloatingActionButton favFab;
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.image_backdrop) public ImageView backdropImage;
     @BindView(R.id.nestedScrollView) public NestedScrollView nestedScrollView;
@@ -61,14 +61,14 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            arguments.putSerializable(Intent.EXTRA_TEXT,movie);
+            arguments.putSerializable(Intent.EXTRA_TEXT, movie);
             MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
             movieDetailFragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, movieDetailFragment)
+                    .add(R.id.movie_detail_container, movieDetailFragment, MainActivity.MOVIE_DETAIL_FRAGMENT_TAG)
                     .commit();
         }
 
@@ -79,19 +79,19 @@ public class DetailActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams scrollViewParams = (CoordinatorLayout.LayoutParams) nestedScrollView.getLayoutParams();
 
         AppBarLayout.ScrollingViewBehavior behavior = (AppBarLayout.ScrollingViewBehavior) scrollViewParams.getBehavior();
-        CoordinatorLayout.LayoutParams fabParams = (CoordinatorLayout.LayoutParams) fav_fab.getLayoutParams();
+        CoordinatorLayout.LayoutParams fabParams = (CoordinatorLayout.LayoutParams) favFab.getLayoutParams();
 
         int overlayTopDimen = UI.dpToPx((int) getResources().getDimension(R.dimen.overlayTopDimen));
-        int wideMargin = UI.dpToPx((int)getResources().getDimension(R.dimen.content_detail_wide_margin));
+        int wideMargin = UI.dpToPx((int) getResources().getDimension(R.dimen.content_detail_wide_margin));
         int fabWideMargin = UI.dpToPx((int) getResources().getDimension(R.dimen.fab_margin));
 
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             behavior.setOverlayTop(overlayTopDimen);
-            scrollViewParams.setMargins(wideMargin,0,wideMargin,0);
-            fabParams.setMargins(fabWideMargin,fabWideMargin,fabWideMargin,fabWideMargin);
-        }else{
+            scrollViewParams.setMargins(wideMargin, 0, wideMargin, 0);
+            fabParams.setMargins(fabWideMargin, fabWideMargin, fabWideMargin, fabWideMargin);
+        } else {
             behavior.setOverlayTop(0);
-            scrollViewParams.setMargins(0,0,0,0);
+            scrollViewParams.setMargins(0, 0, 0, 0);
         }
     }
 
@@ -127,16 +127,16 @@ public class DetailActivity extends AppCompatActivity {
             Cache.setFavouriteMovie(this, movie.getId(), isFavourite);
             Intent intent = new Intent();
             intent.putExtra(getString(R.string.favourite_changed_key), true);
-            intent.putExtra(getString(R.string.fav_movie_bool_key),isFavourite);
-            intent.putExtra(getString(R.string.favourite_movie_id_key),movie.getId());
-            setResult(RESULT_OK,intent);
+            intent.putExtra(getString(R.string.fav_movie_bool_key), isFavourite);
+            intent.putExtra(getString(R.string.favourite_movie_id_key), movie.getId());
+            setResult(RESULT_OK, intent);
             finish();
         }
         super.onBackPressed();
     }
 
     private void setFavButtonDrawable() {
-        fav_fab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
+        favFab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
     }
 
     @Override
@@ -146,5 +146,9 @@ public class DetailActivity extends AppCompatActivity {
         for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
             loader.release();
         }
+    }
+
+    public void setFabVisibility(int visibility) {
+        favFab.setVisibility(visibility);
     }
 }
