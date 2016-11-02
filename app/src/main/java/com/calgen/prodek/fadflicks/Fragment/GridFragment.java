@@ -57,13 +57,16 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
     @BindView(R.id.grid_recycler_view) public RecyclerView recyclerView;
     @BindView(R.id.try_again) public Button tryAgainButton;
     @BindView(R.id.internet_error_layout) public LinearLayout internetErrorLayout;
+    @BindView(R.id.progressBarLayout) public LinearLayout progressBarLayout;
     @State public String sort_type;
     @State public ArrayList<Movie> movieList;
     @BindString(R.string.topRatedData) public String topRatedData;
     @BindString(R.string.popularData) public String popularData;
     @BindString(R.string.favouritesData) public String favouritesData;
-    @State public String fragmentDataType;
     @BindView(R.id.empty_favourites_layout) public LinearLayout emptyFavouritesLayout;
+    @State public String fragmentDataType;
+    @State public boolean isDataLoadedFromCache =false;
+    @State public boolean isInternetOff=false;
     private boolean firstLaunch = true;
     private GridMovieAdapter movieAdapter;
     private Context context;
@@ -118,6 +121,14 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            hideLoadingLayout();
+            if (isDataLoadedFromCache) {
+                if (movieList.isEmpty()) showEmptyFavouritesLayout();
+            }
+            if (isInternetOff) showInternetErrorLayout();
+            return;
+        }
         if (fragmentDataType.equals(popularData)) {
             sort_type = context.getString(R.string.sort_type_popular);
             updateMovieData();
@@ -126,13 +137,17 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
             updateMovieData();
         } else {
             fetchCacheData();
+            hideLoadingLayout();
         }
     }
 
     private void fetchCacheData() {
+        isDataLoadedFromCache = true;
         HashMap<Integer, Boolean> map = Cache.getFavouriteMovies(context);
-        if (map == null)
+        if (map == null) {
+            showEmptyFavouritesLayout();
             return;
+        }
         List<Integer> favouriteMovieIdList = new ArrayList<>();
         for (HashMap.Entry<Integer, Boolean> entry : map.entrySet()) {
             if (entry.getValue()) {
@@ -166,10 +181,14 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
 
     private void updateMovieData() {
         //Check for network connection beforehand
+        showLoadingLayout();
         if (Network.isConnected(context)) {
             fetchData();
+            isInternetOff = false;
         } else {
+            isInternetOff = true;
             showInternetErrorLayout();
+            hideLoadingLayout();
         }
     }
 
@@ -180,7 +199,8 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
 
     @OnClick(R.id.try_again)
     public void onClick() {
-        getActivity().recreate();
+        hideInternetErrorLayout();
+        updateMovieData();
     }
 
     private void hideInternetErrorLayout() {
@@ -203,6 +223,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
                 }
                 initializeFavourites();
                 movieAdapter.notifyDataSetChanged();
+                hideLoadingLayout();
                 if (MainActivity.twoPane && firstLaunch && fragmentDataType.equals(popularData)) {
                     clickFirstItem();
                     firstLaunch = false;
@@ -212,6 +233,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
+                hideLoadingLayout();
                 showInternetErrorLayout();
             }
         });
@@ -245,6 +267,16 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
                 }
             }
         }
+    }
+
+    private void showLoadingLayout() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+    }
+
+    private void hideLoadingLayout() {
+        progressBarLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     // TODO: 11/23/2016 Use Event bus instead
