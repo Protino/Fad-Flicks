@@ -8,6 +8,28 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activity.MainActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/grid_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_margin="4dp"
+        android:scrollbars="vertical"/>
+
+    <LinearLayout
+        android:id="@+id/progressBarLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/empty_favourites_layout"
         android:layout_width="match_parent"
@@ -20,7 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/content_padding"
-            android:src="@drawable/ic_empty_favourite_48dp"/>
+            android:src="@drawable/ic_empty_favourite_48dp"
+            android:contentDescription="@string/content_is_loading"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,9 +61,9 @@
         android:visibility="gone">
 
         <ImageView
-            android:contentDescription="@string/internet_error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/internet_error_message"
             android:paddingBottom="@dimen/content_padding"
             android:src="@drawable/ic_signal_wifi_off_black_36dp"/>
 
@@ -59,12 +82,4 @@
             android:text="@string/try_again"
             android:textColor="@color/grey_700"/>
     </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-
-    android:id="@+id/grid_recycler_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:scrollbars="vertical"/>
 </FrameLayout>

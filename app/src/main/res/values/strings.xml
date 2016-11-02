@@ -75,6 +75,10 @@
     <string name="continue_installation">Continue</string>
     <string name="youtube_package_id">https://play.google.com/store/apps/details?id=com.google.android.youtube</string>
     <string name="play_store_app_error_message">Play store app is not installed on your device.</string>
+
+
+    <!--Content descriptions-->
+    <string name="content_is_loading">Content is loading</string>
     <string name="movie_poster_description">Movie Poster</string>
     <string name="youtube_error_description">You need to install Youtube player</string>
     <string name="movie_backdrop_description">Movie Backdrop</string>

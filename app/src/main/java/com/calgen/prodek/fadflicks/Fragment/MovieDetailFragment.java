@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.activity.DetailActivity;
 import com.calgen.prodek.fadflicks.activity.MainActivity;
 import com.calgen.prodek.fadflicks.activity.ReviewActivity;
 import com.calgen.prodek.fadflicks.adapter.CreditsAdapter;
@@ -80,6 +81,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @State public Movie movie;
     @State public boolean isFavourite;
     @State public String shareMessage;
+    @State public boolean isInternetOff = false;
 
     @BindView(R.id.title) public TextView title;
     @BindView(R.id.release_date) public TextView releaseDate;
@@ -99,12 +101,12 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @Nullable @BindView(R.id.poster) public ImageView poster;
     @Nullable @BindView(R.id.tagline) public TextView tagLine;
     @Nullable @BindView(R.id.language) public TextView language;
-
     @BindView(R.id.progressBarLayout) public LinearLayout progressBarLayout;
     @BindView(R.id.content_detail_wide) public FrameLayout detailContentLayout;
 
     @BindDrawable(R.drawable.ic_favorite_border_white_24dp) public Drawable notFavouriteDrawable;
     @BindDrawable(R.drawable.ic_favorite_white_24dp) public Drawable favouriteDrawable;
+
     private Context context;
     //@formatter:on
 
@@ -168,6 +170,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (isInternetOff) showInternetOffSnackBar();
         if (movie == null) return;
         if (savedInstanceState == null) {
             fetchData();
@@ -178,49 +181,52 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     }
 
     private void bindViews() {
-        title.setText(movie.getTitle());
-        releaseDate.setText(Parser.formatReleaseDate(movie.getReleaseDate()));
+        try {
+            title.setText(movie.getTitle());
+            releaseDate.setText(Parser.formatReleaseDate(movie.getReleaseDate()));
 
-        runtime.setText(String.format(getString(R.string.runtime),movieBundle.movieDetails.getRuntime()));
+            runtime.setText(String.format(getString(R.string.runtime), movieBundle.movieDetails.getRuntime()));
 
-        if (!MainActivity.twoPane) {
-            Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
-                    .into(poster);
-        } else {
-            language.setText(movie.getOriginalLanguage());
-            tagLine.setText(movieBundle.movieDetails.getTagline());
-            if (movieBundle.movieDetails.getTagline().isEmpty()) {
-                tagLine.setHeight(0);
+            if (!MainActivity.twoPane) {
+                Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
+                        .into(poster);
+            } else {
+                language.setText(movie.getOriginalLanguage());
+                tagLine.setText(movieBundle.movieDetails.getTagline());
+                if (movieBundle.movieDetails.getTagline().isEmpty()) {
+                    tagLine.setHeight(0);
+                }
             }
-        }
-        movieRating.setRating((float) (movie.getVoteAverage() / 2));
+            movieRating.setRating((float) (movie.getVoteAverage() / 2));
 
-        plot.setText(movie.getOverview());
+            plot.setText(movie.getOverview());
 
-        // Now initialize recycler views and assign them new adapters
-        CreditsAdapter creditsAdapter = new CreditsAdapter(context, movieBundle.credits);
-        cardCast.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        cardCast.setHasFixedSize(true);
-        cardCast.setNestedScrollingEnabled(false);
-        cardCast.setAdapter(creditsAdapter);
+            // Now initialize recycler views and assign them new adapters
+            CreditsAdapter creditsAdapter = new CreditsAdapter(context, movieBundle.credits);
+            cardCast.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            cardCast.setHasFixedSize(true);
+            cardCast.setNestedScrollingEnabled(false);
+            cardCast.setAdapter(creditsAdapter);
 
-        VideosAdapter videosAdapter = new VideosAdapter(context, movieBundle.videoResponse,this);
-        cardVideo.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        cardVideo.setHasFixedSize(true);
-        cardVideo.setNestedScrollingEnabled(false);
-        cardVideo.setAdapter(videosAdapter);
+            VideosAdapter videosAdapter = new VideosAdapter(context, movieBundle.videoResponse, this);
+            cardVideo.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            cardVideo.setHasFixedSize(true);
+            cardVideo.setNestedScrollingEnabled(false);
+            cardVideo.setAdapter(videosAdapter);
 
-        int reviewCount = movieBundle.reviewResponse.getTotalResults();
-        if (reviewCount == 0) {
-            allReviews.setVisibility(View.GONE);
-            reviewListView.setVisibility(View.GONE);
-            noReviewsMessage.setVisibility(View.VISIBLE);
-        } else {
-            ReviewAdapter reviewAdapter = new ReviewAdapter(context, (ArrayList<Review>) movieBundle.reviewResponse.getReviewResponses(), true);
-            reviewListView.setAdapter(reviewAdapter);
-            reviewListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-            reviewListView.setCacheColorHint(Color.TRANSPARENT);
-            UI.setListViewHeightBasedOnChildren(reviewListView);
+            int reviewCount = movieBundle.reviewResponse.getTotalResults();
+            if (reviewCount == 0) {
+                allReviews.setVisibility(View.GONE);
+                reviewListView.setVisibility(View.GONE);
+                noReviewsMessage.setVisibility(View.VISIBLE);
+            } else {
+                ReviewAdapter reviewAdapter = new ReviewAdapter(context, (ArrayList<Review>) movieBundle.reviewResponse.getReviewResponses(), true);
+                reviewListView.setAdapter(reviewAdapter);
+                reviewListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
+                reviewListView.setCacheColorHint(Color.TRANSPARENT);
+                UI.setListViewHeightBasedOnChildren(reviewListView);
+            }
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -241,20 +247,26 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         }
         //handle network connection
         if (Network.isConnected(context)) {
+            isInternetOff = false;
             fetchDataFromInternet();
         } else {
-            Snackbar snackbar = Snackbar.make(detailContentLayout,
-                    getString(R.string.internet_error_message),
-                    Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fetchData();
-                }
-            });
-            snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
-            snackbar.show();
+            isInternetOff = true;
+            showInternetOffSnackBar();
         }
+    }
+
+    private void showInternetOffSnackBar() {
+        Snackbar snackbar = Snackbar.make(detailContentLayout,
+                getString(R.string.internet_error_message),
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchData();
+            }
+        });
+        snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
+        snackbar.show();
     }
 
     private void fetchDataFromInternet() {
@@ -343,10 +355,13 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
 
     private void notifyDataSetChanged() {
         if (jobsDone == 4) {
-            bindViews();
-            hideLoadingLayout();
-            setShareMessage();
-            Cache.cacheMovieData(context, movieBundle);
+            try {
+                bindViews();
+                hideLoadingLayout();
+                setShareMessage();
+                Cache.cacheMovieData(context, movieBundle);
+            } catch (IllegalStateException ignored) {
+            }
         }
     }
 
@@ -355,11 +370,11 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         Cast cast2 = movieBundle.credits.getCast().get(1);
         String website = movieBundle.movieDetails.getHomepage();
 
-        String greetingMessage = String.format(context.getString(R.string.share_welcome_message),movie.getTitle());
+        String greetingMessage = String.format(context.getString(R.string.share_welcome_message), movie.getTitle());
         String movieInfo = String.format(context.getString(R.string.share_movie_info),
-                movie.getReleaseDate(),cast1.getName(),cast2.getName(),website);
+                movie.getReleaseDate(), cast1.getName(), cast2.getName(), website);
 
-        shareMessage = greetingMessage+movieInfo;
+        shareMessage = greetingMessage + movieInfo;
     }
 
     // TODO: 05-Oct-16 replace with event bus
@@ -423,11 +438,14 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     private void showLoadingLayout() {
         progressBarLayout.setVisibility(View.VISIBLE);
         detailContentLayout.setVisibility(View.GONE);
+        if (!MainActivity.twoPane)
+            ((DetailActivity) getActivity()).setFabVisibility(View.INVISIBLE);
     }
 
     private void hideLoadingLayout() {
         progressBarLayout.setVisibility(View.GONE);
         detailContentLayout.setVisibility(View.VISIBLE);
+        if (!MainActivity.twoPane) ((DetailActivity) getActivity()).setFabVisibility(View.VISIBLE);
     }
 
     private void setFavButtonDrawable() {
@@ -462,7 +480,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
                         }
                     }
                 })
-                .setNegativeButton("Cancel",new DialogInterface.OnClickListener(){
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
