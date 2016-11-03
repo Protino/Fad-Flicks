@@ -30,7 +30,6 @@ import java.util.Random;
 
 /**
  * Created by Gurupad on 12-Sep-16.
- * You asked me to change it for no reason.
  */
 public class TestCache extends AndroidTestCase {
 

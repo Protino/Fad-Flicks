@@ -68,7 +68,7 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditsV
 
     private void initializeDataForCards() {
         //fetch only 5 actors with profile path(so we know that they are famous)
-        //fetch director , screenplay artist or photographer and music director
+        //fetch director , screenplay artist and music director
         short count = 0;
         for (int i = 0; i < castList.size() && count < 6; i++) {
             Cast cast = castList.get(i);
@@ -78,7 +78,6 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditsV
             }
         }
         count = 0;
-
         for (int i = 0; i < crewList.size() && count < 6; i++) {
             Crew crew = crewList.get(i);
             if (hasRequiredJob(crew.getJob())) {

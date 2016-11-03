@@ -46,7 +46,7 @@ public class ReadMoreDialog extends DialogFragment {
     public MovieBundle movieBundle;
     public MovieDetails movieDetails;
     //@formatter:off
-    @BindView(R.id.status_bar) public View status_bar;
+    @BindView(R.id.status_bar) public View statusBar;
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.actors) public TextView actors;
     @BindView(R.id.directors) public TextView directors;
@@ -105,9 +105,12 @@ public class ReadMoreDialog extends DialogFragment {
         return rootView;
     }
 
+    /**
+     * Set the height of the custom {@code statusBar}
+     */
     private void handleStatusBar() {
         if (!getContext().getResources().getBoolean(R.bool.large_layout)) {
-            status_bar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UI.getStatusBarHeight(getContext())));
+            statusBar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UI.getStatusBarHeight(getContext())));
         }
     }
 

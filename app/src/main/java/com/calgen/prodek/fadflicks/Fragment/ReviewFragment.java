@@ -40,7 +40,7 @@ import icepick.Icepick;
 import icepick.State;
 
 /**
- * Created by Gurupad Mamadapur on 10/31/2016.
+ * Placeholder fragment to display list of reviews of a movie.
  */
 
 public class ReviewFragment extends Fragment {

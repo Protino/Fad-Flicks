@@ -20,6 +20,7 @@ import android.app.Application;
 
 import com.calgen.prodek.fadflicks.utils.ApplicationConstants;
 import com.calgen.prodek.fadflicks.utils.Cache;
+import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -31,22 +32,32 @@ public class Global extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // if (LeakCanary.isInAnalyzerProcess(this))
-        //   return;
-        //LeakCanary.install(this);
+        setUpPicasso();
+        setUpLeakCanary();
+        setUpCache();
+    }
 
-
+    private void setUpPicasso() {
         Picasso.Builder builder = new Picasso.Builder(this);
         builder.downloader(new OkHttpDownloader(this, Integer.MAX_VALUE));
         Picasso built = builder.build();
-        built.setIndicatorsEnabled(false);
-        built.setLoggingEnabled(false);
+        built.setIndicatorsEnabled(ApplicationConstants.DEBUG);
+        built.setLoggingEnabled(ApplicationConstants.DEBUG);
         Picasso.setSingletonInstance(built);
+    }
 
-        if (ApplicationConstants.PURGE_CACHE || Cache.isPurgeRequired(getApplicationContext())) {
-            Cache.purgeCache(getApplicationContext());
+
+    private void setUpLeakCanary() {
+        if (ApplicationConstants.DEBUG && !LeakCanary.isInAnalyzerProcess(this)) {
+            LeakCanary.install(this);
+        }
+    }
+
+    private void setUpCache() {
+        if (ApplicationConstants.PURGE_CACHE || Cache.isPurgeRequired(this)) {
+            Cache.purgeCache(this);
         } else {
-            Cache.cacheTimeOfLastUsage(getApplicationContext());
+            Cache.cacheTimeOfLastUsage(this);
         }
     }
 }

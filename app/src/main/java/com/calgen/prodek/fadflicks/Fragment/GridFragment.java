@@ -65,24 +65,23 @@ import retrofit2.Response;
 /**
  * Created by Gurupad on 28-Sep-16.
  */
-public class GridFragment extends Fragment implements SearchView.OnQueryTextListener{
-
+public class GridFragment extends Fragment implements SearchView.OnQueryTextListener {
+    //@formatter:off
     private static final String TAG = GridFragment.class.getSimpleName();
     private static final int MIN_VOTE_COUNT = 100;
-    //@formatter:off
     @BindView(R.id.grid_recycler_view) public RecyclerView recyclerView;
     @BindView(R.id.try_again) public Button tryAgainButton;
     @BindView(R.id.internet_error_layout) public LinearLayout internetErrorLayout;
     @BindView(R.id.progressBarLayout) public LinearLayout progressBarLayout;
-    @State public String sort_type;
-    @State public ArrayList<Movie> movieList;
+    @BindView(R.id.empty_favourites_layout) public LinearLayout emptyFavouritesLayout;
     @BindString(R.string.topRatedData) public String topRatedData;
     @BindString(R.string.popularData) public String popularData;
     @BindString(R.string.favouritesData) public String favouritesData;
-    @BindView(R.id.empty_favourites_layout) public LinearLayout emptyFavouritesLayout;
     @State public String fragmentDataType;
     @State public boolean isDataLoadedFromCache =false;
     @State public boolean isInternetOff=false;
+    @State public String sort_type;
+    @State public ArrayList<Movie> movieList;
     private boolean firstLaunch = true;
     private GridMovieAdapter movieAdapter;
     private Context context;
@@ -157,6 +156,45 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         }
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        movieAdapter.getFilter().filter(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        movieAdapter.getFilter().filter(newText);
+        return false;
+    }
+
+    @OnClick(R.id.try_again)
+    public void onClick() {
+        hideInternetErrorLayout();
+        ((ReloadCallback) getActivity()).reloadData();
+    }
+
+    public interface ReloadCallback {
+        void reloadData();
+    }
+
+    private void updateMovieData() {
+        //Check for network connection beforehand
+        showLoadingLayout();
+        if (Network.isConnected(context)) {
+            fetchData();
+            isInternetOff = false;
+        } else {
+            isInternetOff = true;
+            showInternetErrorLayout();
+            hideLoadingLayout();
+        }
+    }
+
+    /**
+     * Fetch the movie data from the cache. This is only relevant in case of
+     * favourite movies as of now.
+     */
     private void fetchCacheData() {
         isDataLoadedFromCache = true;
         HashMap<Integer, Boolean> map = Cache.getFavouriteMovies(context);
@@ -184,46 +222,10 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         movieAdapter.notifyDataSetChanged();
     }
 
-    private void showEmptyFavouritesLayout() {
-        recyclerView.setVisibility(View.GONE);
-        emptyFavouritesLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void hideEmptyFavouritesLayout() {
-        recyclerView.setVisibility(View.VISIBLE);
-        emptyFavouritesLayout.setVisibility(View.GONE);
-    }
-
-
-    private void updateMovieData() {
-        //Check for network connection beforehand
-        showLoadingLayout();
-        if (Network.isConnected(context)) {
-            fetchData();
-            isInternetOff = false;
-        } else {
-            isInternetOff = true;
-            showInternetErrorLayout();
-            hideLoadingLayout();
-        }
-    }
-
-    private void showInternetErrorLayout() {
-        internetErrorLayout.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
-    }
-
-    @OnClick(R.id.try_again)
-    public void onClick() {
-        hideInternetErrorLayout();
-        ((ReloadCallback)getActivity()).reloadData();
-    }
-
-    private void hideInternetErrorLayout() {
-        internetErrorLayout.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
-    }
-
+    /**
+     * Retrieves movie data using from tmdb.org using {@link retrofit2.Retrofit} based
+     * api calls.
+     */
     private void fetchData() {
         ApiClient apiClient = new ApiClient().setIsDebug(ApplicationConstants.DEBUG);
         Call<MovieResponse> call = apiClient.movieInterface().getMovies(sort_type, MIN_VOTE_COUNT);
@@ -255,6 +257,9 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         });
     }
 
+    /**
+     * Perform click on the first item of the {@code movieAdapter}
+     */
     private void clickFirstItem() {
         final int delay = 10;
         final int position = 0;
@@ -268,6 +273,9 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         }, delay);
     }
 
+    /**
+     * Change favorite value of movie based on values fetched from the cache.
+     */
     private void initializeFavourites() {
         HashMap<Integer, Boolean> map = Cache.getFavouriteMovies(context);
         if (map == null) {
@@ -285,16 +293,12 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         }
     }
 
-    private void showLoadingLayout() {
-        progressBarLayout.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
-    }
-
-    private void hideLoadingLayout() {
-        progressBarLayout.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
-    }
-
+    /**
+     * Update the {@code movieAdapter} with favourite values
+     *
+     * @param movieId id of movie whose favourite value is changed
+     * @param isFavourite favourite value
+     */
     // TODO: 11/23/2016 Use Event bus instead
     public void notifyChange(Integer movieId, boolean isFavourite) {
         if (movieList != null) {
@@ -333,25 +337,40 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         }
     }
 
+    /**
+     * @return number of items to display in one row of gridView according to the screen orientation.
+     */
     private int getSpanCount() {
         return (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2;
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        movieAdapter.getFilter().filter(query);
-        return false;
+    private void showEmptyFavouritesLayout() {
+        recyclerView.setVisibility(View.GONE);
+        emptyFavouritesLayout.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        movieAdapter.getFilter().filter(newText);
-        return false;
+    private void hideEmptyFavouritesLayout() {
+        recyclerView.setVisibility(View.VISIBLE);
+        emptyFavouritesLayout.setVisibility(View.GONE);
     }
 
-
-    public interface ReloadCallback {
-        void reloadData();
+    private void showLoadingLayout() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
     }
 
+    private void hideLoadingLayout() {
+        progressBarLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showInternetErrorLayout() {
+        internetErrorLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+    }
+
+    private void hideInternetErrorLayout() {
+        internetErrorLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
 }

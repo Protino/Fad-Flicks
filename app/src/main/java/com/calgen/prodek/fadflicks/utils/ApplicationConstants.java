@@ -21,8 +21,14 @@ package com.calgen.prodek.fadflicks.utils;
  */
 public class ApplicationConstants {
 
-    public static final boolean DEBUG = false; //for debug purposes
+    /**
+     * Set to true if debugging is needed
+     */
+    public static final boolean DEBUG = false;
 
+    /**
+     * When true, forces to clear defaultSharedPreferences
+     */
     public static final boolean PURGE_CACHE = false;
 
     public static final int CACHE_PURGE_PERIOD = 24*60*60*100;

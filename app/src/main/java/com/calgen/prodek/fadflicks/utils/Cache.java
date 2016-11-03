@@ -36,7 +36,7 @@ import java.util.TimeZone;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
- * Created by Gurupad on 06-Jul-16.
+ * Handles management of cache data of the application stored as defaultSharedPreferences.
  */
 public class Cache {
 
@@ -55,7 +55,7 @@ public class Cache {
     }
 
     /**
-     * @param context Context needed to fetch DefaultSharedPreferences
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences
      * @return String data is returned,{@code null} if not found.
      */
     public static MovieBundle getMovieData(Context context, Integer movieId) {
@@ -70,6 +70,13 @@ public class Cache {
         return null;
     }
 
+    /**
+     * Read movie details of all movies whose id's are specified as {@code List<Integer> movieIds}
+     * from cache.
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences.
+     * @param movieIds list of movieIds whose data is to be fetched.
+     * @return {@code List<MovieBundle>} movieDetails list.
+     */
     public static List<MovieBundle> bulkReadMovieData(Context context, List<Integer> movieIds) {
         List<MovieBundle> movieBundleList = new ArrayList<>();
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
@@ -84,6 +91,11 @@ public class Cache {
         return movieBundleList;
     }
 
+    /**
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences.
+     * @param movieId id of movie whose favourite needs to be cached.
+     * @param isFavourite favourite value.
+     */
     public static void setFavouriteMovie(Context context, int movieId, boolean isFavourite) {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         Editor sharedPreferencesEditor = sharedPreferences.edit();
@@ -98,6 +110,10 @@ public class Cache {
         sharedPreferencesEditor.commit();
     }
 
+    /**
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences
+     * @return {@code HashMap<Integer, Boolean>} of favourite movies.
+     */
     public static HashMap<Integer, Boolean> getFavouriteMovies(Context context) {
         String data;
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
@@ -114,6 +130,10 @@ public class Cache {
         }
     }
 
+    /**
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences
+     * @param map map of movie's which need to be cached.
+     */
     public static void bulkInsertFavouriteMovies(Context context, HashMap<Integer, Boolean> map) {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         Editor sharedPreferencesEditor = sharedPreferences.edit();
@@ -134,6 +154,10 @@ public class Cache {
         sharedPreferencesEditor.apply();
     }
 
+    /**
+     * Clears {@code defaultSharedPreferences}.
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences
+     */
     public static void purgeCache(Context context) {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         Editor sharedPreferencesEditor = sharedPreferences.edit();
@@ -141,6 +165,22 @@ public class Cache {
         sharedPreferencesEditor.apply();
     }
 
+    /**
+     * Determine whether cache clearance is required based on how long it has been since the last
+     * usage of application.
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences
+     * @return
+     */
+    public static boolean isPurgeRequired(Context context) {
+        long currentDate = new Date().getTime();
+        long lastUsageDate = readTimeOfLastUsage(context);
+        return (currentDate - lastUsageDate > ApplicationConstants.CACHE_PURGE_PERIOD);
+    }
+
+    /**
+     * Store the current time including timezone
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences
+     */
     public static void cacheTimeOfLastUsage(Context context) {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         Editor sharedPreferencesEditor = sharedPreferences.edit();
@@ -151,6 +191,10 @@ public class Cache {
         sharedPreferencesEditor.apply();
     }
 
+    /**
+     * @param context {@link Context} needed to fetch DefaultSharedPreferences
+     * @return time when the application was last used.
+     */
     public static Long readTimeOfLastUsage(Context context) {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         if (sharedPreferences.contains(context.getString(R.string.time_of_last_usage_key))) {
@@ -163,11 +207,5 @@ public class Cache {
             cacheTimeOfLastUsage(context);
             return readTimeOfLastUsage(context);
         }
-    }
-
-    public static boolean isPurgeRequired(Context context) {
-        long currentDate = new Date().getTime();
-        long lastUsageDate = readTimeOfLastUsage(context);
-        return (currentDate - lastUsageDate > ApplicationConstants.CACHE_PURGE_PERIOD);
     }
 }

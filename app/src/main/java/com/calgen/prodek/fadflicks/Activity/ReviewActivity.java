@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 
 /**
- * Created by Gurupad on 11-Sep-16.
+ * Handle setup of {@link ReviewFragment} and {@link ReviewDetailFragment}
  */
 public class ReviewActivity extends AppCompatActivity implements ReviewFragment.Callback {
     //@formatter:off

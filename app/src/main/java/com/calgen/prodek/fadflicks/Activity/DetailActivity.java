@@ -45,6 +45,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Handles setup of detailFragment if not in two-pane UI mode.
+ */
 public class DetailActivity extends AppCompatActivity {
 
     //@formatter:off
@@ -91,6 +94,9 @@ public class DetailActivity extends AppCompatActivity {
         setUpLayoutMargins();
     }
 
+    /**
+     * Changes margin of the content and {@link FloatingActionButton} according to the screen orientation.
+     */
     private void setUpLayoutMargins() {
         CoordinatorLayout.LayoutParams scrollViewParams = (CoordinatorLayout.LayoutParams) nestedScrollView.getLayoutParams();
 
@@ -151,17 +157,21 @@ public class DetailActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private void setFavButtonDrawable() {
-        favFab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
-    }
+
 
     @Override
     public void onStop() {
         super.onStop();
+
+        // Release loaders of YoutubeThumbnailView, otherwise Service connection leak occurs.
         if (VideosAdapter.viewLoaderMap == null) return;
         for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
             loader.release();
         }
+    }
+
+    private void setFavButtonDrawable() {
+        favFab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
     }
 
     public void setFabVisibility(int visibility) {

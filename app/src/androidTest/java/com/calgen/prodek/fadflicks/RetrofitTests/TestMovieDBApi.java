@@ -33,7 +33,6 @@ import retrofit2.Response;
 
 /**
  * Created by Gurupad on 01-Sep-16.
- * You asked me to change it for no reason.
  */
 public class TestMovieDBApi extends AndroidTestCase {
 

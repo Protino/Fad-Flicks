@@ -77,7 +77,7 @@ public class UI {
     }
 
     /**
-     * @param context
+     * @param context {@link Context} needed to fetch resources
      * @return height of status bar of current device
      */
     public static int getStatusBarHeight(Context context) {

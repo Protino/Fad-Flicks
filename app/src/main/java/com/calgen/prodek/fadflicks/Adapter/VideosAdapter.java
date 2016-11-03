@@ -82,7 +82,6 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
 
             @Override
             public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
-                // TODO: 11/1/2016 Show Youtube loader error
                 holder.errorPlaceHolder.setVisibility(View.VISIBLE);
             }
         });

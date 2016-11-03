@@ -98,7 +98,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @State public boolean isFavourite;
     @State public String shareMessage;
     @State public boolean isInternetOff = false;
-
     @BindView(R.id.title) public TextView title;
     @BindView(R.id.release_date) public TextView releaseDate;
     @BindView(R.id.runtime) public TextView runtime;
@@ -119,10 +118,8 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @Nullable @BindView(R.id.language) public TextView language;
     @BindView(R.id.progressBarLayout) public LinearLayout progressBarLayout;
     @BindView(R.id.content_detail_wide) public FrameLayout detailContentLayout;
-
     @BindDrawable(R.drawable.ic_favorite_border_white_24dp) public Drawable notFavouriteDrawable;
     @BindDrawable(R.drawable.ic_favorite_white_24dp) public Drawable favouriteDrawable;
-
     private Context context;
     //@formatter:on
 
@@ -134,6 +131,12 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         Icepick.restoreInstanceState(this, savedInstanceState);
         if (!MainActivity.twoPane)
             setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -149,12 +152,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -181,7 +178,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             movieBundle.movie = movie;
         }
         // TODO: 11/21/2016 Replace with broadcast recievers
-        isInternetOff=Network.isConnected(context);
+        isInternetOff = Network.isConnected(context);
         return rootView;
     }
 
@@ -198,54 +195,77 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         }
     }
 
-    private void bindViews() {
-        try {
-            title.setText(movie.getTitle());
-            releaseDate.setText(Parser.formatReleaseDate(movie.getReleaseDate()));
-
-            runtime.setText(String.format(getString(R.string.runtime), movieBundle.movieDetails.getRuntime()));
-
-            if (!MainActivity.twoPane) {
-                Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
-                        .into(poster);
-            } else {
-                language.setText(movie.getOriginalLanguage());
-                tagLine.setText(movieBundle.movieDetails.getTagline());
-                if (movieBundle.movieDetails.getTagline().isEmpty()) {
-                    tagLine.setHeight(0);
-                }
-            }
-            movieRating.setRating((float) (movie.getVoteAverage() / 2));
-
-            plot.setText(movie.getOverview());
-
-            // Now initialize recycler views and assign them new adapters
-            CreditsAdapter creditsAdapter = new CreditsAdapter(context, movieBundle.credits);
-            cardCast.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-            cardCast.setHasFixedSize(true);
-            cardCast.setNestedScrollingEnabled(false);
-            cardCast.setAdapter(creditsAdapter);
-
-            VideosAdapter videosAdapter = new VideosAdapter(context, movieBundle.videoResponse, this);
-            cardVideo.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-            cardVideo.setHasFixedSize(true);
-            cardVideo.setNestedScrollingEnabled(false);
-            cardVideo.setAdapter(videosAdapter);
-
-            int reviewCount = movieBundle.reviewResponse.getTotalResults();
-            if (reviewCount == 0) {
-                allReviews.setVisibility(View.GONE);
-                reviewListView.setVisibility(View.GONE);
-                noReviewsMessage.setVisibility(View.VISIBLE);
-            } else {
-                ReviewAdapter reviewAdapter = new ReviewAdapter(context, (ArrayList<Review>) movieBundle.reviewResponse.getReviewResponses(), true);
-                reviewListView.setAdapter(reviewAdapter);
-                reviewListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-                reviewListView.setCacheColorHint(Color.TRANSPARENT);
-                UI.setListViewHeightBasedOnChildren(reviewListView);
-            }
-        } catch (NullPointerException ignored) {
+    //Only in sw600dp
+    @Optional
+    @OnClick({R.id.fav_fab, R.id.share_fab})
+    public void onFabClick(View view) {
+        switch (view.getId()) {
+            case R.id.fav_fab:
+                isFavourite = !isFavourite;
+                notifyFavouriteChange();
+                setFavButtonDrawable();
+                break;
+            case R.id.share_fab:
+                sendShareIntent();
+                break;
+            default:
+                break;
         }
+        fabMenu.close(true);
+    }
+
+    @OnClick({R.id.read_more_details, R.id.all_reviews_button})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.read_more_details:
+                showDialog();
+                break;
+            case R.id.all_reviews_button:
+                Intent intent = new Intent(context, ReviewActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, movieBundle.reviewResponse);
+                context.startActivity(intent);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (VideosAdapter.viewLoaderMap == null)
+            return;
+        for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
+            loader.release();
+        }
+    }
+
+    @Override
+    public void createAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.youtube_error_dialog_message))
+                .setTitle(getString(R.string.youtube_error_dialog_title))
+                .setIcon(getResources().getDrawable(R.drawable.ic_warning_black_24dp))
+                .setPositiveButton(getString(R.string.continue_installation), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(getString(R.string.youtube_package_id)));
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            Toast.makeText(context, R.string.play_store_app_error_message, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create().show();
     }
 
     private void fetchData() {
@@ -271,20 +291,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             isInternetOff = true;
             showInternetOffSnackBar();
         }
-    }
-
-    private void showInternetOffSnackBar() {
-        Snackbar snackbar = Snackbar.make(detailContentLayout,
-                getString(R.string.internet_error_message),
-                Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fetchData();
-            }
-        });
-        snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
-        snackbar.show();
     }
 
     private void fetchDataFromInternet() {
@@ -361,13 +367,53 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         });
     }
 
-    private void sendShareIntent() {
-        if (shareMessage != null) {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            sendIntent.setType("text/plain");
-            context.startActivity(sendIntent);
+    private void bindViews() {
+        try {
+            title.setText(movie.getTitle());
+            releaseDate.setText(Parser.formatReleaseDate(movie.getReleaseDate()));
+
+            runtime.setText(String.format(getString(R.string.runtime), movieBundle.movieDetails.getRuntime()));
+
+            if (!MainActivity.twoPane) {
+                Picasso.with(context).load(Parser.formatImageUrl(movie.getPosterPath(), context.getString(R.string.image_size_small)))
+                        .into(poster);
+            } else {
+                language.setText(movie.getOriginalLanguage());
+                tagLine.setText(movieBundle.movieDetails.getTagline());
+                if (movieBundle.movieDetails.getTagline().isEmpty()) {
+                    tagLine.setHeight(0);
+                }
+            }
+            movieRating.setRating((float) (movie.getVoteAverage() / 2));
+
+            plot.setText(movie.getOverview());
+
+            // Now initialize recycler views and assign them new adapters
+            CreditsAdapter creditsAdapter = new CreditsAdapter(context, movieBundle.credits);
+            cardCast.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            cardCast.setHasFixedSize(true);
+            cardCast.setNestedScrollingEnabled(false);
+            cardCast.setAdapter(creditsAdapter);
+
+            VideosAdapter videosAdapter = new VideosAdapter(context, movieBundle.videoResponse, this);
+            cardVideo.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            cardVideo.setHasFixedSize(true);
+            cardVideo.setNestedScrollingEnabled(false);
+            cardVideo.setAdapter(videosAdapter);
+
+            int reviewCount = movieBundle.reviewResponse.getTotalResults();
+            if (reviewCount == 0) {
+                allReviews.setVisibility(View.GONE);
+                reviewListView.setVisibility(View.GONE);
+                noReviewsMessage.setVisibility(View.VISIBLE);
+            } else {
+                ReviewAdapter reviewAdapter = new ReviewAdapter(context, (ArrayList<Review>) movieBundle.reviewResponse.getReviewResponses(), true);
+                reviewListView.setAdapter(reviewAdapter);
+                reviewListView.setSelector(new ColorDrawable(Color.TRANSPARENT));
+                reviewListView.setCacheColorHint(Color.TRANSPARENT);
+                UI.setListViewHeightBasedOnChildren(reviewListView);
+            }
+        } catch (NullPointerException ignored) {
         }
     }
 
@@ -383,56 +429,19 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         }
     }
 
-    private void setShareMessage() {
-        Cast cast1 = movieBundle.credits.getCast().get(0);
-        Cast cast2 = movieBundle.credits.getCast().get(1);
-        String website = movieBundle.movieDetails.getHomepage();
-
-        String greetingMessage = String.format(context.getString(R.string.share_welcome_message), movie.getTitle());
-        String movieInfo = String.format(context.getString(R.string.share_movie_info),
-                movie.getReleaseDate(), cast1.getName(), cast2.getName(), website);
-
-        shareMessage = greetingMessage + movieInfo;
-    }
-
     // TODO: 05-Oct-16 replace with event bus
     private void notifyFavouriteChange() {
         Cache.setFavouriteMovie(context, movie.getId(), isFavourite);
         ((MainActivity) getActivity()).notifyFavouriteChange(movie.getId(), isFavourite);
     }
 
-    //Only in sw600dp
-    @Optional
-    @OnClick({R.id.fav_fab, R.id.share_fab})
-    public void onFabClick(View view) {
-        switch (view.getId()) {
-            case R.id.fav_fab:
-                isFavourite = !isFavourite;
-                notifyFavouriteChange();
-                setFavButtonDrawable();
-                break;
-            case R.id.share_fab:
-                sendShareIntent();
-                break;
-            default:
-                break;
-        }
-        fabMenu.close(true);
-    }
-
-    @OnClick({R.id.read_more_details, R.id.all_reviews_button})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.read_more_details:
-                showDialog();
-                break;
-            case R.id.all_reviews_button:
-                Intent intent = new Intent(context, ReviewActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, movieBundle.reviewResponse);
-                context.startActivity(intent);
-                break;
-            default:
-                break;
+    private void sendShareIntent() {
+        if (shareMessage != null) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            sendIntent.setType("text/plain");
+            context.startActivity(sendIntent);
         }
     }
 
@@ -460,6 +469,20 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             ((DetailActivity) getActivity()).setFabVisibility(View.INVISIBLE);
     }
 
+    private void showInternetOffSnackBar() {
+        Snackbar snackbar = Snackbar.make(detailContentLayout,
+                getString(R.string.internet_error_message),
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchData();
+            }
+        });
+        snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
+        snackbar.show();
+    }
+
     private void hideLoadingLayout() {
         progressBarLayout.setVisibility(View.GONE);
         detailContentLayout.setVisibility(View.VISIBLE);
@@ -470,41 +493,15 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         favFab.setImageDrawable((isFavourite) ? favouriteDrawable : notFavouriteDrawable);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (VideosAdapter.viewLoaderMap == null)
-            return;
-        for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
-            loader.release();
-        }
-    }
+    private void setShareMessage() {
+        Cast cast1 = movieBundle.credits.getCast().get(0);
+        Cast cast2 = movieBundle.credits.getCast().get(1);
+        String website = movieBundle.movieDetails.getHomepage();
 
-    @Override
-    public void createAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getString(R.string.youtube_error_dialog_message))
-                .setTitle(getString(R.string.youtube_error_dialog_title))
-                .setIcon(getResources().getDrawable(R.drawable.ic_warning_black_24dp))
-                .setPositiveButton(getString(R.string.continue_installation), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(getString(R.string.youtube_package_id)));
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            Toast.makeText(context, R.string.play_store_app_error_message, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        String greetingMessage = String.format(context.getString(R.string.share_welcome_message), movie.getTitle());
+        String movieInfo = String.format(context.getString(R.string.share_movie_info),
+                movie.getReleaseDate(), cast1.getName(), cast2.getName(), website);
 
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .create().show();
+        shareMessage = greetingMessage + movieInfo;
     }
 }

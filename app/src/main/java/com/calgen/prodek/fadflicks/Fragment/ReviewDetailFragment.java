@@ -33,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Gurupad Mamadapur on 10/30/2016.
+ * Placeholder fragment to display review details.
  */
 
 public class ReviewDetailFragment extends Fragment {

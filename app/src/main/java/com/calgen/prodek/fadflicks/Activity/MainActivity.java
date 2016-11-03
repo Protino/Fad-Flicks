@@ -45,22 +45,25 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
 
-public class MainActivity extends AppCompatActivity implements GridFragment.ReloadCallback{
-
+/**
+ * Handles set up of viewpager, where fragments are loaded which display
+ * movie information. It also handles two-pane UI.
+ */
+public class MainActivity extends AppCompatActivity implements GridFragment.ReloadCallback {
 
     public static final String MOVIE_DETAIL_FRAGMENT_TAG = "M_D_F_TAG";
-    //@formatter:off
     private static final int FAVOURITE_FRAGMENT_POSITION = 2;
     private static final int TOP_RATED_FRAGMENT_POSITION = 1;
     private static final int POPULAR_FRAGMENT_POSITION = 0;
     private static final int PAGE_LIMIT = 2;
     public static boolean twoPane;
+    //@formatter:off
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.tabs) public TabLayout tabLayout;
     @BindView(R.id.viewpager) public ViewPager viewPager;
     @State public int currentItemPosition;
-    //@formatter:on
     private ViewPagerAdapter viewPagerAdapter;
+    //@formatter:on
 
     @Override
     protected void onStart() {
@@ -159,6 +162,12 @@ public class MainActivity extends AppCompatActivity implements GridFragment.Relo
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Notifies respective fragments about the change in the favourite value of the
+     * movie with if {@code movieId}.
+     * @param movieId id of the movie whose favourite value is changed
+     * @param isFavourite value of the favourite
+     */
     public void notifyFavouriteChange(int movieId, boolean isFavourite) {
         GridFragment gridFragment;
         currentItemPosition = viewPager.getCurrentItem();
@@ -186,6 +195,9 @@ public class MainActivity extends AppCompatActivity implements GridFragment.Relo
 
     }
 
+    /**
+     * Force viewpager to update views
+     */
     @Override
     public void reloadData() {
         viewPager.getAdapter().notifyDataSetChanged();

@@ -30,7 +30,7 @@ public class Network {
      * @param context
      * @return {@code True} if the device is connected to a network.
      */
-    // TODO: 12-Jul-16 Make the method return false when there is no Active Internet connection.
+    // TODO: 21-Nov-16 Make the method return false when there is no Active Internet connection.
     public static boolean isConnected(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
