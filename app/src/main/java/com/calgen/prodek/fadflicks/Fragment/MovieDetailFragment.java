@@ -117,6 +117,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @Nullable @BindView(R.id.language) public TextView language;
     @BindView(R.id.progressBarLayout) public LinearLayout progressBarLayout;
     @BindView(R.id.content_detail_wide) public FrameLayout detailContentLayout;
+    @BindView(R.id.fragment_detail) public LinearLayout fragmentDetailLayout;
     @BindDrawable(R.drawable.ic_favorite_border_white_24dp) public Drawable notFavouriteDrawable;
     @BindDrawable(R.drawable.ic_favorite_white_24dp) public Drawable favouriteDrawable;
     private Context context;
@@ -183,7 +184,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // TODO: 11/21/2016 Replace with broadcast receivers
-        if (!Network.isConnected(context)) showInternetOffSnackBar();
+        //if (!Network.isConnected(context)) showInternetOffSnackBar();
         if (movie == null) return;
         if (savedInstanceState == null) {
             fetchData();
@@ -266,7 +267,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     }
 
     private void fetchData() {
-        if (!Network.isConnected(context)) showInternetOffSnackBar();
+        //if (!Network.isConnected(context)) showInternetOffSnackBar();
         showLoadingLayout();
         //check if data is present in the cache to load
         MovieBundle cacheData = Cache.getMovieData(context, movie.getId());
@@ -459,7 +460,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
 
 
     private void showInternetOffSnackBar() {
-        Snackbar snackbar = Snackbar.make(detailContentLayout,
+        Snackbar snackbar = Snackbar.make(fragmentDetailLayout,
                 getString(R.string.internet_error_message),
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
