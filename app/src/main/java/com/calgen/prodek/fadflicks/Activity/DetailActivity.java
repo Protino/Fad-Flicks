@@ -171,7 +171,6 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-
         // Release loaders of YoutubeThumbnailView, otherwise Service connection leak occurs.
         if (VideosAdapter.viewLoaderMap == null) return;
         for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {

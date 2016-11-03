@@ -16,12 +16,15 @@
 
 package com.calgen.prodek.fadflicks.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -122,6 +125,12 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @BindDrawable(R.drawable.ic_favorite_white_24dp) public Drawable favouriteDrawable;
     private Context context;
     //@formatter:on
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!Network.isConnected(context)) showInternetOffSnackBar();
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -183,8 +192,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // TODO: 11/21/2016 Replace with broadcast receivers
-        //if (!Network.isConnected(context)) showInternetOffSnackBar();
         if (movie == null) return;
         if (savedInstanceState == null) {
             fetchData();
@@ -231,11 +238,23 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @Override
     public void onStop() {
         super.onStop();
-        if (VideosAdapter.viewLoaderMap == null)
-            return;
+        // Release loaders of YoutubeThumbnailView, otherwise Service connection leak occurs.
+        if (VideosAdapter.viewLoaderMap == null) return;
         for (YouTubeThumbnailLoader loader : VideosAdapter.viewLoaderMap.values()) {
             loader.release();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -267,7 +286,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     }
 
     private void fetchData() {
-        //if (!Network.isConnected(context)) showInternetOffSnackBar();
         showLoadingLayout();
         //check if data is present in the cache to load
         MovieBundle cacheData = Cache.getMovieData(context, movie.getId());
@@ -282,10 +300,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             setShareMessage();
             return;
         }
-        //handle network connection
-        if (Network.isConnected(context)) {
-            fetchDataFromInternet();
-        }
+        if (Network.isConnected(context)) fetchDataFromInternet();
     }
 
     private void fetchDataFromInternet() {
@@ -441,6 +456,21 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         }
     }
 
+    private void showInternetOffSnackBar() {
+        Snackbar snackbar = Snackbar.make(fragmentDetailLayout,
+                getString(R.string.internet_error_message),
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchData();
+                if (!Network.isConnected(context))showInternetOffSnackBar();
+            }
+        });
+        snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
+        snackbar.show();
+    }
+
     private void showDialog() {
         FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
         ReadMoreDialog newFragment = new ReadMoreDialog();
@@ -456,21 +486,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             transaction.add(android.R.id.content, newFragment)
                     .addToBackStack(null).commit();
         }
-    }
-
-
-    private void showInternetOffSnackBar() {
-        Snackbar snackbar = Snackbar.make(fragmentDetailLayout,
-                getString(R.string.internet_error_message),
-                Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction(getString(R.string.try_again), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fetchData();
-            }
-        });
-        snackbar.setActionTextColor(context.getResources().getColor(R.color.error));
-        snackbar.show();
     }
 
     private void showLoadingLayout() {
