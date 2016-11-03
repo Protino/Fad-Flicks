@@ -44,6 +44,8 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.State;
 
 /**
  * Handles setup of detailFragment if not in two-pane UI mode.
@@ -57,41 +59,49 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.nestedScrollView) public NestedScrollView nestedScrollView;
     @BindDrawable(R.drawable.ic_favorite_border_white_24dp) public Drawable notFavouriteDrawable;
     @BindDrawable(R.drawable.ic_favorite_white_24dp) public Drawable favouriteDrawable;
+    @State public boolean isFavourite;
+    @State public boolean isFavouriteOriginal;
+    @State public Movie movie;
     //@formatter:on
-    private boolean isFavourite;
-    private boolean isFavouriteOriginal;
-    private Movie movie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this,savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
         movie = (Movie) getIntent().getSerializableExtra(Intent.EXTRA_TEXT);
         Picasso.with(this)
                 .load(Parser.formatImageUrl(movie.backdropPath, getString(R.string.image_size_large)))
                 .placeholder(new ColorDrawable(0xFFFFFF))
                 .into(backdropImage);
-        isFavourite = movie.isFavourite;
-        isFavouriteOriginal = isFavourite;
-        setFavButtonDrawable();
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         if (savedInstanceState == null) {
-            Bundle arguments = new Bundle();
-            arguments.putSerializable(Intent.EXTRA_TEXT, movie);
-            MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
-            movieDetailFragment.setArguments(arguments);
-
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, movieDetailFragment, MainActivity.MOVIE_DETAIL_FRAGMENT_TAG)
-                    .commit();
+            isFavourite = movie.isFavourite;
+            isFavouriteOriginal = isFavourite;
         }
 
+        Bundle arguments = new Bundle();
+        arguments.putSerializable(Intent.EXTRA_TEXT, movie);
+        MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
+        movieDetailFragment.setArguments(arguments);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.movie_detail_container, movieDetailFragment, MainActivity.MOVIE_DETAIL_FRAGMENT_TAG)
+                .commit();
+        setFavButtonDrawable();
         setUpLayoutMargins();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this,outState);
     }
 
     /**
@@ -156,7 +166,6 @@ public class DetailActivity extends AppCompatActivity {
         }
         super.onBackPressed();
     }
-
 
 
     @Override

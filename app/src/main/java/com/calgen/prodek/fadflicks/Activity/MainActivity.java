@@ -34,6 +34,7 @@ import com.calgen.prodek.fadflicks.adapter.GridMovieAdapter;
 import com.calgen.prodek.fadflicks.fragment.GridFragment;
 import com.calgen.prodek.fadflicks.fragment.MovieDetailFragment;
 import com.calgen.prodek.fadflicks.utils.Cache;
+import com.calgen.prodek.fadflicks.utils.CustomBundler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,11 +58,13 @@ public class MainActivity extends AppCompatActivity implements GridFragment.Relo
     private static final int POPULAR_FRAGMENT_POSITION = 0;
     private static final int PAGE_LIMIT = 2;
     public static boolean twoPane;
+
     //@formatter:off
     @BindView(R.id.toolbar) public Toolbar toolbar;
     @BindView(R.id.tabs) public TabLayout tabLayout;
     @BindView(R.id.viewpager) public ViewPager viewPager;
     @State public int currentItemPosition;
+    @State(CustomBundler.class) public Map<Integer, String> fragmentTags = new HashMap<>();
     private ViewPagerAdapter viewPagerAdapter;
     //@formatter:on
 
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements GridFragment.Relo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
 
         if (findViewById(R.id.movie_detail_container) != null) {
             twoPane = true;
@@ -88,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements GridFragment.Relo
         } else {
             twoPane = false;
         }
-        setSupportActionBar(toolbar);
         setupViewPager();
         tabLayout.setupWithViewPager(viewPager);
 
@@ -146,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements GridFragment.Relo
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GridMovieAdapter.FAV_REQUEST_CODE && resultCode == Activity.RESULT_OK &&
                 data.getBooleanExtra(getString(R.string.favourite_changed_key), true)) {
             int movieId = data.getIntExtra(getString(R.string.favourite_movie_id_key), -1);
@@ -159,13 +163,13 @@ public class MainActivity extends AppCompatActivity implements GridFragment.Relo
 
             notifyFavouriteChange(movieId, isFavourite);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
      * Notifies respective fragments about the change in the favourite value of the
      * movie with if {@code movieId}.
-     * @param movieId id of the movie whose favourite value is changed
+     *
+     * @param movieId     id of the movie whose favourite value is changed
      * @param isFavourite value of the favourite
      */
     public void notifyFavouriteChange(int movieId, boolean isFavourite) {
@@ -207,11 +211,9 @@ public class MainActivity extends AppCompatActivity implements GridFragment.Relo
 
         private final List<Fragment> fragmentList = new ArrayList<>();
         private final List<String> fragmentTitleList = new ArrayList<>();
-        private Map<Integer, String> fragmentTags;
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            fragmentTags = new HashMap<>();
         }
 
         @Override

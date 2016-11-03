@@ -177,8 +177,8 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             }
             movieBundle.movie = movie;
         }
-        // TODO: 11/21/2016 Replace with broadcast recievers
-        isInternetOff = Network.isConnected(context);
+        // TODO: 11/21/2016 Replace with broadcast receivers
+        isInternetOff = !Network.isConnected(context);
         return rootView;
     }
 
@@ -195,7 +195,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         }
     }
 
-    //Only in sw600dp
     @Optional
     @OnClick({R.id.fav_fab, R.id.share_fab})
     public void onFabClick(View view) {
@@ -285,10 +284,8 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         }
         //handle network connection
         if (!isInternetOff) {
-            isInternetOff = false;
             fetchDataFromInternet();
         } else {
-            isInternetOff = true;
             showInternetOffSnackBar();
         }
     }
@@ -362,6 +359,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
 
             @Override
             public void onFailure(Call<MovieDetails> call, Throwable t) {
+                Log.e(TAG, "onFailure movieDetails call: ", t);
                 progressBarLayout.setVisibility(View.GONE);
             }
         });
