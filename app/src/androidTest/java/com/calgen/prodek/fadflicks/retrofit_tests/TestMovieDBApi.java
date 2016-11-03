@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.calgen.prodek.fadflicks.retrofitTests;
+package com.calgen.prodek.fadflicks.retrofit_tests;
 
 import android.test.AndroidTestCase;
 

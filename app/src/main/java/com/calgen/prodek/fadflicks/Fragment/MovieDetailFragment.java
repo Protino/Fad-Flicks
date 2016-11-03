@@ -97,7 +97,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     @State public Movie movie;
     @State public boolean isFavourite;
     @State public String shareMessage;
-    @State public boolean isInternetOff = false;
     @BindView(R.id.title) public TextView title;
     @BindView(R.id.release_date) public TextView releaseDate;
     @BindView(R.id.runtime) public TextView runtime;
@@ -177,15 +176,14 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             }
             movieBundle.movie = movie;
         }
-        // TODO: 11/21/2016 Replace with broadcast receivers
-        isInternetOff = !Network.isConnected(context);
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (isInternetOff) showInternetOffSnackBar();
+        // TODO: 11/21/2016 Replace with broadcast receivers
+        if (!Network.isConnected(context)) showInternetOffSnackBar();
         if (movie == null) return;
         if (savedInstanceState == null) {
             fetchData();
@@ -268,6 +266,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     }
 
     private void fetchData() {
+        if (!Network.isConnected(context)) showInternetOffSnackBar();
         showLoadingLayout();
         //check if data is present in the cache to load
         MovieBundle cacheData = Cache.getMovieData(context, movie.getId());
@@ -283,10 +282,8 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             return;
         }
         //handle network connection
-        if (!isInternetOff) {
+        if (Network.isConnected(context)) {
             fetchDataFromInternet();
-        } else {
-            showInternetOffSnackBar();
         }
     }
 
