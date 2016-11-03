@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 
@@ -51,6 +52,11 @@ import icepick.State;
  * movie information. It also handles two-pane UI.
  */
 public class MainActivity extends AppCompatActivity implements GridFragment.ReloadCallback {
+
+    //re-enable usage of vectors for devices(API 19 and lower)
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     public static final String MOVIE_DETAIL_FRAGMENT_TAG = "M_D_F_TAG";
     private static final int FAVOURITE_FRAGMENT_POSITION = 2;

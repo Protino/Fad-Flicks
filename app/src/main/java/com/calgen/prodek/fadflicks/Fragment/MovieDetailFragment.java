@@ -288,6 +288,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
     private void fetchData() {
         showLoadingLayout();
         //check if data is present in the cache to load
+        if (movie==null) return;
         MovieBundle cacheData = Cache.getMovieData(context, movie.getId());
         if (cacheData != null) {
             movieBundle.movie = cacheData.movie;
@@ -464,7 +465,11 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             @Override
             public void onClick(View v) {
                 fetchData();
-                if (!Network.isConnected(context))showInternetOffSnackBar();
+                if (!Network.isConnected(context)){
+                    showInternetOffSnackBar();
+                }else{
+                    if (MainActivity.twoPane) ((MainActivity)getActivity()).reloadData();
+                }
             }
         });
         snackbar.setActionTextColor(context.getResources().getColor(R.color.error));

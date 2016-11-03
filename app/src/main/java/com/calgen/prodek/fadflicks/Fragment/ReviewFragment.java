@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.calgen.prodek.fadflicks.R;
+import com.calgen.prodek.fadflicks.activity.MainActivity;
 import com.calgen.prodek.fadflicks.adapter.ReviewAdapter;
 import com.calgen.prodek.fadflicks.model.Review;
 import com.calgen.prodek.fadflicks.model.ReviewResponse;
@@ -78,12 +79,14 @@ public class ReviewFragment extends Fragment {
         reviewListView.setAdapter(reviewAdapter);
         if (savedInstanceState != null) {
             reviewListView.smoothScrollToPosition(selectedItemPosition);
-        }else{
-            reviewListView.performItemClick(
-                    reviewListView.getAdapter().getView(selectedItemPosition,null,null),
-                    selectedItemPosition,
-                    selectedItemPosition
-            );
+        } else {
+            if (MainActivity.twoPane) {
+                reviewListView.performItemClick(
+                        reviewListView.getAdapter().getView(selectedItemPosition, null, null),
+                        selectedItemPosition,
+                        selectedItemPosition
+                );
+            }
         }
         return rootView;
     }

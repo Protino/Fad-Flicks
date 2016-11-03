@@ -26,6 +26,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -52,6 +53,11 @@ import icepick.State;
  */
 public class DetailActivity extends AppCompatActivity {
 
+    //re-enable usage of vectors for devices(API 19 and lower)
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     //@formatter:off
     @BindView(R.id.fav_fab) public FloatingActionButton favFab;
     @BindView(R.id.toolbar) public Toolbar toolbar;
@@ -67,7 +73,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Icepick.restoreInstanceState(this,savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -101,7 +107,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this,outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     /**

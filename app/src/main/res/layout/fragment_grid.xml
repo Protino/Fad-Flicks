@@ -28,9 +28,9 @@
         android:id="@+id/grid_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_margin="4dp"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/progressBarLayout"
@@ -57,9 +57,9 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/content_is_loading"
             android:paddingBottom="@dimen/content_padding"
-            android:src="@drawable/ic_empty_favourite_48dp"
-            android:contentDescription="@string/content_is_loading"/>
+            app:srcCompat="@drawable/ic_empty_favourite_48dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/internet_error_message"
             android:paddingBottom="@dimen/content_padding"
-            android:src="@drawable/ic_signal_wifi_off_black_36dp"/>
+            app:srcCompat="@drawable/ic_signal_wifi_off_black_36dp"/>
 
         <TextView
 
