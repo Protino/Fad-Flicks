@@ -57,7 +57,7 @@ public class ReviewFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        if (savedInstanceState == null) selectedItemPosition = -1;
+        if (savedInstanceState == null) selectedItemPosition = 0;
         ReviewResponse reviewResponse = (ReviewResponse) getActivity().getIntent().getSerializableExtra(Intent.EXTRA_TEXT);
         reviewList = reviewResponse.getReviewResponses();
         Icepick.restoreInstanceState(this, savedInstanceState);
@@ -76,8 +76,14 @@ public class ReviewFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         reviewAdapter = new ReviewAdapter(getContext(), (ArrayList<Review>) reviewList, false);
         reviewListView.setAdapter(reviewAdapter);
-        if (savedInstanceState != null && selectedItemPosition != -1) {
+        if (savedInstanceState != null) {
             reviewListView.smoothScrollToPosition(selectedItemPosition);
+        }else{
+            reviewListView.performItemClick(
+                    reviewListView.getAdapter().getView(selectedItemPosition,null,null),
+                    selectedItemPosition,
+                    selectedItemPosition
+            );
         }
         return rootView;
     }
