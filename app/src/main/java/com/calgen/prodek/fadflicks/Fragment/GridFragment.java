@@ -49,7 +49,7 @@ import retrofit2.Response;
 /**
  * Created by Gurupad on 28-Sep-16.
  */
-public class GridFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class GridFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     private static final String TAG = GridFragment.class.getSimpleName();
     private static final int MIN_VOTE_COUNT = 100;
@@ -200,7 +200,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
     @OnClick(R.id.try_again)
     public void onClick() {
         hideInternetErrorLayout();
-        updateMovieData();
+        ((ReloadCallback)getActivity()).reloadData();
     }
 
     private void hideInternetErrorLayout() {
@@ -332,4 +332,10 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         movieAdapter.getFilter().filter(newText);
         return false;
     }
+
+
+    public interface ReloadCallback {
+        void reloadData();
+    }
+
 }

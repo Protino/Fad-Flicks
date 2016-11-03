@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GridFragment.ReloadCallback{
 
 
     public static final String MOVIE_DETAIL_FRAGMENT_TAG = "M_D_F_TAG";
@@ -129,16 +129,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == GridMovieAdapter.FAV_REQUEST_CODE && resultCode == Activity.RESULT_OK &&
                 data.getBooleanExtra(getString(R.string.favourite_changed_key), true)) {
-                int movieId = data.getIntExtra(getString(R.string.favourite_movie_id_key), -1);
-                boolean isFavourite;
-                if (movieId == -1)
-                    return;
-                if (data.hasExtra(getString(R.string.fav_movie_bool_key)))
-                    isFavourite = data.getBooleanExtra(getString(R.string.fav_movie_bool_key), false);
-                else
-                    return;
+            int movieId = data.getIntExtra(getString(R.string.favourite_movie_id_key), -1);
+            boolean isFavourite;
+            if (movieId == -1)
+                return;
+            if (data.hasExtra(getString(R.string.fav_movie_bool_key)))
+                isFavourite = data.getBooleanExtra(getString(R.string.fav_movie_bool_key), false);
+            else
+                return;
 
-                notifyFavouriteChange(movieId, isFavourite);
+            notifyFavouriteChange(movieId, isFavourite);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -170,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void reloadData() {
+        viewPager.getAdapter().notifyDataSetChanged();
+    }
+
     public class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private final List<Fragment> fragmentList = new ArrayList<>();
@@ -179,6 +184,11 @@ public class MainActivity extends AppCompatActivity {
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
             fragmentTags = new HashMap<>();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
 
         @Override

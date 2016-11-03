@@ -58,7 +58,6 @@ public class ReadMoreDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.more_movie_details, container, false);
         ButterKnife.bind(this, rootView);
-        handleStatusBar();
 
         plotText.setText(movieDetails.getOverview());
         actors.setText(Parser.getActors(movieBundle.credits));
@@ -79,6 +78,7 @@ public class ReadMoreDialog extends DialogFragment {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(5);
+            handleStatusBar();
         }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

@@ -164,6 +164,8 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             }
             movieBundle.movie = movie;
         }
+        // TODO: 11/21/2016 Replace with broadcast recievers
+        isInternetOff=Network.isConnected(context);
         return rootView;
     }
 
@@ -246,7 +248,7 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
             return;
         }
         //handle network connection
-        if (Network.isConnected(context)) {
+        if (!isInternetOff) {
             isInternetOff = false;
             fetchDataFromInternet();
         } else {
