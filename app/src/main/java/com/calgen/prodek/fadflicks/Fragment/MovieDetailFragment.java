@@ -460,12 +460,6 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         }
     }
 
-    private void showLoadingLayout() {
-        progressBarLayout.setVisibility(View.VISIBLE);
-        detailContentLayout.setVisibility(View.GONE);
-        if (!MainActivity.twoPane)
-            ((DetailActivity) getActivity()).setFabVisibility(View.INVISIBLE);
-    }
 
     private void showInternetOffSnackBar() {
         Snackbar snackbar = Snackbar.make(detailContentLayout,
@@ -481,10 +475,23 @@ public class MovieDetailFragment extends Fragment implements VideosAdapter.Callb
         snackbar.show();
     }
 
+    private void showLoadingLayout() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        detailContentLayout.setVisibility(View.GONE);
+        if (!MainActivity.twoPane) {
+            ((DetailActivity) getActivity()).setFabVisibility(View.INVISIBLE);
+            setMenuVisibility(false);
+        }
+
+    }
+
     private void hideLoadingLayout() {
         progressBarLayout.setVisibility(View.GONE);
         detailContentLayout.setVisibility(View.VISIBLE);
-        if (!MainActivity.twoPane) ((DetailActivity) getActivity()).setFabVisibility(View.VISIBLE);
+        if (!MainActivity.twoPane) {
+            ((DetailActivity) getActivity()).setFabVisibility(View.VISIBLE);
+            setMenuVisibility(true);
+        }
     }
 
     private void setFavButtonDrawable() {
