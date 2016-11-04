@@ -138,9 +138,7 @@ public class GridFragment extends Fragment implements SearchView.OnQueryTextList
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
             hideLoadingLayout();
-            if (isDataLoadedFromCache) {
-                if (movieList.isEmpty()) showEmptyFavouritesLayout();
-            }
+            if (isDataLoadedFromCache && movieList.isEmpty()) showEmptyFavouritesLayout();
             if (isInternetOff) showInternetErrorLayout();
             return;
         }

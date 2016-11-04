@@ -16,7 +16,7 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:app="http://schemas.android.com/apk/res-auto"
           xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/fragment_forecast"
+          android:id="@+id/fragment_review"
           android:name="com.calgen.prodek.fadflicks.fragment.ReviewFragment"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
