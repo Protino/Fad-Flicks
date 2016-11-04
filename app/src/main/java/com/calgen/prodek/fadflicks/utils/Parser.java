@@ -130,12 +130,12 @@ public class Parser {
     }
 
     /**
-     * @param releaseDate date in the form yyyy-mm-dd
+     * @param releaseDate date in the form yyyy-MM-dd
      * @return date in friendly form like JUN 2015
      */
     @SuppressLint("SimpleDateFormat")
     public static String formatReleaseDate(String releaseDate) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
         try {
             date = formatter.parse(releaseDate);

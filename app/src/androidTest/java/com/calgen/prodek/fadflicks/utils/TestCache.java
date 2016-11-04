@@ -33,7 +33,6 @@ import java.util.Random;
  */
 public class TestCache extends AndroidTestCase {
 
-
     private static HashMap<Integer, Boolean> generateTestData() {
         Random random = new Random();
         HashMap<Integer, Boolean> map = new HashMap<>();
