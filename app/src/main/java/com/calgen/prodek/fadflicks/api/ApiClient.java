@@ -27,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * ===========
- * Attribution
+ * Acknowledgement
  * ===========
  * Thanks to Thomas kioko for the tutorial
  * on using interceptors
