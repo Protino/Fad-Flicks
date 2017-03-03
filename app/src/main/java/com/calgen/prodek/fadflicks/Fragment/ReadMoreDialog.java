@@ -113,5 +113,4 @@ public class ReadMoreDialog extends DialogFragment {
             statusBar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UI.getStatusBarHeight(getContext())));
         }
     }
-
 }

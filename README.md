@@ -16,15 +16,9 @@ which are fetched from [TMDB - The Movie Database][TMDB].
 
 ### Screenshots
 
-![Phone Main View](https://github.com/Protino/Fad-Flicks/blob/master/captures/phone_main.png)
-
-![Phone Movie Detail](https://github.com/Protino/Fad-Flicks/blob/master/captures/phone_detail.png)
-
-![Phone Movie Detail2](https://github.com/Protino/Fad-Flicks/blob/master/captures/phone_cast.png)
-
-![Tablet View](https://github.com/Protino/Fad-Flicks/blob/master/captures/tablet_main.png)
-
-![Tablet View2](https://github.com/Protino/Fad-Flicks/blob/master/captures/tablet_more_details.png)
+<p align="center">
+<img src="https://drive.google.com/uc?id=0B7HoD_UwfapHRTM0aGFUOV83NWc" width="960" height="540" alt="Cover">
+</p>
 
 ### What did I learn?
 

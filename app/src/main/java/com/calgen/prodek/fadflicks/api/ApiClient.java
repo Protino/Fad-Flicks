@@ -31,6 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * ===========
  * Thanks to Thomas kioko for the tutorial
  * on using interceptors
+ *
  * @see <a href="http://www.thomaskioko.com/mobile_phone/android-unit-testing/">Blog post</a>
  */
 public class ApiClient {
